@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>RES in JavaScript</title>
+</head>
+<body>
+<a href="http://mjn.host.cs.st-andrews.ac.uk/egyptian/res"><img src="uparr.jpg">_<B>RES home page</B></a>
+
+<h1>Hieroglyphic encoding (RES) in web pages using JavaScript</h1>
+
+This package offers an elegant framework for rendering hieroglyphic in web pages,
+using JavaScript. Other technologies used are HTML5 Canvas and TrueType.
+No server-side computation is involved.
+<p>
+One can use RES or RESlite. Rendering of RESlite is fast, but
+requires compilation from RES, for instance using <a
+href="http://mjn.host.cs.st-andrews.ac.uk/egyptian/align">PhilologEg</a>.
+RES is easier to use and more powerful, but can be slow to render for 
+web pages that include large amounts of hieroglyphic text.
+<p>
+This package includes:
+<ul>
+<li> <a href="testsuite_lite.html">test suite for RESlite</a>
+<li> <a href="testsuite_res.html">test suite for RES</a>
+<li> <a href="skeleton_lite.html">skeleton of web page with RESlite only</a>
+<li> <a href="skeleton_res.html">skeleton of web page with RES/RESlite</a> 
+</ul>
+
+<h2>Download and instructions for use</h2>
+
+<ol>
+<li> Download <a href="http://mjn.host.cs.st-andrews.ac.uk/egyptian/res/js/resjs.tar">resjs.tar</a> (approx. 950KB),
+or download from <a href="https://github.com/nederhof/resjs">from GitHub</a>.
+<li> Unpack it. 
+<li> To use RESlite only, one can create new web pages on the basis of
+<a href="skeleton_lite.html">skeleton_lite.html</a>. 
+One needs to include with the web pages
+all the files ending on <tt>.ttf</tt> and <tt>.css</tt>,
+as well as <tt>res_aux.js</tt>,  <tt>res_lite.js</tt>,  <tt>res_web.js</tt>.
+<li> To use any RES/RESlite encodings, one can create new web pages on the
+basis of <a href="skeleton_res.html">skeleton_res.html</a>.
+One needs to include with the web pages 
+all the files ending on <tt>.ttf</tt>, <tt>.js</tt>, and <tt>.css</tt>.
+</ol>
+
+<h2>Frequently asked questions</h2>
+
+<b>For which browsers is this intended?</b>
+<p>
+<i>In principle this should run on all modern browsers. So far it has been
+tested on Chromium 34, Firefox 28, Rekonq 2.4.2.</i> 
+<p>
+<b>Why don't you use SVG?</b>
+<p>
+<i>We tried it, using both Raphael and Snap. In both cases the
+path intersection operation that we need for the implementation of e.g. 
+<b>insert</b> is far too slow to be useable in practice.
+A rendered HTML5 Canvas is not scalable, but the rendering process is parameterizable
+by a font size, so we don't see this as a problem for most web applications.</i>
+<p>
+<b>Can I use this software?</b>
+<p>
+<i>Yes, with few restrictions; see <a href="LICENSE.md">license</a> for details.
+Acknowledgements where appropriate will be appreciated.
+For the font, see the pages of
+<a href="http://mjn.host.cs.st-andrews.ac.uk/egyptian/fonts/newgardiner.html">NewGardiner</a>.</i>
+
+<h2>Versions</h2>
+
+<ul>
+<li> 2015-06-09
+<ul>
+<li> First version on GitHub.
+</ul>
+<li> 2015-05-24
+<ul>
+<li> First complete implementation of RES.
+</ul>
+<li> 2015-05-07
+<ul>
+<li> First complete implementation of RESlite.
+</ul>
+</ul>
+
+<h2>Known issues</h2>
+
+<ul>
+<li> Rendering of cartouches is poor in Firefox 28. This is due to an
+aberrant 'feature' of clip().
+</ul>
+
+<h2>Acknowledgements</h2>
+
+This JavaScript package builds upon a Senior Honours project 
+by Alexander Michael Field, described in the unpublished report
+<i>A Web Editor for Hieroglyphic</i>, 4 April 2014, University of St Andrews. 
+This used SVG instead of Canvas.
+
+</body>
+</html>
+

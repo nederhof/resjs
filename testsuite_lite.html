@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>RESlite test suite</title>
+<link rel="stylesheet" type="text/css" href="res.css" />
+<script type="text/javascript" src="res_aux.js"></script>
+<script type="text/javascript" src="res_lite.js"></script>
+<script type="text/javascript" src="res_web.js"></script>
+</head>
+<body>
+    <!-- hack to force timely loading of fonts -->
+    <div id="outsidescreen">
+        <span class="outsidescreen_elem hi">&#57344;</span>
+        <span class="outsidescreen_elem hiaux">&#35;</span>
+        <span class="outsidescreen_elem hinotes">&#35;</span>
+    </div>
+
+<a href="index.html"><img src="uparr.jpg">_<B>RES in JavaScript</B></a>
+
+<h1>RESlite test suite</h1>
+
+Shown is the original RES encoding.
+See the source for the RESlite encoding.
+
+<h2>Glyphs</h2>
+
+A1
+<canvas class="res demo">
+$ hlr 1000 g 0 696 c 1 57344 0 0 15 1000 1000 348 500 0 0 1000 1000 i e 
+</canvas>
+<p>
+B1
+<canvas class="res demo">
+$ hlr 1000 g 0 565 c 1 57424 0 0 15 1000 1000 283 500 0 0 1000 1000 i e
+</canvas>
+<p>
+A1[mirror]
+<canvas class="res demo">
+$ hlr 1000 g 0 696 c 1 57344 1 0 15 1000 1000 348 511 0 0 1000 1000 i e
+</canvas>
+<p>
+A1[red]
+<canvas class="res demo">
+$ hlr 1000 g 0 696 c 1 57344 0 0 9 1000 1000 348 511 0 0 1000 1000 i e
+</canvas>
+<p>
+A1[rotate=15]
+<canvas class="res demo">
+$ hlr 1000 g 0 761 c 1 57344 0 15 15 1000 1000 380 500 0 0 1000 1000 i e
+</canvas>
+<p>
+A1[rotate=45]
+<canvas class="res demo">
+$ hlr 1000 g 0 1000 c 1 57344 0 45 15 1000 1000 500 511 0 0 1000 1000 i e
+</canvas>
+<p>
+A1[rotate=90]
+<canvas class="res demo">
+$ hlr 1000 g 0 978 c 1 57344 0 90 15 1000 1000 489 500 0 0 1000 1000 i e 
+</canvas>
+<p>
+A1[rotate=15,mirror]
+<canvas class="res demo">
+$ hlr 1000 g 0 717 c 1 57344 1 15 15 939 939 359 500 0 0 1000 1000 i e 
+</canvas>
+<p>
+A1[rotate=45,mirror]
+<canvas class="res demo">
+$ hlr 1000 g 0 978 c 1 57344 1 45 15 1000 1000 489 500 0 0 1000 1000 i e 
+</canvas>
+<p>
+A1[rotate=90,mirror]
+<canvas class="res demo">
+$ hlr 1000 g 0 978 c 1 57344 1 90 15 1000 1000 489 500 0 0 1000 1000 i e
+</canvas>
+<p>
+A1[scale=0.5]
+<canvas class="res demo">
+$ hlr 1000 g 0 348 c 1 57344 0 0 15 500 500 174 511 0 0 1000 1000 i e
+</canvas>
+<p>
+A1[xscale=0.5]
+<canvas class="res demo">
+$ hlr 1000 g 0 348 c 1 57344 0 0 15 500 1000 174 511 0 0 1000 1000 i e 
+</canvas>
+<p>
+A1[yscale=0.5]
+<canvas class="res demo">
+$ hlr 1000 g 0 696 c 1 57344 0 0 15 1000 500 348 511 0 0 1000 1000 i e 
+</canvas>
+<p>
+A1[scale=0.5,rotate=15]
+<canvas class="res demo">
+$ hlr 1000 g 0 413 c 1 57344 0 15 15 500 500 207 500 0 0 1000 1000 i e
+</canvas>
+<p>
+A1[scale=0.5,rotate=15,mirror]
+<canvas class="res demo">
+$ hlr 1000 g 0 413 c 1 57344 1 15 15 500 500 207 511 0 0 1000 1000 i e
+</canvas>
+<p>
+A1^"abc"
+<canvas class="res demo">
+$ hlr 1000 g 0 696 c 1 57344 0 0 15 1000 1000 348 511 0 0 1000 1000 n "abc" 3
+15 261 337 -130 i e
+</canvas>
+<p>
+A1^"\\"[blue]
+<canvas class="res demo">
+$ hlr 1000 g 0 696 c 1 57344 0 0 15 1000 1000 348 511 0 0 1000 1000 n "\\" 3
+11 261 337 -130 i e
+</canvas>
+<p>
+A1^"\""[red]
+<canvas class="res demo">
+$ hlr 1000 g 0 696 c 1 57344 0 0 15 1000 1000 348 511 0 0 1000 1000 n "\"" 3 9
+261 337 -54 i e 
+</canvas>
+<p>
+modify[above=1](A1)
+<canvas class="res demo">
+$ hlr 1000 g 0 696 c 1 57344 0 0 15 1000 1000 348 250 0 0 1000 1000 i e
+</canvas>
+<p>
+modify[below=1](A1)
+<canvas class="res demo">
+$ hlr 1000 g 0 696 c 1 57344 0 0 15 1000 1000 348 750 0 0 1000 1000 i e
+</canvas>
+<p>
+modify[before=1](A1)
+<canvas class="res demo">
+$ hlr 1000 g 0 348 c 1 57344 0 0 15 1000 1000 0 511 0 0 1000 1000 i e 
+</canvas>
+<p>
+modify[after=1](A1)
+<canvas class="res demo">
+$ hlr 1000 g 0 348 c 1 57344 0 0 15 1000 1000 348 511 0 0 1000 1000 i e
+</canvas>
+<p>
+modify[above=1,omit](A1)
+<canvas class="res demo">
+$ hlr 1000 g 0 696 c 1 57344 0 0 15 1000 1000 348 250 0 511 1000 489 i e
+</canvas>
+<p>
+modify[below=1,omit](A1)
+<canvas class="res demo">
+$ hlr 1000 g 0 696 c 1 57344 0 0 15 1000 1000 348 750 0 0 1000 511 i e
+</canvas>
+<p>
+modify[before=1,omit](A1)
+<canvas class="res demo">
+$ hlr 1000 g 0 348 c 1 57344 0 0 15 1000 1000 0 511 500 0 500 1000 i e
+</canvas>
+<p>
+modify[after=1,omit](A1)
+<canvas class="res demo">
+$ hlr 1000 g 0 348 c 1 57344 0 0 15 1000 1000 348 511 0 0 500 1000 i e
+</canvas>
+
+
+<h2>Groups</h2>
+
+(A1*B1):(Z1*Z1*Z1)
+<canvas class="res demo">
+$ hlr 1000 g 0 804 c 1 57344 0 0 15 556 556 196 272 0 0 1000 1000 c 1 57424 0
+0 15 556 556 641 272 0 0 1000 1000 c 1 58340 0 0 15 807 807 33 837 0 0 1000
+1000 c 1 58340 0 0 15 807 807 402 837 0 0 1000 1000 c 1 58340 0 0 15 807 807
+772 837 0 0 1000 1000 i e
+</canvas>
+<p>
+A1-B1
+<canvas class="res demo">
+$ hlr 1000 g 0 696 c 1 57344 0 0 15 1000 1000 348 511 0 0 1000 1000 i g 848
+565 c 1 57424 0 0 15 1000 1000 283 511 0 0 1000 1000 i e
+</canvas>
+<p>
+stack(s,r)
+<canvas class="res demo">
+$ hlr 1000 g 0 978 c 1 58100 0 0 15 1000 1000 478 511 0 0 1000 1000 c 1 57483
+0 0 15 1000 1000 489 500 0 0 1000 1000 i e
+</canvas>
+<p>
+stack[under](Hm,D)
+<canvas class="res demo">
+$ hlr 1000 g 0 978 ( c 1 57747 0 0 15 1000 1000 489 511 0 0 1000 1000 o c 1
+58203 0 0 15 1000 1000 489 511 0 0 1000 1000 ) i e
+</canvas>
+<p>
+stack[on,x=0.76](stack[on,x=0.7](gb,gb),gb)
+<canvas class="res demo">
+$ hlr 1000 g 0 1391 ( ( c 1 57708 0 0 15 1000 1000 489 511 0 0 1000 1000 o c 1
+57708 0 0 15 1000 1000 685 511 0 0 1000 1000 ) o c 1 57708 0 0 15 1000 1000
+902 511 0 0 1000 1000 ) i e
+</canvas>
+<p>
+A1-stack[under](Hm,D)-A1
+<canvas class="res demo">
+$ hlr 1000 g 0 696 c 1 57344 0 0 15 1000 1000 348 511 0 0 1000 1000 i g 848
+978 ( c 1 57747 0 0 15 1000 1000 489 511 0 0 1000 1000 o c 1 58203 0 0 15 1000
+1000 489 511 0 0 1000 1000 ) i g 1130 696 c 1 57344 0 0 15 1000 1000 348 511 0
+0 1000 1000 i e
+</canvas>
+<p>
+B1-stack[on,x=0.76](stack[on,x=0.7](gb,gb),gb)-B1
+<canvas class="res demo">
+$ hlr 1000 g 0 565 c 1 57424 0 0 15 1000 1000 283 511 0 0 1000 1000 i g 717
+1391 ( ( c 1 57708 0 0 15 1000 1000 489 511 0 0 1000 1000 o c 1 57708 0 0 15
+1000 1000 685 511 0 0 1000 1000 ) o c 1 57708 0 0 15 1000 1000 902 511 0 0
+1000 1000 ) i g 1543 565 c 1 57424 0 0 15 1000 1000 283 511 0 0 1000 1000 i e 
+</canvas>
+<p>
+empty-x:x^"a":x-empty
+<canvas class="res demo">
+$ hlr 1000 g 0 1000 i g 1152 261 c 1 58381 0 0 15 512 512 130 130 0 0 1000
+1000 c 1 58381 0 0 15 512 512 130 500 0 0 1000 1000 c 1 58381 0 0 15 512 512
+130 870 0 0 1000 1000 n "a" 3 15 261 380 435 i g 413 1000 i e
+</canvas>
+
+<h2>Text direction</h2>
+
+[hrl](A1*B1):(Z1*Z1*Z1)
+<canvas class="res demo">
+$ hrl 1000 g 0 804 c 1 57344 0 0 15 556 556 196 272 0 0 1000 1000 c 1 57424 0
+0 15 556 556 641 272 0 0 1000 1000 c 1 58340 0 0 15 807 807 33 837 0 0 1000
+1000 c 1 58340 0 0 15 807 807 402 837 0 0 1000 1000 c 1 58340 0 0 15 807 807
+772 837 0 0 1000 1000 i e
+</canvas>
+<p>
+[hrl]A1[scale=0.5,rotate=15,mirror]
+<canvas class="res demo">
+$ hrl 1000 g 0 413 c 1 57344 1 15 15 500 500 207 511 0 0 1000 1000 i e 
+</canvas>
+<p>
+[vlr]A1*B1-Z1*Z1*Z1
+<canvas class="res demo">
+$ vlr 1000 g 0 696 c 1 57344 0 0 15 708 708 250 348 0 0 1000 1000 c 1 57424 0
+0 15 708 708 804 348 0 0 1000 1000 i g 848 391 c 1 58340 0 0 15 1000 1000 33
+196 0 0 1000 1000 c 1 58340 0 0 15 1000 1000 489 196 0 0 1000 1000 c 1 58340 0
+0 15 1000 1000 967 196 0 0 1000 1000 i e
+</canvas>
+<p>
+[vrl]A1*B1-Z1*Z1*Z1
+<canvas class="res demo">
+$ vrl 1000 g 0 696 c 1 57344 0 0 15 708 708 250 348 0 0 1000 1000 c 1 57424 0
+0 15 708 708 804 348 0 0 1000 1000 i g 848 391 c 1 58340 0 0 15 1000 1000 33
+196 0 0 1000 1000 c 1 58340 0 0 15 1000 1000 489 196 0 0 1000 1000 c 1 58340 0
+0 15 1000 1000 967 196 0 0 1000 1000 i e
+</canvas>
+<p>
+[hrl]A1^"abc"
+<canvas class="res demo">
+$ hrl 1000 g 0 696 c 1 57344 0 0 15 1000 1000 348 511 0 0 1000 1000 n "abc" 3
+15 261 337 -130 i e
+</canvas>
+
+<h2>Shading</h2>
+
+A1[shade]
+<canvas class="res demo">
+$ hlr 1000 g 0 696 c 1 57344 0 0 15 1000 1000 348 511 0 0 1000 1000 s 348 500
+696 1000 i e
+</canvas>
+<p>
+A1[shade]-B1[shade]
+<canvas class="res demo">
+$ hlr 1000 g 0 696 c 1 57344 0 0 15 1000 1000 348 511 0 0 1000 1000 s 348 500
+696 1000 i g 848 565 c 1 57424 0 0 15 1000 1000 283 511 0 0 1000 1000 s 283
+500 565 1000 i e
+</canvas>
+<p>
+[vrl]A1[shade]
+<canvas class="res demo">
+$ vrl 1000 g 0 978 c 1 57344 0 0 15 1000 1000 500 489 0 0 1000 1000 s 500 489
+1000 978 i e
+</canvas>
+<p>
+A1[shade]*[shade]B1[shade]:[shade]Z1[shade]*[shade]Z1[shade]*[shade]Z1[shade]
+<canvas class="res demo"> 
+$ hlr 1000 g 0 804 c 1 57344 0 0 15 556 556 196 272 0 0 1000 1000 c 1 57424 0
+0 15 556 556 641 272 0 0 1000 1000 c 1 58340 0 0 15 807 807 33 837 0 0 1000
+1000 c 1 58340 0 0 15 807 807 402 837 0 0 1000 1000 c 1 58340 0 0 15 807 807
+772 837 0 0 1000 1000 s 196 272 391 543 s 641 272 326 543 s 435 272 87 543 s
+33 837 65 326 s 402 837 65 326 s 772 837 65 326 s 217 837 304 326 s 587 837
+304 326 s 402 609 804 130 i e
+</canvas>
+<p>
+empty[te,ts,be,bs]
+<canvas class="res demo">
+$ hlr 1000 g 0 1000 s 750 250 500 500 s 250 250 500 500 s 750 750 500 500 s
+250 750 500 500 i e
+</canvas>
+
+<h2>Font sizes</h2>
+
+A1-B1 (with default font size 36px)
+<canvas class="res demo">
+$ hlr 1000 g 0 696 c 1 57344 0 0 15 1000 1000 348 511 0 0 1000 1000 i g 848
+565 c 1 57424 0 0 15 1000 1000 283 511 0 0 1000 1000 i e
+</canvas>
+<p>
+A1-B1 (with font size 20px)
+<canvas class="res demo" style="font-size: 20px; vertical-align: -5px;">
+$ hlr 1000 g 0 696 c 1 57344 0 0 15 1000 1000 348 511 0 0 1000 1000 i g 848
+565 c 1 57424 0 0 15 1000 1000 283 511 0 0 1000 1000 i e
+</canvas>
+<p>
+A1-B1 (with font size 50px)
+<canvas class="res demo" style="font-size: 50px; vertical-align: -20px;">
+$ hlr 1000 g 0 696 c 1 57344 0 0 15 1000 1000 348 511 0 0 1000 1000 i g 848
+565 c 1 57424 0 0 15 1000 1000 283 511 0 0 1000 1000 i e
+</canvas>
+
+</body>
+</html>

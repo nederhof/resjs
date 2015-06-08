@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>RES test suite</title>
+<link rel="stylesheet" type="text/css" href="res.css" />
+<script type="text/javascript" src="res_aux.js"></script>
+<script type="text/javascript" src="res_points.js"></script>
+<script type="text/javascript" src="res_lite.js"></script>
+<script type="text/javascript" src="res_struct.js"></script>
+<script type="text/javascript" src="res_syntax.js"></script>
+<script type="text/javascript" src="res_format.js"></script>
+<script type="text/javascript" src="res_render.js"></script>
+<script type="text/javascript" src="res_web.js"></script>
+</head>
+<body>
+    <!-- hack to force timely loading of fonts -->
+    <div id="outsidescreen">
+        <span class="outsidescreen_elem hi">&#57344;</span>
+        <span class="outsidescreen_elem hiaux">&#35;</span>
+        <span class="outsidescreen_elem hinotes">&#35;</span>
+    </div>
+
+<a href="index.html"><img src="uparr.jpg">_<B>RES in JavaScript</B></a>
+
+<h1>RES test suite</h1>
+
+<h2>Named glyphs</h2>
+
+A1-[shade]A1[scale=0.4]-[shade]A1[xscale=0.5]-[shade]A1[yscale=0.5]-[shade]A1[scale=1.5,xscale=0.5,yscale=0.5]
+<canvas class="res demo">
+A1-[shade]A1[scale=0.4]-[shade]A1[xscale=0.5]-[shade]A1[yscale=0.5]-[shade]A1[scale=1.5,xscale=0.5,yscale=0.5]
+</canvas>
+
+<p>
+A1[shade]-A1[b]-A1[t]-A1[s]-A1[e]-A1[be]-A1[se]-A1[st]-A1[noshade,stb,bb]
+<canvas class="res demo">
+A1[shade]-A1[b]-A1[t]-A1[s]-A1[e]-A1[be]-A1[se]-A1[st]-A1[noshade,stb,bb]
+</canvas>
+
+<p>
+A1[silver]-B1[white]-C1[gray]-D1[yellow]-E1[fuchsia]-F1a[aqua]-G1[olive]-Aa7a[purple]
+<canvas class="res demo">
+A1[silver]-B1[white]-C1[gray]-D1[yellow]-E1[fuchsia]-F1a[aqua]-G1[olive]-Aa7a[purple]
+</canvas>
+
+<p>
+![shade]H1[teal]-I1[red]-K1[lime]-L1[blue]-M1[maroon]-N1[green]-NL1[navy]-NU1[black]
+<canvas class="res demo">
+![shade]H1[teal]-I1[red]-K1[lime]-L1[blue]-M1[maroon]-N1[green]-NL1[navy]-NU1[black]
+</canvas>
+
+<p>
+A1[mirror]-A1[mirror,scale=0.4]-A1[nomirror,noshade]
+<canvas class="res demo">
+A1[mirror]-A1[mirror,scale=0.4]-A1[nomirror,noshade]
+</canvas>
+
+<p>
+A1[rotate=15]-A1[rotate=45]-A1[rotate=90]-A1[rotate=180]-A1[rotate=270]
+<canvas class="res demo">
+A1[rotate=15]-A1[rotate=45]-A1[rotate=90]-A1[rotate=180]-A1[rotate=270]
+</canvas>
+
+<p>
+A1[rotate=15,mirror]-A1[rotate=90,mirror]-A1[rotate=270,mirror]
+<canvas class="res demo">
+A1[rotate=15,mirror]-A1[rotate=90,mirror]-A1[rotate=270,mirror]
+</canvas>
+
+<p>
+A1[mirror,rotate=90,scale=0.4]-[shade]A1[mirror,rotate=45,xscale=0.4]
+<canvas class="res demo">
+A1[mirror,rotate=90,scale=0.4]-[shade]A1[mirror,rotate=45,xscale=0.4]
+</canvas>
+
+<p>
+mSa-100-10-"["-"?"-"\""-"\\"-open-close
+<canvas class="res demo">
+mSa-100-10-"["-"?"-"\""-"\\"-open-close
+</canvas>
+
+<h2>Operators</h2>
+
+A1-B1-C1
+<canvas class="res demo">
+A1-B1-C1
+</canvas>
+
+<p>
+A1*B1*C1
+<canvas class="res demo">
+A1*B1*C1
+</canvas>
+
+<p>
+D1:D1:D1
+<canvas class="res demo">
+D1:D1:D1
+</canvas>
+
+<p>
+A1*B1-C1:D1
+<canvas class="res demo">
+A1*B1-C1:D1
+</canvas>
+
+<p>
+D1*Z7:Z4-(D1*Z7):Z4
+<canvas class="res demo">
+D1*Z7:Z4-(D1*Z7):Z4
+</canvas>
+
+<p>
+D1*(Z7:Z4)-D1*D1:D1*(D1:D1)
+<canvas class="res demo">
+D1*(Z7:Z4)-D1*D1:D1*(D1:D1)
+</canvas>
+
+<p>
+n:n:n - n:n:[sep=0]n - n:n:[sep=0,fix]n
+<canvas class="res demo">
+n:n:n - n:n:[sep=0]n - n:n:[sep=0,fix]n
+</canvas>
+
+<p>
+x*x:x-x*x:[size=3]x-x*x:[size=inf,fit]x
+<canvas class="res demo">
+x*x:x-x*x:[size=3]x-x*x:[size=inf,fit]x
+</canvas>
+
+<p>
+N9:t-a:r
+<canvas class="res demo">
+N9:t-a:r
+</canvas>
+
+<p>
+(A1*B1):(Z1*Z1*Z1)
+<canvas class="res demo">
+(A1*B1):(Z1*Z1*Z1)
+</canvas>
+
+<p>
+A1-A1-[sep=0.5]A1-[fit]A1-[fit,sep=0]A1
+<canvas class="res demo">
+A1-A1-[sep=0.5]A1-[fit]A1-[fit,sep=0]A1
+</canvas>
+
+<p>
+A1*A1-A1*[sep=0.5]A1-A1*[fit]A1-A1*[fit,sep=0]A1
+<canvas class="res demo">
+A1*A1-A1*[sep=0.5]A1-A1*[fit]A1-A1*[fit,sep=0]A1
+</canvas>
+
+<p>
+A1[rotate=90]:A1[rotate=90]-A1[rotate=90]:[sep=0.5]A1[rotate=90]-A1[rotate=90]:[fit]A1[rotate=90]-A1[rotate=90]:[fit,sep=0]A1[rotate=90]
+<canvas class="res demo">
+A1[rotate=90]:A1[rotate=90]-A1[rotate=90]:[sep=0.5]A1[rotate=90]-A1[rotate=90]:[fit]A1[rotate=90]-A1[rotate=90]:[fit,sep=0]A1[rotate=90]
+</canvas>
+
+<p>
+Hm[rotate=90]:empty-[fit]empty:Hm[rotate=90]-A1-Hm[rotate=90]:empty[firm]-[fit,shade]empty:Hm[rotate=90]
+<canvas class="res demo">
+Hm[rotate=90]:empty-[fit]empty:Hm[rotate=90]-A1-Hm[rotate=90]:empty[firm]-[fit,shade]empty:Hm[rotate=90]
+</canvas>
+
+<p>
+A1-[t]A1-[noshade,sep=5,ss]A1
+<canvas class="res demo">
+A1-[t]A1-[noshade,sep=5,ss]A1
+</canvas>
+
+<h2>Empty glyphs</h2>
+
+A1-empty[shade]-A1-empty[width=0.5]-A1-empty[width=2,shade]-A1:empty-A1:empty[height=0.5]-empty[firm]
+<canvas class="res demo">
+A1-empty[shade]-A1-empty[width=0.5]-A1-empty[width=2,shade]-A1:empty-A1:empty[height=0.5]-empty[firm]
+</canvas>
+
+<p>
+empty[shade]-empty[b]-empty[t]-empty[s]-empty[e]-empty[be]-empty[se]-empty[st]-empty[stb]
+<canvas class="res demo">
+empty[shade]-empty[b]-empty[t]-empty[s]-empty[e]-empty[be]-empty[se]-empty[st]-empty[stb]
+</canvas>
+
+<h2>Boxes</h2>
+
+cartouche(x-A1-B2-x)-serekh[h](A1-B2)-rectangle[v](A1-B2)-Hwtopenover()-Hwtopenunder()-Hwtcloseover()-Hwtcloseunder()
+<canvas class="res demo">
+cartouche(x-A1-B2-x)-serekh[h](A1-B2)-rectangle[v](A1-B2)-Hwtopenover()-Hwtopenunder()-Hwtcloseover()-Hwtcloseunder()
+</canvas>
+
+<p>
+[vlr]cartouche(x-A1-B2-x)-cartouche[h](x-A1-B2-x)-cartouche[v](x-A1-B2-x)
+<canvas class="res demo">
+[vlr]cartouche(x-A1-B2-x)-cartouche[h](x-A1-B2-x)-cartouche[v](x-A1-B2-x)
+</canvas>
+
+<p>
+cartouche(oval(A1))-inb(cartouche[v]()-A1)-oval[shade]()-![sep=0]oval(A1)-oval[undersep=1](A1)
+<canvas class="res demo">
+cartouche(oval(A1))-inb(cartouche[v]()-A1)-oval[shade]()-![sep=0]oval(A1)-oval[undersep=1](A1)
+</canvas>
+
+<p>
+oval[blue](A1)-oval[shade](A1)-oval[ts](A1)-![shade]serekh[scale=0.7](A1)![noshade]-![red]rectangle[size=0.5](A1)
+<canvas class="res demo">
+oval[blue](A1)-oval[shade](A1)-oval[ts](A1)-![shade]serekh[scale=0.7](A1)![noshade]-![red]rectangle[size=0.5](A1)
+</canvas>
+
+<p>
+cartouche[opensep=9.1](A1-B2)-cartouche[closesep=9.1](A1-B2)-cartouche[undersep=9.1](A1-B2)-cartouche[oversep=9.1](A1-B2)
+<canvas class="res demo">
+cartouche[opensep=9.1](A1-B2)-cartouche[closesep=9.1](A1-B2)-cartouche[undersep=9.1](A1-B2)-cartouche[oversep=9.1](A1-B2)
+</canvas>
+
+<p>
+[size=3]cartouche[v,opensep=9.1](A1-B2)-cartouche[v,closesep=9.1](A1-B2)-cartouche[v,undersep=9.1](A1-B2)-cartouche[v,oversep=9.1](A1-B2)
+<canvas class="res demo">
+[size=3]cartouche[v,opensep=9.1](A1-B2)-cartouche[v,closesep=9.1](A1-B2)-cartouche[v,undersep=9.1](A1-B2)-cartouche[v,oversep=9.1](A1-B2)
+</canvas>
+
+<p>
+![mirror]Hwtopenunder(A1)-Hwtopenunder[nomirror](A1)-cartouche[mirror](A1)-cartouche[v](A1)
+<canvas class="res demo">
+![mirror]Hwtopenunder(A1)-Hwtopenunder[nomirror](A1)-cartouche[mirror](A1)-cartouche[v](A1)
+</canvas>
+
+<h2>Stack</h2>
+
+stack(s,r)
+<canvas class="res demo">
+stack(s,r)
+</canvas>
+
+<p>
+stack[under](Hm,D)
+<canvas class="res demo">
+stack[under](Hm,D)
+</canvas>
+
+<p>
+stack[on,x=0.76](stack[on,x=0.7](gb,gb),gb)
+<canvas class="res demo">
+stack[on,x=0.76](stack[on,x=0.7](gb,gb),gb)
+</canvas>
+
+<p>
+A1-A1-A1-stack[under](Hm,D)-A1-A1-A1
+<canvas class="res demo">
+A1-A1-A1-stack[under](Hm,D)-A1-A1-A1
+</canvas>
+
+<p>
+B1-B1-B1-stack[on,x=0.76](stack[on,x=0.7](gb,gb),gb)-B1-B1-B1
+<canvas class="res demo">
+B1-B1-B1-stack[on,x=0.76](stack[on,x=0.7](gb,gb),gb)-B1-B1-B1
+</canvas>
+
+<p>
+stack[on](A1,ra)-stack[x=0.25,on](A1,ra)-stack[on,y=0.25](A1,ra)-stack[on,x=0,y=0](A1,ra)-stack[on,x=1,y=1](A1,ra)
+<canvas class="res demo">
+stack[on](A1,ra)-stack[x=0.25,on](A1,ra)-stack[on,y=0.25](A1,ra)-stack[on,x=0,y=0](A1,ra)-stack[on,x=1,y=1](A1,ra)
+</canvas>
+
+<p>
+stack[on,x=0,y=0](A1[shade],ra)-stack[on,x=1,y=1](A1,ra[shade])
+<canvas class="res demo">
+stack[on,x=0,y=0](A1[shade],ra)-stack[on,x=1,y=1](A1,ra[shade])
+</canvas>
+
+<h2>Insert</h2>
+
+insert[ts,sep=0](A1,ra)-insert[te,sep=0](zA,ra)-insert[bs,sep=0](zA,ra)-insert[be,sep=0](zA,ra)
+<canvas class="res demo">
+insert[ts,sep=0](A1,ra)-insert[te,sep=0](zA,ra)-insert[bs,sep=0](zA,ra)-insert[be,sep=0](zA,ra)
+</canvas>
+
+<p>
+insert[te,sep=0](zA,ra)-insert[te,sep=0.5](zA,ra)-insert[te,sep=1](zA,ra)
+<canvas class="res demo">
+insert[te,sep=0](zA,ra)-insert[te,sep=0.5](zA,ra)-insert[te,sep=1](zA,ra)
+</canvas>
+
+<p>
+insert[te,sep=0.5](zA[shade],ra)-insert[te,sep=0.5](zA,ra[shade])-![shade]insert[te,sep=0.5](zA,ra)
+<canvas class="res demo">
+insert[te,sep=0.5](zA[shade],ra)-insert[te,sep=0.5](zA,ra[shade])-![shade]insert[te,sep=0.5](zA,ra)
+</canvas>
+
+<p>
+insert[x=0.8,fix](empty,A1)-[shade]insert[x=0.2,fix](empty,A1)-[shade]insert[y=0.2,fix](empty,A1)-[shade]insert[y=0.8,fix](empty,A1)
+<canvas class="res demo">
+insert[x=0.8,fix](empty,A1)-[shade]insert[x=0.2,fix](empty,A1)-[shade]insert[y=0.2,fix](empty,A1)-[shade]insert[y=0.8,fix](empty,A1)
+</canvas>
+
+<p>
+insert[x=0.5,y=0.5,fix,sep=0.3](oval(),A1)-insert[x=0.6,y=0.6,fix,sep=0.3](oval(),A1)
+<canvas class="res demo">
+insert[x=0.5,y=0.5,fix,sep=0.3](oval(),A1)-insert[x=0.6,y=0.6,fix,sep=0.3](oval(),A1)
+</canvas>
+
+<p>
+insert[x=0.8,y=0.8,fix](empty,A1)-insert[fix](empty[height=2]:oval(),A1)-insert[fix,x=.3,y=.4](empty[width=2,height=2]:oval(),A1)
+<canvas class="res demo">
+insert[x=0.8,y=0.8,fix](empty,A1)-insert[fix](empty[height=2]:oval(),A1)-insert[fix,x=.3,y=.3](empty[width=2,height=2]:oval(),A1)
+</canvas>
+
+<p>
+insert[t,x=0.9,sep=0.5](zA,ra)-insert[t,x=0.6,sep=0.5](zA,ra)-insert[t,x=0.3,sep=0.5](zA,ra)
+<canvas class="res demo">
+insert[t,x=0.9,sep=0.5](zA,ra)-insert[t,x=0.6,sep=0.5](zA,ra)-insert[t,x=0.3,sep=0.5](zA,ra)
+</canvas>
+
+<p>
+insert[t,x=0.9,sep=0](zA,x)-insert[t,x=0.6,sep=0](zA,x)-insert[t,x=0.4,sep=0.0](zA,x)
+<canvas class="res demo">
+insert[t,x=0.9,sep=0](zA,x)-insert[t,x=0.6,sep=0](zA,x)-insert[t,x=0.4,sep=0.0](zA,x)
+</canvas>
+
+<p>
+insert[sep=0](cartouche(),A1)-insert[x=0.9,sep=0](cartouche(),A1)-insert[x=0.9,y=0.2,sep=0](cartouche(),A1)
+<canvas class="res demo">
+insert[sep=0](cartouche(),A1)-insert[x=0.9,sep=0](cartouche(),A1)-insert[x=0.9,y=0.2,sep=0](cartouche(),A1)
+</canvas>
+
+<p>
+insert[s,sep=0.0](.*w,t)-insert[e,sep=0.0](w*.,t)
+<canvas class="res demo">
+insert[s,sep=0.0](.*w,t)-insert[e,sep=0.0](w*.,t)
+</canvas>
+
+<h2>Modify</h2>
+
+modify[above=1](A1)
+<canvas class="res demo">
+modify[above=1](A1)
+</canvas>
+
+<p>
+modify[below=1,shade](A1)
+<canvas class="res demo">
+modify[below=1,shade](A1)
+</canvas>
+
+<p>
+modify[before=1,s](A1)
+<canvas class="res demo">
+modify[before=1,t](A1)
+</canvas>
+
+<p>
+modify[after=1](A1)
+<canvas class="res demo">
+modify[after=1](A1)
+</canvas>
+
+<p>
+modify[above=1,omit](A1)
+<canvas class="res demo">
+modify[above=1,omit](A1)
+</canvas>
+
+<p>
+modify[below=1,omit](A1)
+<canvas class="res demo">
+modify[below=1,omit](A1)
+</canvas>
+
+<p>
+modify[before=1,omit](A1)
+<canvas class="res demo">
+modify[before=1,omit](A1)
+</canvas>
+
+<p>
+modify[after=1,omit](A1)
+<canvas class="res demo">
+modify[after=1,omit](A1)
+</canvas>
+
+<p>
+modify[width=0.5](A1)-modify[height=0.5](A1)
+<canvas class="res demo">
+modify[width=0.5](A1)-modify[height=0.5](A1)
+</canvas>
+
+<p>
+modify[below=1](oval())-modify[omit,below=1](oval(A1))-modify[omit,above=1](cartouche(A1))
+<canvas class="res demo">
+modify[below=1](oval())-modify[omit,below=1](oval(A1))-modify[omit,above=1](cartouche(A1))
+</canvas>
+
+<h2>Header</h2>
+
+[hrl](A1*B1):(Z1*Z1*Z1)
+<canvas class="res demo">
+[hrl](A1*B1):(Z1*Z1*Z1)
+</canvas>
+
+<p>
+[hrl]A1[scale=0.5,rotate=15,mirror]
+<canvas class="res demo">
+[hrl]A1[scale=0.5,rotate=15,mirror]
+</canvas>
+
+<p>
+[vlr]A1*B1-Z1*Z1*Z1
+<canvas class="res demo">
+[vlr]A1*B1-Z1*Z1*Z1
+</canvas>
+
+<p>
+[vrl]A1*B1-Z1*Z1*Z1
+<canvas class="res demo">
+[vrl]A1*B1-Z1*Z1*Z1
+</canvas>
+
+<p>
+[size=2]A1-Z1-A1:A1-![shade]B1:B1
+<canvas class="res demo">
+[size=2]A1-Z1-A1:A1-![shade]B1:B1
+</canvas>
+
+<p>
+[vrl,size=1.5]A1-Z1-A1*A1-![shade]B1*B1
+<canvas class="res demo">
+[vrl,size=1.5]A1-Z1-A1*A1-![shade]B1*B1
+</canvas>
+
+<h2>Switches</h2>
+
+A1-![shade]A1-A1-A1[noshade]-A1-![noshade]A1
+<canvas class="res demo">
+A1-![shade]A1-A1-A1[noshade]-A1-![noshade]A1
+</canvas>
+
+<p>
+A1-![red]A1-A1-A1[blue]-A1![black]-A1
+<canvas class="res demo">
+A1-![red]A1-A1-A1[blue]-A1![black]-A1
+</canvas>
+
+<p>
+A1 - ![shade] B1 - ![red] C1 - D1[black,noshade] - E1 - ![noshade] F1 - ![black] G1
+<canvas class="res demo">
+A1 - ![shade] B1 - ![red] C1 - D1[black,noshade] - E1 - ![noshade] F1 - ![black] G1
+</canvas>
+
+<p>
+![mirror]A1-A1[nomirror]![nomirror]-![fit,sep=0]A1*A1-A1*[nofit]A1
+<canvas class="res demo">
+![mirror]A1-A1[nomirror]![nomirror]-![fit,sep=0]A1*A1-A1*[nofit]A1
+</canvas>
+
+<h2>Notes</h2>
+
+<p>
+A1^"a"
+<canvas class="res demo">
+A1^"a"
+</canvas>
+
+<p>
+A1^"a"^"b"
+<canvas class="res demo">
+A1^"a"^"b"
+</canvas>
+
+<p>
+A1^"a"^"b"^"c"
+<canvas class="res demo">
+A1^"a"^"b"^"c"
+</canvas>
+
+<p>
+A1^"a"^"b"^"c"^"d"
+<canvas class="res demo">
+A1^"a"^"b"^"c"^"d"
+</canvas>
+
+<p>
+A1[shade]^"a"^"b"^"c"^"d"^"e"
+<canvas class="res demo">
+A1[shade]^"a"^"b"^"c"^"d"^"e"
+</canvas>
+
+<p>
+rectangle(A1)^"abc"
+<canvas class="res demo">
+rectangle(A1)^"abc"
+</canvas>
+
+<p>
+[vlr]A1-B1[shade]^"a"^"b"^"c"^"d"^"e"-C1-A1*A1[shade]^"a"^"b"^"c"^"d"^"e"-D1
+<canvas class="res demo">
+[vlr]A1-B1[shade]^"a"^"b"^"c"^"d"^"e"-C1-A1*A1[shade]^"a"^"b"^"c"^"d"^"e"-D1
+</canvas>
+
+<p>
+[vrl]A1-B1[shade]^"a"^"b"^"c"^"d"^"e"-C1-A1*A1[shade]^"a"^"b"^"c"^"d"^"e"-D1
+<canvas class="res demo">
+[vrl]A1-B1[shade]^"a"^"b"^"c"^"d"^"e"-C1-A1*A1[shade]^"a"^"b"^"c"^"d"^"e"-D1
+</canvas>
+
+<p>
+A1^"abc"-A1^"\\"[blue]-A1^"\""[red]-A1^"\\\""[green]
+<canvas class="res demo">
+A1^"abc"-A1^"\\"[blue]-A1^"\""[red]-A1^"\\\""[green]
+</canvas>
+
+<p>
+empty-x:x^"a":x-empty^"abc"-A1-empty[shade]^"def"
+<canvas class="res demo">
+empty-x:x^"a":x-empty^"abc"-A1-empty[shade]^"def"
+</canvas>
+
+<p>
+B1-B1-A1^"abc"^"def"-C1
+<canvas class="res demo">
+B1-B1-A1^"abc"^"def"-C1
+</canvas>
+
+<p>
+[hrl]B1-B1-A1^"abc"^"def"-C1
+<canvas class="res demo">
+[hrl]B1-B1-A1^"abc"^"def"-C1
+</canvas>
+
+</body>
+</html>
+
