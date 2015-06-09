@@ -30,7 +30,6 @@
 	    <tarfileset dir=".">
 		<include name="*.ttf"/>
 		<include name="*.js"/>
-		<include name="*.jison"/>
 		<include name="*.css"/>
 		<include name="*.html"/>
 		<include name="*.md"/>
