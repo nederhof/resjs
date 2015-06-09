@@ -1,5 +1,6 @@
-For more information, open: 
+For more information, open
 	index.html
-or go to:
-http://mjn.host.cs.st-andrews.ac.uk/egyptian/res/js/
+in a browser, or go to
+	http://mjn.host.cs.st-andrews.ac.uk/egyptian/res/js/
+.
 
