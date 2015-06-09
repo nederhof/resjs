@@ -14,8 +14,10 @@
 	    <tarfileset dir=".">
 		<include name="*.ttf"/>
 		<include name="*.js"/>
+		<include name="*.jison"/>
 		<include name="*.css"/>
 		<include name="*.html"/>
+		<include name="*.md"/>
 		<include name="uparr.jpg"/>
 		<include name="build.xml"/>
 	    </tarfileset>
@@ -28,8 +30,10 @@
 	    <tarfileset dir=".">
 		<include name="*.ttf"/>
 		<include name="*.js"/>
+		<include name="*.jison"/>
 		<include name="*.css"/>
 		<include name="*.html"/>
+		<include name="*.md"/>
 		<include name="uparr.jpg"/>
 		<include name="${tarfile}"/>
 	    </tarfileset>
