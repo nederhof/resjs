@@ -32,7 +32,7 @@
 		<include name="*.js"/>
 		<include name="*.css"/>
 		<include name="*.html"/>
-		<include name="*.md"/>
+		<include name="LICENSE.md"/>
 		<include name="uparr.jpg"/>
 		<include name="${tarfile}"/>
 	    </tarfileset>
