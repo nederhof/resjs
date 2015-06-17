@@ -24,24 +24,30 @@ This package includes:
 <li> <a href="testsuite_lite.html">test suite for RESlite</a>
 <li> <a href="testsuite_res.html">test suite for RES</a>
 <li> <a href="skeleton_lite.html">skeleton of web page with RESlite only</a>
-<li> <a href="skeleton_res.html">skeleton of web page with RES/RESlite</a> 
+<li> <a href="skeleton_res.html">skeleton of web page with RES/RESlite, plus
+transliteration</a> 
 </ul>
 
 <h2>Download and instructions for use</h2>
 
 <ol>
 <li> Download <a href="http://mjn.host.cs.st-andrews.ac.uk/egyptian/res/js/resjs.tar">resjs.tar</a> (approx. 950KB),
-or download from <a href="https://github.com/nederhof/resjs">from GitHub</a>.
+or download <a href="https://github.com/nederhof/resjs">from GitHub</a>.
 <li> Unpack it. 
 <li> To use RESlite only, one can create new web pages on the basis of
 <a href="skeleton_lite.html">skeleton_lite.html</a>. 
 One needs to include with the web pages
 all the files ending on <tt>.ttf</tt> and <tt>.css</tt>,
-as well as <tt>res_aux.js</tt>,  <tt>res_lite.js</tt>,  <tt>res_web.js</tt>.
+as well as 
+<tt>res_aux.js</tt>,  <tt>res_lite.js</tt>,  <tt>res_web.js</tt>.
 <li> To use any RES/RESlite encodings, one can create new web pages on the
 basis of <a href="skeleton_res.html">skeleton_res.html</a>.
 One needs to include with the web pages 
-all the files ending on <tt>.ttf</tt>, <tt>.js</tt>, and <tt>.css</tt>.
+all the files ending on <tt>.ttf</tt> and <tt>.css</tt>,
+as well as 
+<tt>res_aux.js</tt>, <tt>res_points.js</tt>, <tt>res_lite.js</tt>,  
+<tt>res_struct.js</tt>, <tt>res_syntax.js</tt>, <tt>res_format.js</tt>,
+<tt>res_render.js</tt>, <tt>res_web.js</tt>.
 </ol>
 
 <h2>Frequently asked questions</h2>
@@ -49,7 +55,7 @@ all the files ending on <tt>.ttf</tt>, <tt>.js</tt>, and <tt>.css</tt>.
 <b>For which browsers is this intended?</b>
 <p>
 <i>In principle this should run on all modern browsers. So far it has been
-tested on Chromium 34, Firefox 28, Rekonq 2.4.2.</i> 
+tested on Chromium 34, Firefox 28, Rekonq 2.4.2, Safari 8.0.6.</i> 
 <p>
 <b>Why don't you use SVG?</b>
 <p>
@@ -77,6 +83,10 @@ href="http://mjn.host.cs.st-andrews.ac.uk/egyptian/res">RES</a>.</i>
 <h2>Versions</h2>
 
 <ul>
+<li> 2015-06-17
+<ul>
+<li> Added transliteration.
+</ul>
 <li> 2015-06-09
 <ul>
 <li> First version on GitHub.
@@ -95,7 +105,8 @@ href="http://mjn.host.cs.st-andrews.ac.uk/egyptian/res">RES</a>.</i>
 
 <ul>
 <li> Rendering of cartouches is poor in Firefox 28. This is due to an
-aberrant 'feature' of clip().
+aberrant 'feature' of clip(). Problems with cartouches are even more severe in
+Safari; this needs to be looked at.
 </ul>
 
 <h2>Acknowledgements</h2>

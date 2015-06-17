@@ -228,7 +228,7 @@ function(str) {
 		buffer.readToEnd();
 	var remainder = buffer.remainder();
 	if (remainder.replace(/^\s+|\s+$/gm,'').length !== 0)
-		console.log("ResLite trailing symbols:" + remainder);
+		console.log("RESlite trailing symbols:" + remainder);
 	return resLite;
 };
 
@@ -243,14 +243,14 @@ function(resLite, buffer) {
 			(newDir = buffer.readDirection()) === undefined ||
 			(newSize = buffer.readNum()) === undefined) {
 		buffer.pos = oldPos;
-		console.log("ResLite ill-formed header");
+		console.log("RESlite ill-formed header");
 		return false;
 	}
 	resLite.dir = newDir;
 	resLite.sizeMilEm = newSize;
 	resLite.groups = ResLite.parseGroups(buffer);
 	if (!buffer.readSingleChar("e")) {
-		console.log("ResLite missing end");
+		console.log("RESlite missing end");
 		return false;
 	} else 
 		return true;
@@ -269,7 +269,7 @@ function(buffer) {
 	if ((advance = buffer.readNum()) === undefined ||
 			(length = buffer.readNum()) === undefined) {
 		buffer.pos = oldPos;
-		console.log("ResLite ill-formed group header");
+		console.log("RESlite ill-formed group header");
 		return groups;
 	}
 	groups.advanceMilEm = advance;
@@ -279,7 +279,7 @@ function(buffer) {
 	groups.shades = ResLite.parseShades(buffer);
 	if (!buffer.readChar("i")) {
 		buffer.pos = oldPos;
-		console.log("ResLite missing i in group");
+		console.log("RESlite missing i in group");
 		return groups;
 	}
 	groups.intershades = ResLite.parseShades(buffer);
@@ -310,7 +310,7 @@ function(buffer) {
 	var oldPos = buffer.pos;
 	var glyph = new ResLiteGlyph();
 	if (!buffer.readChar("c")) {
-		console.log("ResLite missing c in glyph");
+		console.log("RESlite missing c in glyph");
 		return glyph;
 	}
 	var fileNumber;
@@ -341,7 +341,7 @@ function(buffer) {
 			(width = buffer.readNum()) === undefined ||
 			(height = buffer.readNum()) === undefined) {
 		buffer.pos = oldPos;
-		console.log("ResLite ill-formed glyph");
+		console.log("RESlite ill-formed glyph");
 		return glyph;
 	}
 	glyph.fileNumber = fileNumber;
@@ -367,19 +367,19 @@ function(buffer) {
 	var oldPos = buffer.pos;
 	var pair = new ResLitePair();
 	if (!buffer.readChar("(")) {
-		console.log("ResLite missing ( in pair");
+		console.log("RESlite missing ( in pair");
 		return pair;
 	}
 	pair.list1 = ResLite.parseExprs(buffer);
 	if (!buffer.readChar("o")) {
 		buffer.pos = oldPos;
-		console.log("ResLite missing o in pair");
+		console.log("RESlite missing o in pair");
 		return pair;
 	}
 	pair.list2 = ResLite.parseExprs(buffer);
 	if (!buffer.readChar(")")) {
 		buffer.pos = oldPos;
-		console.log("ResLite missing ) in pair");
+		console.log("RESlite missing ) in pair");
 		return pair;
 	}
 	return pair;
@@ -407,7 +407,7 @@ function(buffer) {
 			(x = buffer.readNum()) === undefined ||
 			(y = buffer.readNum()) === undefined) {
 		buffer.pos = oldPos;
-		console.log("ResLite ill-formed note");
+		console.log("RESlite ill-formed note");
 		return notes;
 	}
 	notes.string = string;
@@ -437,7 +437,7 @@ function(buffer) {
 			(width = buffer.readNum()) === undefined ||
 			(height = buffer.readNum()) === undefined) {
 		buffer.pos = oldPos;
-		console.log("ResLite ill-formed shade");
+		console.log("RESlite ill-formed shade");
 		return shades;
 	}
 	shades.xMilEm = x;

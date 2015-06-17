@@ -4,6 +4,8 @@
 // (so if margin became bigger) do again.
 // The 'env' object is the environment of printing; it contains
 // the rectangle, the margin, the canvas context, etc.
+// return: list of rectangle, one for each top-level group, plus separation in
+// between, plus some space at the beginning.
 ResFragment.prototype.render =
 function(canvas, size) {
 	var context = new ResContext();
@@ -23,13 +25,18 @@ function(canvas, size) {
 		env.ctx = canvas.getContext("2d");
 		env.ctx.clearRect(0, 0, canvas.width, canvas.height);
 		if (env.mirror) {
+			env.ctx.save();
 			env.ctx.translate(canvas.width, 0);
 			env.ctx.scale(-1, 1);
 		}
 		var rect = new ResRectangle(env.leftMarginPx, env.topMarginPx, w, h);
 		env.shading = new ResShading(context, env.mirror); 
-		if (this.hiero !== null) 
-			this.hiero.render(env, rect, rect, null, false);
+		var groupRects = env.isH ? [new ResRectangle(0, 0, env.leftMarginPx, h)] :
+									[new ResRectangle(0, 0, w, env.topMarginPx)];
+		if (this.hiero !== null) {
+			var hieroRects = this.hiero.render(env, rect, rect, null, false);
+			groupRects = groupRects.concat(hieroRects);
+		}
 		env.shading.compress();
 		env.shading.print(env.ctx);
 		if (this.hiero !== null)
@@ -39,10 +46,19 @@ function(canvas, size) {
 		} else
 			env.updateMargins();
 	}
+	if (env.mirror) {
+		env.ctx.restore();
+		var rev = [];
+		for (var i = 0; i < groupRects.length; i++)
+			rev.push(groupRects[i].mirror(env.totalWidthPx));
+		return rev;
+	} else
+		return groupRects;
 };
 
 ResHieroglyphic.prototype.render =
 function(env, rect, shadeRect, clip, fitting) {
+	var groupRects = [];
 	for (var i = 0; i < this.groups.length; i++) {
 		var group = this.groups[i];
 		if (this.effectiveIsH()) {
@@ -50,6 +66,7 @@ function(env, rect, shadeRect, clip, fitting) {
 			var groupRect = rect.chopStartH(rect.x + w);
 			var groupShadeRect = shadeRect.chopStartH(rect.x + w);
 			group.render(env, groupRect, groupShadeRect, clip, fitting);
+			groupRects.push(groupRect);
 			shadeRect = shadeRect.chopEndH(rect.x + w);
 			rect = rect.chopEndH(rect.x + w);
 		} else {
@@ -57,6 +74,7 @@ function(env, rect, shadeRect, clip, fitting) {
 			var groupRect = rect.chopStartV(rect.y + h);
 			var groupShadeRect = shadeRect.chopStartV(rect.y + h);
 			group.render(env, groupRect, groupShadeRect, clip, fitting);
+			groupRects.push(groupRect);
 			shadeRect = shadeRect.chopEndV(rect.y + h);
 			rect = rect.chopEndV(rect.y + h);
 		}
@@ -66,16 +84,19 @@ function(env, rect, shadeRect, clip, fitting) {
 			if (this.effectiveIsH()) {
 				var opRect = shadeRect.chopStartH(rect.x + size);
 				op.render(env, opRect, fitting);
+				groupRects.push(opRect);
 				shadeRect = shadeRect.chopEndH(rect.x + size);
 				rect = rect.chopEndH(rect.x + size);
 			} else {
 				var opRect = shadeRect.chopStartV(rect.y + size);
 				op.render(env, opRect, fitting);
+				groupRects.push(opRect);
 				shadeRect = shadeRect.chopEndV(rect.y + size);
 				rect = rect.chopEndV(rect.y + size);
 			}
 		}
 	}
+	return groupRects;
 };
 ResHieroglyphic.prototype.renderFromTo =
 function(env, rect, i, j) {
@@ -975,8 +996,7 @@ function(env) {
 
 ResNote.prototype.render =
 function(env, rect) {
-	var str = this.str.substring(1, this.str.length-1);
-	str = str.replace(/\\(["\\])/g, "$1");
+	var str = this.displayString();
 	var size = env.resContext.noteSizePx;
 	var mirror = env.mirror;
 	var color = this.color !== null ? this.color : env.resContext.noteColor;

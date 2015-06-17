@@ -33,6 +33,10 @@ function(other) {
 	var h = Math.max(yBottom - yTop, 0);
 	return new ResRectangle(xLeft, yTop, w, h);
 };
+ResRectangle.prototype.includes =
+function(x, y) {
+	return this.x <= x && x < this.x+this.width && this.y <= y && y < this.y+this.height;
+};
 ResRectangle.prototype.chopStartH =
 function(x) {
 	return new ResRectangle(this.x, this.y, x - this.x, this.height);
@@ -190,6 +194,13 @@ function() {
 // Canvas operations.
 
 function ResCanvas() {
+}
+
+// Clear canvas.
+ResCanvas.clear =
+function(canvas) {
+	this.ctx = canvas.getContext("2d");
+	this.ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 // Sum all values from pixel in data from canvas with dimensions.

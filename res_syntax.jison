@@ -134,7 +134,7 @@ named_glyph
 	    {na:$name,l:$optional_arg_bracket_list,no:$notes,sw:$switches});}
     | nat_num optional_arg_bracket_list whitespaces notes switches
 	{$$ = new ResNamedglyph(
-	    {na:$nat_num,l:$optional_arg_bracket_list,no:$notes,sw:$switches});}
+	    {na:String($nat_num),l:$optional_arg_bracket_list,no:$notes,sw:$switches});}
     | string optional_arg_bracket_list whitespaces notes switches
 	{$$ = new ResNamedglyph(
 	    {na:$string,l:$optional_arg_bracket_list,no:$notes,sw:$switches});}

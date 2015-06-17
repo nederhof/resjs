@@ -131,9 +131,13 @@ break;
 case 20:
 this.$ = new ResHorsubgroup({b:$$[$0]});
 break;
-case 27: case 28: case 29: case 30:
+case 27: case 28: case 30:
 this.$ = new ResNamedglyph(
 	    {na:$$[$0-4],l:$$[$0-3],no:$$[$0-1],sw:$$[$0]});
+break;
+case 29:
+this.$ = new ResNamedglyph(
+	    {na:String($$[$0-4]),l:$$[$0-3],no:$$[$0-1],sw:$$[$0]});
 break;
 case 31:
 this.$ = new ResEmptyglyph(

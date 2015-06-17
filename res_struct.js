@@ -101,7 +101,7 @@ function ResFragment(args) {
 		this.propagate();
 	}
 }
-ResFragment.prototype.toString =
+ResFragment.prototype.headerString =
 function() {
 	var args = [];
 	if (this.direction !== null)
@@ -109,6 +109,11 @@ function() {
 	if (this.size !== null)
 		args.push("size=" + ResArg.realStr(this.size));
 	var s = ResArg.argsStr(args);
+	return s;
+};
+ResFragment.prototype.toString =
+function() {
+	var s = this.headerString();
 	s += this.switchs.toString();
 	if (this.hiero !== null) 
 		s += this.hiero.toString();
@@ -1130,6 +1135,12 @@ function() {
 		args.push(this.color);
 	return "^" + this.str + ResArg.argsStr(args);
 };
+ResNote.prototype.displayString =
+function() {
+	var str = this.str.substring(1, this.str.length-1);
+	str = str.replace(/\\(["\\])/g, "$1");
+	return str;
+};
 ResNote.prototype.propagate =
 function(globals) {
 	this.globals = globals;
@@ -1197,6 +1208,14 @@ function() {
 		return "!" + ResArg.argsStr(args);
 	else
 		return "";
+};
+ResSwitch.prototype.hasDefaultValues =
+function() {
+	return this.color === null &&
+		this.shade === null &&
+		this.sep === null &&
+		this.fit === null &&
+		this.mirror === null;
 };
 ResSwitch.prototype.join =
 function(other) {
@@ -1298,6 +1317,7 @@ function(args) {
 };
 ResArg.realStr =
 function(val) {
+	val -= Math.floor(val / 10) * 10;
 	val = Math.floor(val * 100.0);
 	var hundreds = Math.floor(val / 100);
 	val -= hundreds * 100;
