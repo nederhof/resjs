@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Editor help</title>
+</head>
+<body>
+
+<a href="edit.html"><img src="uparr.jpg">&nbsp;<b>RES Editor</b></a>
+
+<h1>Manual of RES Editor in JavaScript</h1>
+
+<h2>Introductory example</h2>
+
+Groups are generally constructed from the bottom up, and from left to right
+(or right to left, depending on the text direction).
+For example, to construct
+<tt>cartouche(N5-N28:f)</tt>, one first constructs 
+the sign <tt>N5</tt>, which is then placed in a cartouche.
+Thereafter <tt>N28</tt> is added in a new group after <tt>N5</tt>. 
+Added to <tt>N28</tt> are then the operator '<tt>:</tt>' and the sign <tt>f</tt>. 
+In terms of mouse clicks and keyboard input, this is obtained by:
+<ol>
+<li> Click <b>named</b> and fill in 'N5' as name;
+<li> Click <b>box</b>;
+<li> Click on the lower square containing the sun;
+<li> Click '<b>-</b>' and fill in 'N28' as name;
+<li> Click '<b>:</b>' and fill in 'f' as name.
+</ol>
+Now the desired cartouche is visible in the preview panel, and with internal
+structure in the tree panel, and the RES
+fragment <tt>cartouche(N5-N28:f)</tt> will appear in the text panel at the bottom
+of the page.
+<p>
+If one has an existing RES fragment, this can also be entered in the 
+text panel.
+To try this out, refresh the page, enter <tt>cartouche(N5-N28:f)</tt>, and press
+<b>Parse</b>, and observe that the preview and tree panels are
+populated with the corresponding graphical representations.
+
+<h2>Structure of the page</h2>
+
+The page is subdivided into:
+<ul>
+<li> the header,
+<li> the global properties panel,
+<li> the preview panel,
+<li> the tree panel,
+<li> the control panel, and
+<li> the text panel.
+</ul> 
+
+<h3>Header</h3>
+
+There are two drop-down lists for changing the fontsizes in the preview and
+tree panels.
+There are also buttons to undo or redo edit operations, and to open this help page.
+
+<h3>Global properties panel</h3>
+
+The panel for changing the global properties of a RES fragment
+is located in the top-left or top-right corner of the page, immediately next
+to the preview panel.
+One may select the desired text direction
+by pressing one of the five relevant buttons.
+The direction can be unspecified (<b>none</b>) or horizontal
+left-to-right (<b>hlr</b>), etc. 
+Next to this is the unit size, which is normally 1; only
+in rare cases would one want to deviate from that default value.
+
+<h3>Preview panel</h3>
+
+The preview panel presents a RES fragment in graphical form, as it would
+appear to the reader of a printed document or web page.
+
+<h3>Tree panel</h3>
+
+The tree panel presents the fragment in an hierarchical form.
+Nodes connected by edges represent expressions and their subexpressions.
+<p>
+In each RES fragment there is at most one group that is the current focus.
+The focus is the target of edit operations.
+In the tree panel, the focus is indicated by a thick blue boundary
+around a node, as opposed to a thin gray boundary.
+In the preview panel, the top-most group containing the current focus is
+indicated by a blue square. The current focus can also be an operator
+between two groups, or a switch. If no group, operator or switch holds the focus, 
+there is a blue line at the beginning of the preview panel.
+<p>
+In the tree panel, the focus can be changed by clicking on a node.
+In the preview panel, the root node of a top-level group can be
+made the focus by clicking on that group; one may also click
+on the white space between two groups to transfer focus onto an operator. 
+Other ways to navigate rely on keyboard shortcuts, as will be explained later.
+
+<h3>Control panel</h3>
+
+The control panel contains buttons for changing the structure of the fragment
+and changing parameters of groups, operators and switches.
+Only those buttons and parameters are shown that are relevant to the
+current focus.
+
+<h3>Text panel</h3>
+
+The text panel contains the RES fragment. This fragment is updated every time
+an edit is made, for example through the buttons and fields in the control panel.
+Alternatively, one can edit the text panel and press
+<b>Parse</b>, which updates the preview and tree panels.
+
+<h2>Editing</h2>
+
+<h3>Changing the structure</h3>
+
+Depending on the current focus, the following buttons may be available to
+change the structure of a fragment:
+<ul>
+<li> <b>named</b> creates a new group consisting of a named glyph.
+If the current focus is an empty glyph, it is replaced by the named glyph.
+If the current focus is a box, the new group is placed at the beginning of
+the content of the box.
+<li> <b>empty</b> creates a new group consisting of an empty glyph,
+and behaves similarly to <b>named</b>.
+<li> '<b>.</b>' creates a point glyph, i.e., a special kind of empty glyph, of
+which the width and height are zero. 
+<li> '<b>-</b>' creates a new group following the current group, operator or
+switch, initially containing a named glyph. The newly created group will be either
+at the top level, or just below a box.
+<li> '<b>*</b>' generally appends a new subgroup of a horizontal group, 
+initially consisting of a named glyph.
+If the current focus is an operator ':' or '-' however, 
+then the two groups on either side are combined into a horizontal group.
+<li> '<b>:</b>' behaves similarly, but for vertical groups.
+<li> '<b>+</b>' and '<b>;</b>' can be used to insert a new subgroup
+<em>before</em> the current focus, in a horizontal group
+and vertical group, respectively.
+<li> <b>stack</b> and <b>insert</b> generally create
+a new element in the structure, of which the current focus becomes the
+first argument; the second argument initially consists of a named glyph.
+If the current focus is an operator however, 
+then the two groups on either side become the two arguments of a stack or insert,
+respectively.
+<li> <b>box</b> creates a new box, initially containing the current focus.
+<li> <b>modify</b> creates modification of the current focus.
+<li> '<b>!</b>' creates a switch. Observe that switches that have no
+parameters (other than the defaults) may disappear again after a structural change.
+In a box, there is a distinction between a switch at the beginning of the
+contents, and a switch after the box itself; similarly for
+insert, modify and stack. For this reason, we additionally have
+'<b>!front</b>' and '<b>!back</b>'.
+<li> '<b>^</b>' creates a note attached to the current focus, or a note
+following an existing note.
+<li> <b>swap</b> swaps the name of the current named glyph and that of
+the next one.
+<li> <b>delete</b> generally removes the current element. This may lead to 
+further changes to preserve the integrity of the syntax of RES. 
+For example, if <tt>B1</tt> is removed from <tt>A1*B1</tt>,
+then the operator '<tt>*</tt>' also needs to be removed, and only <tt>A1</tt>
+remains. 
+If the current focus is a switch, <b>delete</b> sets the parameters to the
+default ones.
+</ul>
+
+<h3>Changing the parameters</h3>
+
+Relevant parameters are shown for the group that is the current focus.
+Many parameters first need to be selected before they can be changed
+to something other than the default. 
+<p> 
+Shading for subregions of a group or operator can be set to be coarse-grained, 
+in a 2x2 grid, or more fine-grained, up to a 16x16 grid. Click to the toggle the subregions.
+
+<h3>Keyboard shortcuts</h3>
+
+Use of the mouse can to a great extent be avoided by keyboard shortcuts.
+The four arrow keys can be used to move the focus in the tree panel.
+The <tt>Home</tt> and <tt>End</tt> keys transfer the focus to the first and last
+top-level group, respectively.
+<p>
+Buttons that change the structure of groups
+can be activated by entering letters such as
+'<tt>*</tt>', '<tt>:</tt>', '<tt>-</tt>', '<tt>^</tt>', '<tt>!</tt>',
+the <tt>Delete</tt> key for <b>delete</b>, 
+'<tt>n</tt>' for <b>named</b>, 
+'<tt>e</tt>' for <b>empty</b>, 
+'<tt>b</tt>' for <b>box</b>, 
+'<tt>t</tt>' for <b>!front</b>, 
+etc. (See the letters on the buttons that are underlined.)
+<p>
+The above keyboard shortcuts will only work if the browser's focus is 
+on the preview or tree panels, which is indicated by a blue dotted border
+around the preview or tree panels.
+If the browser's focus is in a text field, it can be transferred to the tree panel
+by pressing the space bar. Conversely, if the browser's focus is in the preview or
+tree panel, and the editor's focus is on a named glyph, then the browser's focus
+can be transferred to the name field by pressing the space bar once more.
+
+<h2>Sign chooser</h2>
+
+The following is relevant when the editor's focus is on a named glyph.
+<p>
+The menu of signs is activated by clicking <b>menu</b>, or by entering
+'<tt>u</tt>' when the browser's focus is on the preview or tree panels, or
+by entering '<tt>u</tt>' into an otherwise empty name field.
+<p>
+By clicking the tabs at the top of the window, one may view categories of
+signs according to Gardiner's sign list. Three extra tabs show collections
+of signs according to shape. 
+Alternatively, one may navigate through the tabs
+using the four arrow keys. 
+A sign is selected by clicking on it.
+<p>
+One may also type the name of a sign, by keyboard presses of letters and digits
+(there is no need for the <tt>Shift</tt> key). The name will appear in the 
+upper left corner.
+After entering the first letter (or the first two letters for 'NL', 'NU',
+'Aa'), signs in the relevant category will appear.
+One may then type the remaining digits, and possibly more letters, 
+and press <tt>Enter</tt> to select the sign.
+Typed characters can be erased by pressing <tt>Backspace</tt>;
+this is not needed for switching between categories however:
+by pressing '<tt>a</tt>', then then '<tt>b</tt>', 
+one switches from category 'A' directly to category 'B'.
+By pressing <tt>Esc</tt>, or by clicking on the upper right corner of the menu, 
+one exits the sign chooser without having selected a sign.
+<p>
+Information on signs can be obtained by clicking <b>info on</b> and moving the 
+mouse over a sign. 
+Alternatively, this functionality can be switched on/off by pressing the space bar.
+The information is presented in the right or left half of the 
+screen if the mouse moves over a sign in the left or right half, respectively.
+
+</body>
+</html>
