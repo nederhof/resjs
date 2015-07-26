@@ -219,13 +219,15 @@ function(data, width, x, y) {
 // return: 2-dimensional boolean array indicating which pixels are external
 ResCanvas.externalPixels =
 function(ctx, w, h) {
-	var data = ctx.getImageData(0, 0, w, h).data;
 	var external = new Array(w);
 	for (var x = 0; x < w; x++) {
 		external[x] = new Array(h);
 		for (var y = 0; y < h; y++) 
 			external[x][y] = false;
 	}
+	if (w === 0 || h === 0)
+		return external;
+	var data = ctx.getImageData(0, 0, w, h).data;
 	for (var x = 0; x < w; x++) {
 		if (!ResCanvas.isNotBlank(data, w, x, 0))
 			external[x][0] = true;
@@ -433,8 +435,8 @@ function(data, w, h) {
 // First make aura around left-most pixels of second image.
 ResCanvas.fitHor =
 function(ctx1, ctx2, w1, w2, h, sepInit, sepMax) {
-	var data1 = ctx1.getImageData(0, 0, w1, h).data;
-	var data2 = ctx2.getImageData(0, 0, w2, h).data;
+	var data1 = w1 > 0 && h > 0 ? ctx1.getImageData(0, 0, w1, h).data : null;
+	var data2 = w2 > 0 && h > 0 ? ctx2.getImageData(0, 0, w2, h).data : null;
 	var w = w2 + sepInit;
 	var canvas = document.createElement("canvas");
 	canvas.width = w;
@@ -449,7 +451,7 @@ function(ctx1, ctx2, w1, w2, h, sepInit, sepMax) {
 				ctx.stroke();
 				break;
 			}
-	var data = ctx.getImageData(0, 0, w, h).data;
+	var data = w > 0 && h > 0 ? ctx.getImageData(0, 0, w, h).data : null;
 	dist = -sepMax;
 	for (var y = 0; y < h; y++) {
 		for (var spLeft = 0; spLeft < w1; spLeft++)
@@ -465,8 +467,8 @@ function(ctx1, ctx2, w1, w2, h, sepInit, sepMax) {
 };
 ResCanvas.fitVert =
 function(ctx1, ctx2, w, h1, h2, sepInit, sepMax) {
-	var data1 = ctx1.getImageData(0, 0, w, h1).data;
-	var data2 = ctx2.getImageData(0, 0, w, h2).data;
+	var data1 = w > 0 && h1 > 0 ? ctx1.getImageData(0, 0, w, h1).data : null;
+	var data2 = w > 0 && h2 > 0 ? ctx2.getImageData(0, 0, w, h2).data : null;
 	var h = h2 + sepInit;
 	var canvas = document.createElement("canvas");
 	canvas.width = w;
@@ -480,7 +482,7 @@ function(ctx1, ctx2, w, h1, h2, sepInit, sepMax) {
 				ctx.stroke();
 				break;
 			}
-	var data = ctx.getImageData(0, 0, w, h).data;
+	var data = w > 0 && h > 0 ? ctx.getImageData(0, 0, w, h).data : null;
 	dist = -sepMax;
 	for (var x = 0; x < w; x++) {
 		for (var spTop = 0; spTop < h1; spTop++)
@@ -507,6 +509,8 @@ function(ctx, canvas, x, y, w, h, sep) {
 // Take two images of same size and compute whether they have black pixel in common.
 ResCanvas.disjoint =
 function(ctx1, ctx2, w, h) {
+	if (w === 0 || h === 0)
+		return false;
 	var data1 = ctx1.getImageData(0, 0, w, h).data;
 	var data2 = ctx2.getImageData(0, 0, w, h).data;
 	for (var x = 0; x < w; x++)
@@ -519,7 +523,7 @@ function(ctx1, ctx2, w, h) {
 // Internal space in horizontal box. 
 ResCanvas.internalHor =
 function(ctx, w, h) {
-	var data = ctx.getImageData(0, 0, w, h).data;
+	var data = w > 0 && h > 0 ? ctx.getImageData(0, 0, w, h).data : null;
 	var t = 0;
 	for (var y = Math.round(1/3*h); y >= 0 && t === 0; y--)
 		for (var x = 0; x < w; x++)
@@ -538,7 +542,7 @@ function(ctx, w, h) {
 };
 ResCanvas.internalVert =
 function(ctx, w, h) {
-	var data = ctx.getImageData(0, 0, w, h).data;
+	var data = w > 0 && h > 0 ? ctx.getImageData(0, 0, w, h).data : null;
 	var l = 0;
 	for (var x = Math.round(1/3*w); x >= 0 && l === 0; x--)
 		for (var y = 0; y < h; y++)
@@ -561,7 +565,7 @@ function(ctx, w, h) {
 // return: top-left point, or false if unsuccesful.
 ResCanvas.findFreeRectRightLeft =
 function(ctx, w, h, rect, width) {
-	var data = ctx.getImageData(0, 0, w, h).data;
+	var data = w > 0 && h > 0 ? ctx.getImageData(0, 0, w, h).data : null;
 	var n = 0;
 	for (var x = rect.x + rect.width-1; x >= rect.x; x--) {
 		var isBlank = true;
@@ -581,7 +585,7 @@ function(ctx, w, h, rect, width) {
 };
 ResCanvas.findFreeRectLeftRight =
 function(ctx, w, h, rect, width) {
-	var data = ctx.getImageData(0, 0, w, h).data;
+	var data = w > 0 && h > 0 ? ctx.getImageData(0, 0, w, h).data : null;
 	var n = 0;
 	for (var x = rect.x; x < rect.x + rect.width; x++) {
 		var isBlank = true;
@@ -601,7 +605,7 @@ function(ctx, w, h, rect, width) {
 };
 ResCanvas.findFreeRectBottomTop =
 function(ctx, w, h, rect, height) {
-	var data = ctx.getImageData(0, 0, w, h).data;
+	var data = w > 0 && h > 0 ? ctx.getImageData(0, 0, w, h).data : null;
 	var n = 0;
 	for (var y = rect.y + rect.height-1; y >= rect.y; y--) {
 		var isBlank = true;
@@ -621,7 +625,7 @@ function(ctx, w, h, rect, height) {
 };
 ResCanvas.findFreeRectTopBottom =
 function(ctx, w, h, rect, height) {
-	var data = ctx.getImageData(0, 0, w, h).data;
+	var data = w > 0 && h > 0 ? ctx.getImageData(0, 0, w, h).data : null;
 	var n = 0;
 	for (var y = rect.y; y < rect.y + rect.height; y++) {
 		var isBlank = true;

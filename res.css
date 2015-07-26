@@ -50,12 +50,12 @@ span.sign {
 }
 
 @font-face {
-    font-family: 'Transliteration';
-    src: url('DejaVuSans-Bold.ttf') format('truetype');;
+	font-family: 'Transliteration';
+	src: url('DejaVuSans-Bold.ttf') format('truetype');;
 }
 
 span.trans {
-    font-family: Transliteration;
-    font-weight: normal;
-    font-style: normal;
+	font-family: Transliteration;
+	font-weight: normal;
+	font-style: normal;
 }

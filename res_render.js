@@ -407,7 +407,7 @@ function(env, rect, shadeRect, clip, fitting) {
 ResNamedglyph.prototype.testPrint =
 function() {
 	if (this.font === undefined)
-		return new ResRectangle(0, 0, 0, 0);
+		return new ResRectangle(0, 0, 1, 1);
 	var mirror = this.effectiveMirror();
 	var ySize = this.resContext.emSizePx * this.dynScale * this.scale * this.yscale;
 	var xScale = this.xscale / this.yscale;

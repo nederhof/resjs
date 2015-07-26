@@ -130,8 +130,12 @@ ResFragment.prototype.propagate =
 function() {
 	this.globals = new ResGlobals(this.direction, this.size);
 	this.globals = this.switchs.update(this.globals);
-	if (this.hiero != null)
+	if (this.hiero !== null)
 		this.globals = this.hiero.propagate(this.globals, this.globals.direction);
+};
+ResFragment.prototype.namedGlyphs =
+function() {
+	return this.hiero === null ? [] : this.hiero.namedGlyphs();
 };
 
 function ResHieroglyphic(args) {
@@ -162,13 +166,19 @@ function(group, argList, switchs) {
 	this.switches.unshift(switchs);
 	return this;
 };
+ResHieroglyphic.prototype.addGroupAt = 
+function(group, i) {
+	this.groups.splice(i, 0, group);
+	this.ops.splice(Math.min(i, this.ops.length), 0, new ResOp(null));
+	this.switches.splice(Math.min(i, this.switches.length), 0, new ResSwitch(null));
+};
 ResHieroglyphic.prototype.propagateBack =
 function() {
 	for (var i = 0; i < this.switches.length; i++) {
-		var sw = this.groups[i+1].propagateBack(ResSwitch.plain());
+		var sw = this.groups[i+1].propagateBack(new ResSwitch(null));
 		this.switches[i] = this.switches[i].join(sw);
 	}
-	return this.groups[0].propagateBack(ResSwitch.plain());
+	return this.groups[0].propagateBack(new ResSwitch(null));
 };
 ResHieroglyphic.prototype.propagate =
 function(globals, direction) {
@@ -193,16 +203,23 @@ ResHieroglyphic.prototype.effectiveIsV =
 function() {
 	return ResGlobals.isV(this.direction);
 };
+ResHieroglyphic.prototype.namedGlyphs =
+function() {
+	var l = [];
+	for (var i = 0; i < this.groups.length; i++)
+		l = l.concat(this.groups[i].namedGlyphs());
+	return l;
+};
 
 function ResVertgroup(args) {
-	this.groups = [];
-	this.ops = [];
-	this.switches = [];
-	if (args.l) {
+	if (args === null)
+		this.setDefaults();
+	else if (args.l) {
 		var group1 = args.g1;
 		var argList = args.l;
 		var switchs = args.sw;
 		var group2 = args.g2;
+		this.setDefaults();
 		this.groups.push(group1);
 		this.ops.push(new ResOp({l:argList}, true));
 		this.switches.push(switchs);
@@ -213,6 +230,19 @@ function ResVertgroup(args) {
 		this.switches = args.switches;
 	}
 }
+ResVertgroup.prototype.setDefaults =
+function() {
+	this.groups = [];
+	this.ops = [];
+	this.switches = [];
+};
+ResVertgroup.make =
+function(groups, ops, switches) {
+	var subgroups = [];
+	for (var i = 0; i < groups.length; i++)
+		subgroups.push(new ResVertsubgroup({b: groups[i]}));
+	return new ResVertgroup({groups: subgroups, ops: ops, switches: switches});
+};
 ResVertgroup.prototype.toString =
 function() {
 	var s = this.groups[0].toString();
@@ -228,15 +258,21 @@ function(argList, switchs, group) {
 	this.groups.push(group);
 	return this;
 };
+ResVertgroup.prototype.addGroupAt = 
+function(group, i) {
+	this.groups.splice(i, 0, new ResVertsubgroup({b: group}));
+	this.ops.splice(Math.min(i, this.ops.length), 0, new ResOp(null));
+	this.switches.splice(Math.min(i, this.switches.length), 0, new ResSwitch(null));
+};
 ResVertgroup.prototype.propagateBack =
 function(sw) {
 	for (var i = 1; i < this.groups.length; i++) {
 		var swGroup = (i === this.groups.length - 1) ?
 			this.groups[i].propagateBack(sw) :
-				this.groups[i].propagateBack(ResSwitch.plain());
+				this.groups[i].propagateBack(new ResSwitch(null));
 		this.switches[i-1] = this.switches[i-1].join(swGroup);
 	}
-	return this.groups[0].propagateBack(ResSwitch.plain());
+	return this.groups[0].propagateBack(new ResSwitch(null));
 };
 ResVertgroup.prototype.propagate =
 function(globals) {
@@ -253,6 +289,13 @@ ResVertgroup.prototype.effectiveSize =
 function() {
 	return this.ops[0].size !== null ? this.ops[0].size : this.globals.size;
 };
+ResVertgroup.prototype.subGroups =
+function() {
+	var l = [];
+	for (var i = 0; i < this.groups.length; i++)
+		l.push(this.groups[i].group);
+	return l;
+};
 ResVertgroup.prototype.nPaddable =
 function() {
 	var n = 0;
@@ -261,6 +304,13 @@ function() {
 			n++;
 	return n;
 };
+ResVertgroup.prototype.namedGlyphs =
+function() {
+	var l = [];
+	for (var i = 0; i < this.groups.length; i++)
+		l = l.concat(this.groups[i].group.namedGlyphs());
+	return l;
+};
 
 function ResVertsubgroup(args) {
 	if (args.g) {
@@ -268,9 +318,9 @@ function ResVertsubgroup(args) {
 		this.group = args.g;
 		this.switchs2 = args.sw2;
 	} else if (args.b) {
-		this.switchs1 = ResSwitch.plain();
+		this.switchs1 = new ResSwitch(null);
 		this.group = args.b;
-		this.switchs2 = ResSwitch.plain();
+		this.switchs2 = new ResSwitch(null);
 	} else {
 		this.switchs1 = args.switchs1;
 		this.group = args.group;
@@ -284,10 +334,10 @@ function() {
 ResVertsubgroup.prototype.propagateBack =
 function(sw) {
 	var swEnd = this.switchs2.join(sw);
-	this.switchs2 = ResSwitch.plain();
+	this.switchs2 = new ResSwitch(null);
 	var swGroup = this.group.propagateBack(swEnd);
 	var swStart = this.switchs1.join(swGroup);
-	this.switchs1 = ResSwitch.plain();
+	this.switchs1 = new ResSwitch(null);
 	return swStart;
 };
 ResVertsubgroup.prototype.propagate =
@@ -298,14 +348,14 @@ function(globals) {
 };
 
 function ResHorgroup(args) {
-	this.groups = [];
-	this.ops = [];
-	this.switches = [];
-	if (args.l) {
+	if (args === null)
+		this.setDefaults();
+	else if (args.l) {
 		var group1 = args.g1;
 		var argList = args.l;
 		var switchs = args.sw;
 		var group2 = args.g2;
+		this.setDefaults();
 		this.groups.push(group1);
 		this.ops.push(new ResOp({l:argList}, true));
 		this.switches.push(switchs);
@@ -316,6 +366,19 @@ function ResHorgroup(args) {
 		this.switches = args.switches;
 	}
 }
+ResHorgroup.prototype.setDefaults =
+function() {
+	this.groups = [];
+	this.ops = [];
+	this.switches = [];
+};
+ResHorgroup.make =
+function(groups, ops, switches) {
+	var subgroups = [];
+	for (var i = 0; i < groups.length; i++)
+		subgroups.push(new ResHorsubgroup({b: groups[i]}));
+	return new ResHorgroup({groups: subgroups, ops: ops, switches: switches});
+};
 ResHorgroup.prototype.toString =
 function() {
 	var s = this.groups[0].toString();
@@ -331,15 +394,21 @@ function(argList, switchs, group) {
 	this.groups.push(group);
 	return this;
 };
+ResHorgroup.prototype.addGroupAt = 
+function(group, i) {
+	this.groups.splice(i, 0, new ResHorsubgroup({b: group}));
+	this.ops.splice(Math.min(i, this.ops.length), 0, new ResOp(null));
+	this.switches.splice(Math.min(i, this.switches.length), 0, new ResSwitch(null));
+};
 ResHorgroup.prototype.propagateBack =
 function(sw) {
 	for (var i = 1; i < this.groups.length; i++) {
 		var swGroup = (i === this.groups.length - 1) ?
 			this.groups[i].propagateBack(sw) :
-				this.groups[i].propagateBack(ResSwitch.plain());
+				this.groups[i].propagateBack(new ResSwitch(null));
 		this.switches[i-1] = this.switches[i-1].join(swGroup);
 	}
-	return this.groups[0].propagateBack(ResSwitch.plain());
+	return this.groups[0].propagateBack(new ResSwitch(null));
 };
 ResHorgroup.prototype.propagate =
 function(globals) {
@@ -356,6 +425,13 @@ ResHorgroup.prototype.effectiveSize =
 function() {
 	return this.ops[0].size !== null ? this.ops[0].size : this.globals.size;
 };
+ResHorgroup.prototype.subGroups =
+function() {
+	var l = [];
+	for (var i = 0; i < this.groups.length; i++)
+		l.push(this.groups[i].group);
+	return l;
+};
 ResHorgroup.prototype.nPaddable =
 function() {
 	var n = 0;
@@ -364,6 +440,13 @@ function() {
 			n++;
 	return n;
 };
+ResHorgroup.prototype.namedGlyphs =
+function() {
+	var l = [];
+	for (var i = 0; i < this.groups.length; i++)
+		l = l.concat(this.groups[i].group.namedGlyphs());
+	return l;
+};
 
 function ResHorsubgroup(args) {
 	if (args.g) { 
@@ -371,9 +454,9 @@ function ResHorsubgroup(args) {
 		this.group = args.g;
 		this.switchs2 = args.sw2;
 	} else if (args.b) {
-		this.switchs1 = ResSwitch.plain();
+		this.switchs1 = new ResSwitch(null);
 		this.group = args.b;
-		this.switchs2 = ResSwitch.plain();
+		this.switchs2 = new ResSwitch(null);
 	} else {
 		this.switchs1 = args.switchs1;
 		this.group = args.group;
@@ -392,10 +475,10 @@ function() {
 ResHorsubgroup.prototype.propagateBack =
 function(sw) {
 	var swEnd = this.switchs2.join(sw);
-	this.switchs2 = ResSwitch.plain();
+	this.switchs2 = new ResSwitch(null);
 	var swGroup = this.group.propagateBack(swEnd);
 	var swStart = this.switchs1.join(swGroup);
-	this.switchs1 = ResSwitch.plain();
+	this.switchs1 = new ResSwitch(null);
 	return swStart;
 };
 ResHorsubgroup.prototype.propagate =
@@ -406,7 +489,9 @@ function(globals) {
 };
 
 function ResOp(args, isFirst) {
-	if (args.l) {
+	if (args === null)
+		this.setDefaults();
+	else if (args.l) {
 		var argList = args.l;
 		this.sep = null;
 		this.fit = null;
@@ -442,8 +527,18 @@ function ResOp(args, isFirst) {
 		this.fix = args.fix;
 		this.shade = args.shade;
 		this.shades = args.shades;
+		this.size = args.size;
 	}
 }
+ResOp.prototype.setDefaults =
+function() {
+	this.sep = null;
+	this.fit = null;
+	this.fix = false;
+	this.shade = null;
+	this.shades = [];
+	this.size = null;
+};
 ResOp.prototype.propagate =
 function(globals) {
 	this.globals = globals;
@@ -482,7 +577,9 @@ function() {
 };
 
 function ResNamedglyph(args) {
-	if (args.na) { 
+	if (args === null) 
+		this.setDefaults();
+	else if (args.na) { 
 		var name = args.na;
 		var argList = args.l;
 		var notes = args.no;
@@ -535,6 +632,20 @@ function ResNamedglyph(args) {
 		this.switchs = args.switchs;
 	}
 }
+ResNamedglyph.prototype.setDefaults =
+function() {
+		this.name = '\"?\"';
+		this.mirror = null;
+		this.rotate = 0;
+		this.scale = 1;
+		this.xscale = 1;
+		this.yscale = 1;
+		this.color = null;
+		this.shade = null;
+		this.shades = [];
+		this.notes = [];
+		this.switchs = new ResSwitch(null);
+};
 ResNamedglyph.prototype.toString =
 function() {
 	var args = [];
@@ -567,7 +678,7 @@ function() {
 ResNamedglyph.prototype.propagateBack =
 function(sw) {
 	this.switchs = this.switchs.join(sw);
-	return ResSwitch.plain();
+	return new ResSwitch(null);
 };
 ResNamedglyph.prototype.propagate =
 function(globals) {
@@ -584,9 +695,15 @@ ResNamedglyph.prototype.effectiveColor =
 function() {
 	return this.color !== null ? this.color : this.globals.color;
 };
+ResNamedglyph.prototype.namedGlyphs =
+function() {
+	return [this];
+};
 
 function ResEmptyglyph(args) {
-	if (args.l) { 
+	if (args === null) 
+		this.setDefaults();
+	else if (args.l) { 
 		var argList = args.l;
 		var note = args.n;
 		var switchs = args.sw;
@@ -632,6 +749,16 @@ function ResEmptyglyph(args) {
 		this.switchs = args.switchs;
 	}
 }
+ResEmptyglyph.prototype.setDefaults =
+function() {
+	this.width = 1;
+	this.height = 1;
+	this.shade = null;
+	this.shades = [];
+	this.firm = false;
+	this.note = null;
+	this.switchs = new ResSwitch(null);
+};
 ResEmptyglyph.pointArgs =
 function() {
 	return [new ResArg("width",0), new ResArg("height",0)];
@@ -673,7 +800,7 @@ function() {
 ResEmptyglyph.prototype.propagateBack =
 function(sw) {
 	this.switchs = this.switchs.join(sw);
-	return ResSwitch.plain();
+	return new ResSwitch(null);
 };
 ResEmptyglyph.prototype.propagate =
 function(globals) {
@@ -682,9 +809,15 @@ function(globals) {
 		this.note.propagate(globals);
 	return this.switchs.update(globals);
 };
+ResEmptyglyph.prototype.namedGlyphs =
+function() {
+	return [];
+};
 
 function ResBox(args) {
-	if (args.l) {
+	if (args === null) 
+		this.setDefaults();
+	else if (args.l) {
 		var type = args.na;
 		var argList = args.l;
 		var switchs1 = args.sw1;
@@ -755,6 +888,25 @@ function ResBox(args) {
 		this.switchs2 = args.switchs2;
 	}
 }
+ResBox.prototype.setDefaults =
+function() {
+		this.type = 'cartouche';
+		this.direction = null;
+		this.mirror = null;
+		this.scale = 1;
+		this.color = null;
+		this.shade = null;
+		this.shades = [];
+		this.size = 1;
+		this.opensep = null;
+		this.closesep = null;
+		this.undersep = null;
+		this.oversep = null;
+		this.switchs1 = new ResSwitch(null);
+		this.hiero = null;
+		this.notes = [];
+		this.switchs2 = new ResSwitch(null);
+};
 ResBox.prototype.toString =
 function() {
 	var args = [];
@@ -800,7 +952,7 @@ function(sw) {
 		var swHiero = this.hiero.propagateBack();
 		this.switchs1 = this.switchs1.join(swHiero);
 	}
-	return ResSwitch.plain();
+	return new ResSwitch(null);
 };
 ResBox.prototype.propagate =
 function(globals) {
@@ -859,9 +1011,15 @@ ResBox.prototype.effectiveOversep =
 function() {
 	return this.oversep !== null ? this.oversep : this.globals.sep;
 };
+ResBox.prototype.namedGlyphs =
+function() {
+	return this.hiero === null ? [] : this.hiero.namedGlyphs();
+};
 
 function ResStack(args) {
-	if (args.l) {
+	if (args === null)
+		this.setDefaults();
+	else if (args.l) {
 		var argList = args.l;
 		var switchs1 = args.sw1;
 		var group1 = args.g1;
@@ -896,6 +1054,17 @@ function ResStack(args) {
 		this.switchs3 = args.switchs3;
 	}
 }
+ResStack.prototype.setDefaults =
+function() {
+	this.x = 0.5;
+	this.y = 0.5;
+	this.onunder = null;
+	this.switchs1 = new ResSwitch(null);
+	this.group1 = null;
+	this.switchs2 = new ResSwitch(null);
+	this.group2 = null;
+	this.switchs3 = new ResSwitch(null);
+};
 ResStack.prototype.toString =
 function() {
 	var args = [];
@@ -912,12 +1081,12 @@ function() {
 ResStack.prototype.propagateBack =
 function(sw) {
 	this.switchs3 = this.switchs3.join(sw);
-	var swAfter = this.group2.propagateBack(ResSwitch.plain());
-	var swBefore = this.switchs1.join(swAfter);
-	this.switchs2 = ResSwitch.plain();
+	var swAfter = this.group2.propagateBack(new ResSwitch(null));
+	var swBefore = this.switchs2.join(swAfter);
+	this.switchs2 = new ResSwitch(null);
 	var swStart = this.group1.propagateBack(swBefore);
 	this.switchs1 = this.switchs1.join(swStart);
-	return ResSwitch.plain();
+	return new ResSwitch(null);
 };
 ResStack.prototype.propagate =
 function(globals) {
@@ -928,9 +1097,15 @@ function(globals) {
 	globals = this.group2.propagate(globals);
 	return this.switchs3.update(globals);
 };
+ResStack.prototype.namedGlyphs =
+function() {
+	return this.group1.namedGlyphs().concat(this.group2.namedGlyphs());
+};
 
 function ResInsert(args) {
-	if (args.l) {
+	if (args === null)
+		this.setDefaults();
+	else if (args.l) {
 		var argList = args.l;
 		var switchs1 = args.sw1;
 		var group1 = args.g1;
@@ -974,6 +1149,19 @@ function ResInsert(args) {
 		this.switchs3 = args.switchs3;
 	}
 }
+ResInsert.prototype.setDefaults =
+function() {
+	this.place = "";
+	this.x = 0.5;
+	this.y = 0.5;
+	this.fix = false;
+	this.sep = null;
+	this.switchs1 = new ResSwitch(null);
+	this.group1 = null;
+	this.switchs2 = new ResSwitch(null);
+	this.group2 = null;
+	this.switchs3 = new ResSwitch(null);
+};
 ResInsert.prototype.toString =
 function() {
 	var args = [];
@@ -994,12 +1182,12 @@ function() {
 ResInsert.prototype.propagateBack =
 function(sw) {
 	this.switchs3 = this.switchs3.join(sw);
-	var swAfter = this.group2.propagateBack(ResSwitch.plain());
-	var swBefore = this.switchs1.join(swAfter);
-	this.switchs2 = ResSwitch.plain();
+	var swAfter = this.group2.propagateBack(new ResSwitch(null));
+	var swBefore = this.switchs2.join(swAfter);
+	this.switchs2 = new ResSwitch(null);
 	var swStart = this.group1.propagateBack(swBefore);
 	this.switchs1 = this.switchs1.join(swStart);
-	return ResSwitch.plain();
+	return new ResSwitch(null);
 };
 ResInsert.prototype.propagate =
 function(globals) {
@@ -1014,9 +1202,17 @@ ResInsert.prototype.effectiveSep =
 function() {
 	return this.sep !== null ? this.sep : this.globals.sep;
 };
+ResInsert.prototype.namedGlyphs =
+function() {
+	return this.place === "s" || this.place === "t" ?
+		this.group2.namedGlyphs().concat(this.group1.namedGlyphs()) :
+		this.group1.namedGlyphs().concat(this.group2.namedGlyphs());
+};
 
 function ResModify(args) {
-	if (args.l) {
+	if (args === null)
+		this.setDefaults();
+	else if (args.l) {
 		var argList = args.l;
 		var switchs1 = args.sw1;
 		var group = args.g;
@@ -1071,6 +1267,21 @@ function ResModify(args) {
 		this.switchs2 = args.switchs2;
 	}
 }
+ResModify.prototype.setDefaults =
+function() {
+	this.width = null;
+	this.height = null;
+	this.above = 0;
+	this.below = 0;
+	this.before = 0;
+	this.after = 0;
+	this.omit = false;
+	this.shade = null;
+	this.shades = [];
+	this.switchs1 = new ResSwitch(null);
+	this.group = null; 
+	this.switchs2 = new ResSwitch(null);
+};
 ResModify.prototype.toString =
 function() {
 	var args = [];
@@ -1100,9 +1311,9 @@ function() {
 ResModify.prototype.propagateBack =
 function(sw) {
 	this.switchs2 = this.switchs2.join(sw);
-	var swGroup = this.group.propagateBack(ResSwitch.plain());
+	var swGroup = this.group.propagateBack(new ResSwitch(null));
 	this.switchs1 = this.switchs1.join(swGroup);
-	return ResSwitch.plain();
+	return new ResSwitch(null);
 };
 ResModify.prototype.propagate =
 function(globals) {
@@ -1111,9 +1322,15 @@ function(globals) {
 	globals = this.group.propagate(globals);
 	return this.switchs2.update(globals);
 };
+ResModify.prototype.namedGlyphs =
+function() {
+	return this.group.namedGlyphs();
+};
 
 function ResNote(args) {
-	if (args.l) {
+	if (args === null)
+		this.setDefaults();
+	else if (args.l) {
 		var str = args.s;
 		var argList = args.l;
 		this.color = null;
@@ -1128,6 +1345,11 @@ function ResNote(args) {
 		this.str = args.str;
 	}
 }
+ResNote.prototype.setDefaults =
+function() {
+	this.color = null;
+	this.str = '"?"';
+};
 ResNote.prototype.toString =
 function() {
 	var args = [];
@@ -1141,19 +1363,23 @@ function() {
 	str = str.replace(/\\(["\\])/g, "$1");
 	return str;
 };
+ResNote.escapeString =
+function(str) {
+	str = str.replace(/\\/g, '\\\\');
+	str = str.replace(/"/g, '\\"');
+	return '\"' + str + '\"';
+};
 ResNote.prototype.propagate =
 function(globals) {
 	this.globals = globals;
 };
 
 function ResSwitch(args) {
-	if (args.l) {
+	if (args === null)
+		this.setDefaults();
+	else if (args.l) {
 		var argList = args.l;
-		this.color = null;
-		this.shade = null;
-		this.sep = null;
-		this.fit = null;
-		this.mirror = null;
+		this.setDefaults();
 		for (var i = 0; i < argList.length; i++) {
 			var arg = argList[i];
 			if (arg.isColor())
@@ -1181,9 +1407,13 @@ function ResSwitch(args) {
 		this.mirror = args.mirror;
 	}
 }
-ResSwitch.plain =
+ResSwitch.prototype.setDefaults =
 function() {
-	return new ResSwitch({l:[]});
+	this.color = null;
+	this.shade = null;
+	this.sep = null;
+	this.fit = null;
+	this.mirror = null;
 };
 ResSwitch.prototype.toString =
 function() {
@@ -1219,7 +1449,7 @@ function() {
 };
 ResSwitch.prototype.join =
 function(other) {
-	var copy = ResSwitch.plain();
+	var copy = new ResSwitch(null);
 	for (var i = 0; i < ResGlobals.properties.length; i++) {
 		var global = ResGlobals.properties[i];
 		if (other[global] !== null)

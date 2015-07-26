@@ -10,6 +10,16 @@ function ResWeb() {
 			ResWeb.makeSometime(canvas);
 	}
 }
+// Make canvas for hieroglyphic in element.
+ResWeb.makeIn =
+function(elem) {
+	var canvass = elem.getElementsByTagName("canvas");
+	for (var i = 0; i < canvass.length; i++) {
+		var canvas = canvass[i];
+		if (canvas.className.match(/\bres\b/))
+			ResWeb.make(canvas);
+	}
+};
 
 // Root function for web page.
 ResWeb.init =
@@ -27,7 +37,8 @@ function(canvas) {
 // Make canvas now.
 ResWeb.make =
 function(canvas) {
-	var code = canvas.firstChild.nodeValue;
+	var text = canvas.firstChild;
+	var code = canvas.firstChild !== null ? canvas.firstChild.nodeValue : "";
 	var style = window.getComputedStyle(canvas, null);
 	var size = style.getPropertyValue("font-size").replace("px", "");
 	if (code.match(/\s*\$/m)) {
@@ -112,9 +123,9 @@ function(f, c) {
 /////////////////////////////////////////////////////////////////////////////
 // Individual signs and transliteration.
 
-ResWeb.mapSigns =
-function() {
-	var spans = document.getElementsByTagName("span");
+ResWeb.mapSignsIn =
+function(elem) {
+	var spans = elem.getElementsByTagName("span");
 	for (var i = 0; i < spans.length; i++) {
 		var span = spans[i];
 		if (span.className.match(/\bsign\b/)) {
@@ -127,10 +138,14 @@ function() {
 		}
 	}
 };
-
-ResWeb.mapTrans =
+ResWeb.mapSigns =
 function() {
-	var spans = document.getElementsByTagName("span");
+	ResWeb.mapSignsIn(document);
+};
+
+ResWeb.mapTransIn =
+function(elem) {
+	var spans = elem.getElementsByTagName("span");
 	for (var i = 0; i < spans.length; i++) {
 		var span = spans[i];
 		if (span.className.match(/\btrans\b/)) {
@@ -146,6 +161,10 @@ function() {
 			span.innerHTML = uni;
 		}
 	}
+};
+ResWeb.mapTrans =
+function() {
+	ResWeb.mapTransIn(document);
 };
 ResWeb.transUnicode =
 function(c, upper) {

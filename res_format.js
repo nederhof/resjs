@@ -415,8 +415,8 @@ function(context) {
 		this.font = "HieroglyphicPlain";
 		this.charName = this.name.charAt(1);
 	} else {
-		this.font = undefined;
-		this.charName = " ";
+		this.font = "HieroglyphicPlain"
+		this.charName = '?';
 	}
 	if (this.font === "HieroglyphicPlain")
 		this.dynScale = this.plainCorrection();
@@ -512,9 +512,10 @@ function(context) {
 	this.dynScale = 1;
 	if (this.hiero !== null) 
 		this.hiero.resetScaling(context);
-	this.charOpenName = String.fromCharCode(context.auxPoints[this.type + "open"]);
-	this.charCloseName = String.fromCharCode(context.auxPoints[this.type + "close"]);
-	this.charSegmentName = String.fromCharCode(context.auxPoints[this.type + "segment"]);
+	var type = context.auxPoints[this.type + 'open'] ? this.type : 'cartouche';
+	this.charOpenName = String.fromCharCode(context.auxPoints[type + 'open']);
+	this.charCloseName = String.fromCharCode(context.auxPoints[type + 'close']);
+	this.charSegmentName = String.fromCharCode(context.auxPoints[type + 'segment']);
 	this.scaleDown(1);
 };
 ResBox.prototype.openChar =
@@ -550,8 +551,8 @@ ResBox.prototype.widthEm =
 function() {
 	if (this.effectiveIsH())
 		return this.openSizeEm + this.closeSizeEm + 
-			(this.hiero === null ? 0 : this.hiero.widthEm()) +
-			this.openFitSizeEm + this.closeFitSizeEm;
+			Math.max(0, (this.hiero === null ? 0 : this.hiero.widthEm()) +
+						this.openFitSizeEm + this.closeFitSizeEm);
 	else
 		return this.dynSegmentSizeEm
 };
@@ -561,8 +562,8 @@ function() {
 		return this.dynSegmentSizeEm
 	else
 		return this.openSizeEm + this.closeSizeEm + 
-			(this.hiero === null ? 0 : this.hiero.heightEm()) +
-			this.openFitSizeEm + this.closeFitSizeEm;
+			Math.max(0, (this.hiero === null ? 0 : this.hiero.heightEm()) +
+						this.openFitSizeEm + this.closeFitSizeEm);
 };
 ResBox.prototype.overSizeEm =
 function() {
@@ -692,7 +693,7 @@ function(f) {
 				break;
 			this.hiero.scaleDown(targetSize / size);
 		}
-		   if (this.effectiveIsH()) {
+		if (this.effectiveIsH()) {
 			this.openFitSizeEm = this.fitLeftPx() / this.resContext.emSizePx;
 			this.closeFitSizeEm = this.fitRightPx() / this.resContext.emSizePx;
 		} else {
