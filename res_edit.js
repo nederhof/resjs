@@ -16,7 +16,7 @@ function() {
 };
 ResEdit.makeFromText =
 function() {
-	var res = ResEdit.getValue("res");
+	var res = ResEdit.getValue('res');
 	if (res.match(/\s*\$/m)) {
 		ResEdit.frag = parser.parse('\"?\"');
 		ResEdit.setError('Cannot edit RESlite');
@@ -37,7 +37,7 @@ function(res, address) {
 	ResEdit.setTree();
 	ResEdit.frag.setFocusAddress(address);
 	ResEdit.setFocus();
-	ResEdit.setText();
+	ResEdit.resetText();
 	ResEdit.treeFocus();
 };
 ResEdit.remake =
@@ -49,13 +49,13 @@ function() {
 	ResEdit.setTree();
 	ResEdit.frag.setFocusAddress(address);
 	ResEdit.setFocus();
-	ResEdit.setText();
+	ResEdit.resetText();
 };
 ResEdit.makeFromRes =
 function(res) {
 	try {
 		ResEdit.frag = parser.parse(res);
-		var error = "";
+		var error = '';
 	} catch(err) {
 		ResEdit.frag = parser.parse('\"?\"');
 		var error = 'Parsing error';
@@ -77,7 +77,31 @@ function() {
 		document.getElementById('name_param_text').focus();
 };
 
-// Do tree focus upon entering space.
+// Do tree focus upon entering space, or do operation.
+ResEdit.isNonName =
+function(name) {
+	var str = ResEdit.getValue(name);
+	if (str.match(/.*\s.*/)) {
+		ResEdit.setRawValue(name, str.replace(/\s/, ''));
+		setTimeout(function() {ResEdit.treeFocus();}, 10); // needed for rekonq
+		return true;
+	} else if (str.match(/.*[\-\*\+\:\;\.\!\^]$/)) {
+		ResEdit.setRawValue(name, str.replace(/.$/, ''));
+		switch (str.slice(-1)) {
+			case '.': ResEdit.doDot(); break; 
+			case '*': ResEdit.doStar(); break; 
+			case '+': ResEdit.doPlus(); break; 
+			case ':': ResEdit.doColon(); break; 
+			case ';': ResEdit.doSemicolon(); break; 
+			case '-': ResEdit.doHyphen(); break; 
+			case '!': ResEdit.doExcl(); break; 
+			case '^': ResEdit.doCaret(); break; 
+		}
+		return true;
+	} else
+		return false;
+};
+// As above, but just for spaces.
 ResEdit.isTreeFocus =
 function(name) {
 	var str = ResEdit.getValue(name);
@@ -201,20 +225,20 @@ function() {
 	var canvas = document.getElementById('res_canvas');
 	var focus = document.getElementById('res_focus');
 	var preview = document.getElementById('res_preview');
-	var focusCtx = focus.getContext("2d");
-	var previewCtx = preview.getContext("2d");
+	var focusCtx = focus.getContext('2d');
+	var previewCtx = preview.getContext('2d');
 	ResCanvas.clear(focus);
 	ResCanvas.clear(preview);
 	var address = ResEdit.frag.getFocusTopAddress();
 	var rect = ResEdit.rects[address];
 	focusCtx.beginPath();
-	focusCtx.lineWidth = "2";
-	focusCtx.strokeStyle = "blue";
+	focusCtx.lineWidth = '2';
+	focusCtx.strokeStyle = 'blue';
 	focusCtx.rect(rect.x, rect.y, rect.width, rect.height);
 	focusCtx.stroke();
 	previewCtx.drawImage(canvas, 0, 0);
 	previewCtx.drawImage(focus, 0, 0);
-	var container = document.getElementById("preview_panel");
+	var container = document.getElementById('preview_panel');
 	var containerRect = container.getBoundingClientRect();
 	if (ResEdit.frag.globals.isH()) {
 		var containerMiddle = containerRect.width/2;
@@ -228,24 +252,28 @@ function() {
 };
 ResEdit.setTree =
 function() {
-	var treeDiv = document.getElementById("res_tree");
+	var treeDiv = document.getElementById('res_tree');
 	new ResTree(ResEdit.frag, treeDiv, ResEdit.getTreeSize());
 };
 ResEdit.remakeTreeUpwardsFrom =
 function(elem) {
 	ResEdit.frag.prepareFocusToElem(elem);
 	ResEdit.frag.connectTree();
-	var treeDiv = document.getElementById("res_tree");
+	var treeDiv = document.getElementById('res_tree');
 	ResTree.remakeTreeUpwardsFrom(ResEdit.frag, treeDiv, elem);
 	ResEdit.frag.finalizeFocus();
 };
 ResEdit.setText =
+function(val) {
+	document.getElementById('res_text').value = val;
+};
+ResEdit.resetText =
 function() {
-	document.getElementById("res_text").value = ResEdit.frag.toString();
+	ResEdit.setText(ResEdit.frag.toString());
 };
 ResEdit.setError =
 function(message) {
-	var errorField = document.getElementById("res_error");
+	var errorField = document.getElementById('res_error');
 	errorField.innerHTML = message;
 };
 
@@ -263,7 +291,7 @@ function(name, def) {
 			!ResContext.mnemonicStructure.exec(val)) {
 		text.className = 'error_text';
 		val = def;
-		throw "wrong input";
+		throw 'wrong input';
 	} else 
 		text.className = 'input_text';
 	return val;
@@ -278,7 +306,7 @@ function(name, def) {
 	} else {
 		text.className = 'error_text';
 		val = def;
-		throw "wrong input";
+		throw 'wrong input';
 	} 
 	return val;
 };
@@ -289,7 +317,7 @@ function(name, def) {
 	if (isNaN(val) || val < 0) {
 		text.className = 'error_text';
 		val = def;
-		throw "wrong input";
+		throw 'wrong input';
 	} else 
 		text.className = 'input_text';
 	return val;
@@ -315,7 +343,7 @@ function(name, def, wrong) {
 	if (wrong(val)) {
 		text.className = 'error_text';
 		val = def;
-		throw "wrong input";
+		throw 'wrong input';
 	} else 
 		text.className = 'input_text';
 	return check.checked ? val : def;
@@ -437,7 +465,7 @@ function(name, val) {
 
 ResEdit.adjustName =
 function(e) {
-	if (ResEdit.isTreeFocus('name_param'))
+	if (ResEdit.isNonName('name_param'))
 		return;
 	else if (ResEdit.getValue('name_param') === 'u') {
 		ResEdit.setValue('name_param', '');
@@ -702,7 +730,7 @@ function(prop, val) {
 	ResEdit.setPreview();
 	ResEdit.setFocus();
 	ResEdit.frag.redrawNodesUpwards();
-	ResEdit.setText();
+	ResEdit.resetText();
 };
 ResEdit.adjustOfOpsSize =
 function(val) {
@@ -718,7 +746,7 @@ function(val) {
 	ResEdit.setPreview();
 	ResEdit.setFocus();
 	ResEdit.frag.redrawNodesUpwards();
-	ResEdit.setText();
+	ResEdit.resetText();
 };
 
 // Replace the names in the two named glyphs. 
@@ -734,7 +762,7 @@ function(named1, named2) {
 	ResEdit.setFocus();
 	ResEdit.frag.redrawNodesUpwardsFrom(named2);
 	ResEdit.frag.redrawNodesUpwardsFrom(named1);
-	ResEdit.setText();
+	ResEdit.resetText();
 };
 
 ///////////////////////////////////
@@ -854,7 +882,7 @@ function(x, y) {
 	ResEdit.setPreview();
 	ResEdit.setFocus();
 	ResEdit.frag.redrawNodesUpwards();
-	ResEdit.setText();
+	ResEdit.resetText();
 };
 
 ResEdit.setShades =
@@ -963,6 +991,12 @@ function(e) {
 ResEdit.changeText =
 function(e) {
 	ResEdit.remember();
+	ResEdit.makeFromText();
+};
+ResEdit.clearText =
+function(e) {
+	ResEdit.remember();
+	ResEdit.setText('');
 	ResEdit.makeFromText();
 };
 
@@ -1452,7 +1486,7 @@ function() {
 			ResEdit.setPreview();
 			ResEdit.setFocus();
 			ResEdit.frag.redrawNodesUpwards();
-			ResEdit.setText();
+			ResEdit.resetText();
 		}
 	}
 	ResEdit.treeFocus();

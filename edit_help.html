@@ -21,11 +21,11 @@ Thereafter <tt>N28</tt> is added in a new group after <tt>N5</tt>.
 Added to <tt>N28</tt> are then the operator '<tt>:</tt>' and the sign <tt>f</tt>. 
 In terms of mouse clicks and keyboard input, this is obtained by:
 <ol>
-<li> Click <b>named</b> and fill in 'N5' as name;
-<li> Click <b>box</b>;
+<li> Click on <b>named</b> and type <tt>N5</tt> into the name field;
+<li> Click on <b>box</b>;
 <li> Click on the lower square containing the sun;
-<li> Click '<b>-</b>' and fill in 'N28' as name;
-<li> Click '<b>:</b>' and fill in 'f' as name.
+<li> Click on '<b>-</b>' and type <tt>N28</tt> into the name field;
+<li> Click on '<b>:</b>' and type <tt>f</tt> into the name field.
 </ol>
 Now the desired cartouche is visible in the preview panel, and with internal
 structure in the tree panel, and the RES
@@ -34,13 +34,16 @@ of the page.
 <p>
 If one has an existing RES fragment, this can also be entered in the 
 text panel.
-To try this out, refresh the page, enter <tt>cartouche(N5-N28:f)</tt>, and press
+To try this out, press <b>Clear</b>, enter <tt>cartouche(N5-N28:f)</tt>, and press
 <b>Parse</b>, and observe that the preview and tree panels are
 populated with the corresponding graphical representations.
+<p>
+For more on RES, see the relevant <a
+href="http://mjn.host.cs.st-andrews.ac.uk/egyptian/res">documentation</a>.
 
 <h2>Structure of the page</h2>
 
-The page is subdivided into:
+The page is divided into:
 <ul>
 <li> the header,
 <li> the global properties panel,
@@ -96,7 +99,7 @@ Other ways to navigate rely on keyboard shortcuts, as will be explained later.
 <h3>Control panel</h3>
 
 The control panel contains buttons for changing the structure of the fragment
-and changing parameters of groups, operators and switches.
+and for changing parameters of groups, operators and switches.
 Only those buttons and parameters are shown that are relevant to the
 current focus.
 
@@ -106,6 +109,7 @@ The text panel contains the RES fragment. This fragment is updated every time
 an edit is made, for example through the buttons and fields in the control panel.
 Alternatively, one can edit the text panel and press
 <b>Parse</b>, which updates the preview and tree panels.
+By pressing <b>Clear</b>, one obtains an empty fragment.
 
 <h2>Editing</h2>
 
@@ -116,7 +120,7 @@ change the structure of a fragment:
 <ul>
 <li> <b>named</b> creates a new group consisting of a named glyph.
 If the current focus is an empty glyph, it is replaced by the named glyph.
-If the current focus is a box, the new group is placed at the beginning of
+If the current focus is a box, the named glyph is inserted at the beginning of
 the content of the box.
 <li> <b>empty</b> creates a new group consisting of an empty glyph,
 and behaves similarly to <b>named</b>.
@@ -151,11 +155,12 @@ insert, modify and stack. For this reason, we additionally have
 following an existing note.
 <li> <b>swap</b> swaps the name of the current named glyph and that of
 the next one.
-<li> <b>delete</b> generally removes the current element. This may lead to 
-further changes to preserve the integrity of the syntax of RES. 
+<li> <b>delete</b> generally removes the node with the current focus. 
+This may lead to further changes to preserve the integrity of the syntax of RES. 
 For example, if <tt>B1</tt> is removed from <tt>A1*B1</tt>,
 then the operator '<tt>*</tt>' also needs to be removed, and only <tt>A1</tt>
-remains. 
+remains. If '<tt>*</tt>' is removed from <tt>A1*B1</tt>, then
+two isolated named glyphs remain, or in other words, we obtain the fragment <tt>A1-B1</tt>.
 If the current focus is a switch, <b>delete</b> sets the parameters to the
 default ones.
 </ul>
@@ -167,7 +172,8 @@ Many parameters first need to be selected before they can be changed
 to something other than the default. 
 <p> 
 Shading for subregions of a group or operator can be set to be coarse-grained, 
-in a 2x2 grid, or more fine-grained, up to a 16x16 grid. Click to the toggle the subregions.
+in a 2x2 grid, or more fine-grained, up to a 16x16 grid. Click a subregion 
+to toggle it from unshaded to shaded or vice versa.
 
 <h3>Keyboard shortcuts</h3>
 
@@ -177,7 +183,7 @@ The <tt>Home</tt> and <tt>End</tt> keys transfer the focus to the first and last
 top-level group, respectively.
 <p>
 Buttons that change the structure of groups
-can be activated by entering letters such as
+can be activated by entering characters such as
 '<tt>*</tt>', '<tt>:</tt>', '<tt>-</tt>', '<tt>^</tt>', '<tt>!</tt>',
 the <tt>Delete</tt> key for <b>delete</b>, 
 '<tt>n</tt>' for <b>named</b>, 
@@ -186,13 +192,19 @@ the <tt>Delete</tt> key for <b>delete</b>,
 '<tt>t</tt>' for <b>!front</b>, 
 etc. (See the letters on the buttons that are underlined.)
 <p>
-The above keyboard shortcuts will only work if the browser's focus is 
+The above keyboard shortcuts will work if the browser's focus is 
 on the preview or tree panels, which is indicated by a blue dotted border
 around the preview or tree panels.
+In addition, the keyboard shortcuts for 
+'<tt>*</tt>', '<tt>+</tt>', '<tt>:</tt>', '<tt>;</tt>', '<tt>-</tt>', '<tt>!</tt>', '<tt>^</tt>'
+can be used directly after typing the name of a named glyph.
+<p>
 If the browser's focus is in a text field, it can be transferred to the tree panel
 by pressing the space bar. Conversely, if the browser's focus is in the preview or
 tree panel, and the editor's focus is on a named glyph, then the browser's focus
 can be transferred to the name field by pressing the space bar once more.
+This also works for a note. If the browser's focus is on a check box or radio button however, 
+a mouse click on the tree panel is needed to transfer the browser's focus to the tree panel.
 
 <h2>Sign chooser</h2>
 

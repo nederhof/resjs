@@ -527,6 +527,10 @@ div.tree {
 	cursor: default;
 }
 
+.danger {
+	color: Red;
+}
+
 .button_unselected, .button_selected {
 	height: 26px;
 	font-weight: bold;

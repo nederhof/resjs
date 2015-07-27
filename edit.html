@@ -387,7 +387,11 @@
 	</div>
 	<div id="footer_panel">
 		<textarea id="res_text" rows="4" spellcheck="false" 
-			onchange="ResEdit.changeText(event);"></textarea> <button id="parse_button" class="generic_button" onclick="ResEdit.changeText(event);">Parse</button>
+			onchange="ResEdit.changeText(event);"></textarea> 
+		<button id="parse_button" class="generic_button" 
+			onclick="ResEdit.changeText(event);">Parse</button>
+		<button id="clear_button" class="generic_button error" 
+			onclick="ResEdit.clearText(event);">Clear</button>
 		<span id="res_error" class="error_text">
 		</span>
 	</div>
