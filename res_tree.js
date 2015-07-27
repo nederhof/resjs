@@ -1040,14 +1040,13 @@ function(op) {
 };
 ResTree.appendNamedBehindSwitchHiero =
 function(sw) {
-	if (ResTree.objInClasses(sw.editParent, [ResHorgroup, ResVertgroup]))
-		return ResTree.appendNamedHiero(sw.editParent);
-	else {
-		var i = sw.editParent.hiero.switches.indexOf(sw);
+	if (ResTree.objInClasses(sw.structureParent, [ResFragment, ResBox])) {
+		var i = sw.structureParent.hiero.switches.indexOf(sw);
 		var named = new ResNamedglyph(null);
 		sw.editParent.hiero.addGroupAt(named, i+1);
 		return named;
-	}
+	} 
+	return ResTree.appendNamedHiero(sw.structureParent);
 };
 
 ResTree.appendNamedBehindOp =
@@ -1057,12 +1056,25 @@ function(op) {
 	op.editParent.addGroupAt(named, i+1);
 	return named;
 };
-ResTree.appendNamedBehindSwitch =
+ResTree.appendNamedHorAfterSwitch =
 function(sw) {
-	var i = sw.editParent.switches.indexOf(sw);
-	var named = new ResNamedglyph(null);
-	sw.editParent.addGroupAt(named, i+1);
-	return named;
+	if (sw.structureParent instanceof ResHorgroup) {
+		var i = sw.editParent.switches.indexOf(sw);
+		var named = new ResNamedglyph(null);
+		sw.editParent.addGroupAt(named, i+1);
+		return named;
+	} else 
+		return ResTree.appendNamedHor(sw.structureParent);
+};
+ResTree.appendNamedVertAfterSwitch =
+function(sw) {
+	if (sw.structureParent instanceof ResVertgroup) {
+		var i = sw.editParent.switches.indexOf(sw);
+		var named = new ResNamedglyph(null);
+		sw.editParent.addGroupAt(named, i+1);
+		return named;
+	} else
+		return ResTree.appendNamedVert(sw.structureParent);
 };
 
 ResTree.appendNamedHor =

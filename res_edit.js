@@ -1237,9 +1237,9 @@ function() {
 			ResEdit.treeFocus();
 		}
 	} else if (foc instanceof ResSwitch) {
-		if (ResTree.objInClasses(par, [ResHorgroup, ResVertgroup])) {
+		if (par instanceof ResHorgroup) {
 			ResEdit.remember();
-			ResEdit.frag.editFocus = ResTree.appendNamedBehindSwitch(foc);
+			ResEdit.frag.editFocus = ResTree.appendNamedHorAfterSwitch(foc);
 			ResEdit.remake();
 			ResEdit.nameFocus();
 		}
@@ -1284,10 +1284,12 @@ function() {
 			ResEdit.treeFocus();
 		}
 	} else if (foc instanceof ResSwitch) {
-		ResEdit.remember();
-		ResEdit.frag.editFocus = ResTree.appendNamedBehindSwitch(foc);
-		ResEdit.remake();
-		ResEdit.nameFocus();
+		if (par instanceof ResVertgroup) {
+			ResEdit.remember();
+			ResEdit.frag.editFocus = ResTree.appendNamedVertAfterSwitch(foc);
+			ResEdit.remake();
+			ResEdit.nameFocus();
+		}
 	} else if (foc instanceof ResVertgroup) {
 		ResEdit.remember();
 		ResEdit.frag.editFocus = ResTree.appendNamedVert(foc.groups[foc.groups.length-1].group);
