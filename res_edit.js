@@ -1237,10 +1237,12 @@ function() {
 			ResEdit.treeFocus();
 		}
 	} else if (foc instanceof ResSwitch) {
-		ResEdit.remember();
-		ResEdit.frag.editFocus = ResTree.appendNamedBehindSwitch(foc);
-		ResEdit.remake();
-		ResEdit.nameFocus();
+		if (ResTree.objInClasses(par, [ResHorgroup, ResVertgroup])) {
+			ResEdit.remember();
+			ResEdit.frag.editFocus = ResTree.appendNamedBehindSwitch(foc);
+			ResEdit.remake();
+			ResEdit.nameFocus();
+		}
 	}
 };
 ResEdit.doPlus =
