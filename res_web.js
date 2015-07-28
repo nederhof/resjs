@@ -113,7 +113,7 @@ function(f, c) {
 		ResWeb.fontsDone = true;
 		f();
 	} else if (c > 40) {
-		console.log("seem unable to load fonts: " + fontsLoaded());
+		console.log("seem unable to load fonts: " + ResWeb.fontsLoaded());
 		alert("seem unable to load fonts; perhaps try again later?");
 	} else {
 		setTimeout(function(){ ResWeb.waitForFonts(f, c+1); }, 1000);
