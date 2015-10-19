@@ -35,18 +35,26 @@ span.hinotes {
 }
 
 .res {
-	vertical-align:-10px;
+	vertical-align: -10px;
 	font-size: 36px;
 }
 
 .demo {
-	border:1px solid #000000;
+	border: 1px solid #000000;
 }
 
 span.sign {
 	font-family: Hieroglyphic;
-	vertical-align:-10px;
+	vertical-align: 0;
 	font-size: 36px;
+	font-weight: normal;
+}
+span.high {
+	vertical-align: -10px;
+}
+span.low {
+	vertical-align: 0;
+	line-height: 70%;
 }
 
 @font-face {
