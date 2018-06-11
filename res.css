@@ -39,6 +39,11 @@ span.hinotes {
 	font-size: 36px;
 }
 
+.uni {
+	vertical-align: -10px;
+	font-size: 36px;
+}
+
 .demo {
 	border: 1px solid #000000;
 }

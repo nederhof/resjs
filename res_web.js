@@ -50,9 +50,9 @@ function(canvas) {
 	} else {
 		if (typeof ResFragment === 'function') {
 			try {
-				var frag = parser.parse(code);
+				var frag = res_syntax.parse(code);
 			} catch(err) {
-				var frag = parser.parse("\"?\"");
+				var frag = res_syntax.parse("\"?\"");
 			}
 			frag.render(canvas, size);
 		} else

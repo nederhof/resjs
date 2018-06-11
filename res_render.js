@@ -871,7 +871,7 @@ function(ctx1, canvas2, rect1, rect2, fixX, fixY, scale) {
 	for (var step = this.resContext.scaleStep; 
 			step >= this.resContext.scaleStepMin; 
 			step *= this.resContext.scaleStepFactor) {
-		for (var newScale = scale*(1+step) ; newScale <= scaleMax; newScale *= 1+step) {
+		for (var newScale = scale*(1+step); newScale <= scaleMax; newScale *= 1+step) {
 			var w = Math.round(rect2.width * newScale);
 			var h = Math.round(rect2.height * newScale);
 			if (this.place === "ts" || this.place === "bs" || this.place === "s")
@@ -949,6 +949,8 @@ function(ctx1, canvas2, rect1, rect2) {
 };
 ResInsert.prototype.render =
 function(env, rect, shadeRect, clip, fitting) {
+	var box = new ResRectangle(0, 0, this.widthPx(), this.heightPx());
+	rect = rect.center(box);
 	this.group1.render(env, rect, shadeRect, clip, fitting);
 	var w2 = this.group2.widthPx();
 	var h2 = this.group2.heightPx();

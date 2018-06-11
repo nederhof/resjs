@@ -58,6 +58,80 @@ function(g1, g2) {
 	}
 };
 
+UniFragment.makeVerticalGroup =
+function(gs) {
+	var g1 = new ResVertsubgroup({b:gs[0]});
+	var g2 = new ResVertsubgroup({b:gs[1]});
+	var sw = new ResSwitch(null);
+	var g = new ResVertgroup({g1:g1,l:[],sw:sw,g2:g2}); 
+	for (var i = 2; i < gs.length; i++) {
+		var gSub = new ResVertsubgroup({b:gs[i]});
+		var swSub = new ResSwitch(null);
+		g.addGroup([], swSub, gSub);
+	}
+	return g;
+};
+
+UniFragment.makeHorizontalGroup =
+function(gs) {
+	var g1 = new ResHorsubgroup({b:gs[0]});
+	var g2 = new ResHorsubgroup({b:gs[1]});
+	var sw = new ResSwitch(null);
+	var g = new ResHorgroup({g1:g1,l:[],sw:sw,g2:g2}); 
+	for (var i = 2; i < gs.length; i++) {
+		var gSub = new ResHorsubgroup({b:gs[i]});
+		var swSub = new ResSwitch(null);
+		g.addGroup([], swSub, gSub);
+	}
+	return g;
+};
+
+UniFragment.makeInsertionGroup =
+function(g, ins) {
+	var iST = ins[0];
+	var iSB = ins[1];
+	var iET = ins[2];
+	var iEB = ins[3];
+	var group = g;
+	if (iST) {
+		var sw1 = new ResSwitch(null);
+		var sw2 = new ResSwitch(null);
+		var sw3 = new ResSwitch(null);
+		var arg = new ResArg("ts",null);
+		group = new ResInsert({l:[arg],sw1:sw1,g1:group,sw2:sw2,g2:iST,sw3:sw3});
+	}
+	if (iSB) {
+		var sw1 = new ResSwitch(null);
+		var sw2 = new ResSwitch(null);
+		var sw3 = new ResSwitch(null);
+		var arg = new ResArg("bs",null);
+		group = new ResInsert({l:[arg],sw1:sw1,g1:group,sw2:sw2,g2:iSB,sw3:sw3});
+	}
+	if (iET) {
+		var sw1 = new ResSwitch(null);
+		var sw2 = new ResSwitch(null);
+		var sw3 = new ResSwitch(null);
+		var arg = new ResArg("te",null);
+		group = new ResInsert({l:[arg],sw1:sw1,g1:group,sw2:sw2,g2:iET,sw3:sw3});
+	}
+	if (iEB) {
+		var sw1 = new ResSwitch(null);
+		var sw2 = new ResSwitch(null);
+		var sw3 = new ResSwitch(null);
+		var arg = new ResArg("be",null);
+		group = new ResInsert({l:[arg],sw1:sw1,g1:group,sw2:sw2,g2:iEB,sw3:sw3});
+	}
+	return group;
+};
+
+UniFragment.makeCoreGroup =
+function(g1, g2) {
+	var sw1 = new ResSwitch(null);
+	var sw2 = new ResSwitch(null);
+	var sw3 = new ResSwitch(null);
+	return new ResStack({l:[],sw1:sw1,g1:g1,sw2:sw2,g2:g2,sw3:sw3});
+};
+
 UniFragment.addHorizontalGroup =
 function(g1, g2) {
 	if (!UniFragment.isVerticalSubgroup(g2))

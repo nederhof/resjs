@@ -46,9 +46,9 @@ function(elem, label, res) {
 		div.className = 'node_label';
 		var canvas = document.createElement('canvas');
 		try {
-			var frag = parser.parse(res);
+			var frag = res_syntax.parse(res);
 		} catch(err) {
-			var frag = parser.parse('\"?\"');
+			var frag = res_syntax.parse('\"?\"');
 		}
 		frag.render(canvas, root.editTreeSize);
 		div.appendChild(canvas);
@@ -69,9 +69,9 @@ function(elem, res) {
 	var root = elem.editRoot;
 	res = root.headerString() + res;
 	try {
-		var frag = parser.parse(res);
+		var frag = res_syntax.parse(res);
 	} catch(err) {
-		var frag = parser.parse('\"?\"');
+		var frag = res_syntax.parse('\"?\"');
 	}
 	frag.render(canvas, root.editTreeSize);
 };

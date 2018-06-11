@@ -18,7 +18,7 @@ ResEdit.makeFromText =
 function() {
 	var res = ResEdit.getValue('res');
 	if (res.match(/\s*\$/m)) {
-		ResEdit.frag = parser.parse('\"?\"');
+		ResEdit.frag = res_syntax.parse('\"?\"');
 		ResEdit.setError('Cannot edit RESlite');
 	} else
 		ResEdit.makeFromRes(res);
@@ -54,10 +54,10 @@ function() {
 ResEdit.makeFromRes =
 function(res) {
 	try {
-		ResEdit.frag = parser.parse(res);
+		ResEdit.frag = res_syntax.parse(res);
 		var error = '';
 	} catch(err) {
-		ResEdit.frag = parser.parse('\"?\"');
+		ResEdit.frag = res_syntax.parse('\"?\"');
 		var error = 'Parsing error';
 	}
 	ResEdit.setError(error);

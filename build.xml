@@ -10,42 +10,56 @@
 
 	<target name="pack"
 		description="pack the sources">
-	<tar destfile="${tarfile}">
-		<tarfileset dir=".">
-		<include name="*.ttf"/>
-		<include name="*.js"/>
-		<include name="*.jison"/>
-		<include name="*.css"/>
-		<include name="*.html"/>
-		<include name="*.md"/>
-		<include name="uparr.jpg"/>
-		<include name="build.xml"/>
-		</tarfileset>
+		<tar destfile="${tarfile}">
+			<tarfileset dir=".">
+			<include name="*.ttf"/>
+			<include name="*.js"/>
+			<include name="*.jison"/>
+			<include name="*.css"/>
+			<include name="*.html"/>
+			<include name="*.md"/>
+			<include name="uparr.jpg"/>
+			<include name="build.xml"/>
+			</tarfileset>
 		</tar>
 	</target>
 
 	<target name="packall" depends="pack"
 		description="pack all for web distribution">
-	<tar destfile="${alltarfile}">
-		<tarfileset dir=".">
-		<include name="*.ttf"/>
-		<include name="*.js"/>
-		<include name="*.css"/>
-		<include name="*.html"/>
-		<include name="LICENSE.md"/>
-		<include name="uparr.jpg"/>
-		<include name="${tarfile}"/>
-		</tarfileset>
+		<tar destfile="${alltarfile}">
+			<tarfileset dir=".">
+			<include name="*.ttf"/>
+			<include name="*.js"/>
+			<include name="*.css"/>
+			<include name="*.html"/>
+			<include name="LICENSE.md"/>
+			<include name="uparr.jpg"/>
+			<include name="${tarfile}"/>
+			</tarfileset>
 		</tar>
 	</target>
 
 	<target name="syntax" 
-		description="compile RES parser to produce res_syntax.js">
-	<exec executable="jison">
-		<arg value="res_syntax.jison"/>
-		<arg value="-p"/>
-		<arg value="lr"/>
-	</exec>
+		description="compile RES and Unicode parsers to produce res_syntax.js and uni_syntax.js">
+		<exec executable="jison">
+			<arg value="res_syntax.jison"/>
+			<arg value="-p"/>
+			<arg value="lr"/>
+		</exec>
+		<exec executable="jison">
+			<arg value="uni_syntax.jison"/>
+			<arg value="-p"/>
+			<arg value="lr"/>
+		</exec>
+	</target>
+
+	<target name="test" 
+		description="compile RES and Unicode parsers to produce res_syntax.js and uni_syntax.js">
+		<exec executable="jison">
+			<arg value="test.jison"/>
+			<arg value="-p"/>
+			<arg value="lr"/>
+		</exec>
 	</target>
 
 </project>
