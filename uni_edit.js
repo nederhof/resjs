@@ -16,14 +16,10 @@ function() {
 };
 ResEdit.makeFromText =
 function() {
-	var res = ResEdit.getValue('res');
-	if (res.match(/\s*\$/m)) {
-		ResEdit.frag = res_syntax.parse('\"?\"');
-		ResEdit.setError('Cannot edit RESlite');
-	} else
-		ResEdit.makeFromRes(res);
+	var uni = ResEdit.getValue('uni');
+	uni = UniWeb.mapDigitsToBMP(uni);
+	ResEdit.makeFromUni(uni);
 	ResEdit.setDirFromFragment();
-	ResEdit.setSizeFromFragment();
 	ResEdit.setPreview();
 	ResEdit.setTree();
 	ResEdit.setFocus();
@@ -32,7 +28,6 @@ ResEdit.makeWithAddress =
 function(res, address) {
 	ResEdit.makeFromRes(res);
 	ResEdit.setDirFromFragment();
-	ResEdit.setSizeFromFragment();
 	ResEdit.setPreview();
 	ResEdit.setTree();
 	ResEdit.frag.setFocusAddress(address);
@@ -51,6 +46,18 @@ function() {
 	ResEdit.setFocus();
 	ResEdit.resetText();
 };
+ResEdit.makeFromUni =
+function(uni) {
+	try {
+		ResEdit.frag = uni_syntax.parse(uni);
+		var error = '';
+	} catch(err) {
+		ResEdit.frag = res_syntax.parse('\"?\"');
+		var error = 'Parsing error';
+	}
+	ResEdit.fragFine = ResEdit.frag.finetuneUni();
+	ResEdit.setError(error);
+};
 ResEdit.makeFromRes =
 function(res) {
 	try {
@@ -60,6 +67,7 @@ function(res) {
 		ResEdit.frag = res_syntax.parse('\"?\"');
 		var error = 'Parsing error';
 	}
+	ResEdit.fragFine = ResEdit.frag.finetuneUni();
 	ResEdit.setError(error);
 };
 ResEdit.treeFocus =
@@ -88,14 +96,11 @@ function(name) {
 	} else if (str.match(/.*[\-\*\+\:\;\.\!\^]$/)) {
 		ResEdit.setRawValue(name, str.replace(/.$/, ''));
 		switch (str.slice(-1)) {
-			case '.': ResEdit.doDot(); break; 
 			case '*': ResEdit.doStar(); break; 
 			case '+': ResEdit.doPlus(); break; 
 			case ':': ResEdit.doColon(); break; 
 			case ';': ResEdit.doSemicolon(); break; 
 			case '-': ResEdit.doHyphen(); break; 
-			case '!': ResEdit.doExcl(); break; 
-			case '^': ResEdit.doCaret(); break; 
 		}
 		return true;
 	} else
@@ -175,22 +180,22 @@ function() {
 };
 ResEdit.getDir =
 function() {
-	var dirs = ['none', 'hlr', 'hrl', 'vlr', 'vrl'];
+	var dirs = ['hlr', 'hrl', 'vlr', 'vrl'];
 	for (var i = 0; i < dirs.length; i++)
 		if (document.getElementById(dirs[i]).className === 'button_selected')
 			return dirs[i];
-	return 'none';
+	return 'hlr';
 };
 ResEdit.setDir =
 function(dir) {
 	if (dir === ResEdit.getDir())
 		return false;
-	var dirs = ['none', 'hlr', 'hrl', 'vlr', 'vrl'];
+	var dirs = ['hlr', 'hrl', 'vlr', 'vrl'];
 	for (var i = 0; i < dirs.length; i++)
 		if (dirs[i] !== dir)
 			document.getElementById(dirs[i]).className = 'button_unselected';
 	document.getElementById(dir).className = 'button_selected';
-	var layoutDir = dir === 'none' ? 'hlr' : dir;
+	var layoutDir = dir;
 	document.getElementById('header_panel').className = layoutDir;
 	document.getElementById('dir_panel').className = layoutDir;
 	document.getElementById('tree_panel').className = layoutDir;
@@ -200,11 +205,7 @@ function(dir) {
 };
 ResEdit.setDirFromFragment =
 function() {
-	ResEdit.setDir(ResEdit.frag.direction === null ? 'none' : ResEdit.frag.direction);
-};
-ResEdit.setSizeFromFragment =
-function() {
-	ResEdit.setRealValue('size', ResEdit.frag.size, null, '1');
+	ResEdit.setDir(ResEdit.frag.direction === null ? 'hlr' : ResEdit.frag.direction);
 };
 ResEdit.setPreview =
 function() {
@@ -214,7 +215,8 @@ function() {
 	ResCanvas.clear(canvas);
 	ResCanvas.clear(focus);
 	ResCanvas.clear(preview);
-	ResEdit.rects = ResEdit.frag.render(canvas, ResEdit.getPreviewSize());
+	ResEdit.fragFine = ResEdit.frag.finetuneUni();
+	ResEdit.rects = ResEdit.fragFine.render(canvas, ResEdit.getPreviewSize());
 	focus.width = canvas.width;
 	focus.height = canvas.height;
 	preview.width = canvas.width;
@@ -265,15 +267,15 @@ function(elem) {
 };
 ResEdit.setText =
 function(val) {
-	document.getElementById('res_text').value = val;
+	document.getElementById('uni_text').value = val;
 };
 ResEdit.resetText =
 function() {
-	ResEdit.setText(ResEdit.frag.toString());
+	ResEdit.setText(ResEdit.frag.toUni());
 };
 ResEdit.setError =
 function(message) {
-	var errorField = document.getElementById('res_error');
+	var errorField = document.getElementById('uni_error');
 	errorField.innerHTML = message;
 };
 
@@ -696,7 +698,7 @@ function(dir) {
 	if (!changed)
 		return;
 	ResEdit.remember();
-	ResEdit.frag.direction = dir === 'none' ? null : dir;
+	ResEdit.frag.direction = dir;
 	ResEdit.remake();
 	ResEdit.treeFocus();
 };
@@ -766,222 +768,6 @@ function(named1, named2) {
 };
 
 ///////////////////////////////////
-// Shades.
-
-// Last shades that were put in grid.
-ResEdit.cachedShades = [];
-// Avoid having to create new buttons upon change of resolution.
-// Maps id to button.
-ResEdit.shadeButtons = {};
-ResEdit.getShadeButtonId =
-function(x, y) {
-	return 'shade_button_' + x + '-' + y;
-};
-// Create button, unless already exists.
-ResEdit.getShadeButton =
-function(x, y) {
-	var id = ResEdit.getShadeButtonId(x, y);
-	var button = ResEdit.shadeButtons[id];
-	if (button === undefined) {
-		button = document.createElement('a');
-		button.setAttribute('href', '#');
-		button.addEventListener('click',  
-			function(x1,y1) { return function(e) { 
-				e.preventDefault();
-				ResEdit.toggleShade(x1, y1); }; }(x, y) );
-		button.id = id;
-		button.className = 'shade_button off';
-		ResEdit.shadeButtons[id] = button;
-	}
-	return button;
-};
-ResEdit.getShadeButtonValue =
-function(x, y) {
-	return ResEdit.getShadeButton(x, y).className === 'shade_button on';
-};
-ResEdit.setShadeButtonValue =
-function(x, y, b) {
-	var button = ResEdit.getShadeButton(x, y);
-	button.className = 'shade_button ' + (b ? 'on' : 'off');
-};
-ResEdit.toggleShadeButtonValue =
-function(x, y) {
-	ResEdit.setShadeButtonValue(x, y, !ResEdit.getShadeButtonValue(x, y));
-};
-ResEdit.clearShadeButtonValues =
-function(x, y) {
-	var resol = ResEdit.getShadesResolution();
-	for (var y = 0; y < resol; y++) 
-		for (var x = 0; x < resol; x++)
-			ResEdit.setShadeButtonValue(x, y, false);
-};
-ResEdit.retrieveShades =
-function() {
-	var shades = [];
-	var resol = ResEdit.getShadesResolution();
-	for (var y = 0; y < resol; y++)
-		for (var x = 0; x < resol; x++) 
-			if (ResEdit.getShadeButtonValue(x, y))
-				shades.push(ResEdit.coordToShade(x, y));
-	return shades;
-};
-ResEdit.refillShades =
-function() {
-	var shades = ResEdit.cachedShades;
-	ResEdit.clearShadeButtonValues();
-	for (var i = 0; i < shades.length; i++) 
-		ResEdit.fillShade(shades[i]);
-};
-ResEdit.fillShade =
-function(shade) {
-	var coords = ResEdit.shadeToCoords(shade);
-	for (var i = 0; i < coords.length; i++)
-		ResEdit.setShadeButtonValue(coords[i].x, coords[i].y, true)
-};
-
-ResEdit.getShadesResolution =
-function() {
-	var elem = document.getElementById('shades_resolution');
-	return elem.options[elem.selectedIndex].text;
-};
-ResEdit.setShadesResolution =
-function(resol) {
-	var elem = document.getElementById('shades_resolution');
-	elem.value = '' + resol;
-	ResEdit.rebuildShadesGrid();
-};
-ResEdit.rebuildShadesGrid =
-function() {
-	var resol = ResEdit.getShadesResolution();
-	var grid = document.getElementById('shades_grid');
-	while (grid.firstChild) 
-		grid.removeChild(grid.firstChild);
-	for (var y = 0; y < resol; y++) {
-		var tr = document.createElement('tr');
-		grid.appendChild(tr);
-		for (var x = 0; x < resol; x++) {
-			var td = document.createElement('td');
-			tr.appendChild(td);
-			td.appendChild(ResEdit.getShadeButton(x,y));
-		}
-	}
-	ResEdit.refillShades();
-};
-
-// Triggered directly from user interaction.
-ResEdit.changeShadesResolution =
-function() {
-	ResEdit.rebuildShadesGrid();
-};
-ResEdit.toggleShade =
-function(x, y) {
-	ResEdit.toggleShadeButtonValue(x, y);
-	ResEdit.remember();
-	ResEdit.frag.editFocus.shades = ResEdit.retrieveShades();
-	ResEdit.cachedShades = ResEdit.frag.editFocus.shades
-	ResEdit.setPreview();
-	ResEdit.setFocus();
-	ResEdit.frag.redrawNodesUpwards();
-	ResEdit.resetText();
-};
-
-ResEdit.setShades =
-function(shades) {
-	ResEdit.cachedShades = shades;
-	var resol = ResEdit.shadesRes(shades);
-	ResEdit.setShadesResolution(resol);
-};
-ResEdit.shadesRes =
-function(shades) {
-	var max = 2;
-	for (var i = 0; i < shades.length; i++) 
-		max = Math.max(max, ResEdit.maxShadeRes(shades[i]));
-	return Math.min(max, 16);
-};
-ResEdit.maxShadeRes =
-function(shade) {
-	var xMax = 1;
-	var yMax = 1;
-	for (var i = 0; i < shade.length; i++) {
-		var c = shade.charAt(i);
-		switch (c) {
-			case 't':
-			case 'b':
-				yMax *= 2;
-				break;
-			case 's':
-			case 'e':
-				xMax *= 2;
-				break;
-		}
-	}
-	return Math.max(xMax, yMax);
-};
-
-ResEdit.shadeToCoords =
-function(shade) {
-	var xLow = 0;
-	var xHigh = ResEdit.getShadesResolution();
-	var yLow = 0;
-	var yHigh = ResEdit.getShadesResolution();
-	for (var i = 0; i < shade.length; i++) {
-		var c = shade.charAt(i);
-		switch (c) {
-			case 't':
-				if (yLow < yHigh - 1)
-					yHigh -= Math.round((yHigh-yLow) / 2);
-				break;
-			case 'b':
-				if (yLow < yHigh - 1)
-					yLow += Math.round((yHigh-yLow) / 2);
-				break;
-			case 's':
-				if (xLow < xHigh - 1)
-					xHigh -= Math.round((xHigh-xLow) / 2);
-				break;
-			case 'e':
-				if (xLow < xHigh - 1)
-					xLow += Math.round((xHigh-xLow) / 2);
-				break;
-		}
-	}
-	var coords = [];
-	for (var x = xLow; x < xHigh; x++)
-		for (var y = yLow; y < yHigh; y++)
-			coords.push({x: x, y: y});
-	return coords;
-};
-ResEdit.coordToShade =
-function(x, y) {
-	var shade = '';
-	var xLow = 0;
-	var xHigh = ResEdit.getShadesResolution();
-	while (xLow < xHigh-1) {
-		xMid = xLow + Math.round((xHigh-xLow) / 2);
-		if (x < xMid) {
-			shade += 's';
-			xHigh = xMid;
-		} else {
-			shade += 'e';
-			xLow = xMid;
-		}
-	}
-	var yLow = 0;
-	var yHigh = ResEdit.getShadesResolution();
-	while (yLow < yHigh-1) {
-		yMid = yLow + Math.round((yHigh-yLow) / 2);
-		if (y < yMid) {
-			shade += 't';
-			yHigh = yMid;
-		} else {
-			shade += 'b';
-			yLow = yMid;
-		}
-	}
-	return shade;
-};
-
-///////////////////////////////////
 // Events.
 
 ResEdit.openHelp =
@@ -1040,24 +826,20 @@ function(e) {
 ResEdit.processKeyPress =
 function(e) {
 	switch (String.fromCharCode(e.charCode)) {
-		case 'b': ResEdit.doBox(); break; 
-		case 'e': ResEdit.doEmpty(); break; 
+		case 'b': ResEdit.doBottom(); break; 
+		case 'e': ResEdit.doEnd(); break; 
 		case 'i': ResEdit.doInsert(); break; 
-		case 'k': ResEdit.doExclBack(); break; 
-		case 'm': ResEdit.doModify(); break; 
 		case 'n': ResEdit.doNamed(); break; 
-		case 's': ResEdit.doStack(); break; 
-		case 't': ResEdit.doExclFront(); break; 
+		case 'o': ResEdit.doStack(); break; 
+		case 's': ResEdit.doStart(); break; 
+		case 't': ResEdit.doTop(); break; 
 		case 'u': ResEdit.doSignMenu(); break; 
 		case 'w': ResEdit.doSwap(); break; 
-		case '.': ResEdit.doDot(); break; 
 		case '*': ResEdit.doStar(); break; 
 		case '+': ResEdit.doPlus(); break; 
 		case ':': ResEdit.doColon(); break; 
 		case ';': ResEdit.doSemicolon(); break; 
 		case '-': ResEdit.doHyphen(); break; 
-		case '!': ResEdit.doExcl(); break; 
-		case '^': ResEdit.doCaret(); break; 
 		case ' ': ResEdit.nameFocus(); ResEdit.stringFocus(); break; 
 		default: return;
 	}
@@ -1109,9 +891,9 @@ function(name, b) {
 };
 ResEdit.disableStructureButtons =
 function() {
-	var names = ['named', 'empty', 'dot', 'star', 'plus', 'colon', 'semicolon',
-		'hyphen', 'box', 'stack', 'insert', 'modify', 'front', 'back', 'excl', 
-		'caret', 'delete', 'swap'];
+	var names = ['named', 'star', 'plus', 'colon', 'semicolon',
+		'hyphen', 'stack', 'insert',
+		'delete', 'swap'];
 	for (var i = 0; i < names.length; i++)
 		ResEdit.enableStructureButton(names[i], true);
 };
@@ -1137,15 +919,9 @@ function(name, b) {
 };
 ResEdit.disableParams =
 function() {
-	var names = ['name', 'string', 'type', 'mirror', 'direction', 'rotate', 
-		'scale', 'xscale', 'yscale', 'width', 'height', 'size', 'size_inf',
-		'sep', 'opensep', 'closesep', 'undersep', 'oversep', 
-		'x', 'y', 'above', 'below', 'before', 'after',
-		'color', 'shade', 
-		'fit', 'firm', 'fix', 'omit', 'cover'];
+	var names = ['name']; 
 	for (var i = 0; i < names.length; i++)
 		ResEdit.enableParam(names[i], true);
-	ResEdit.enableParamChunk('shades', true);
 	ResEdit.enableParamChunk('place', true);
 };
 ResEdit.enableParams =
@@ -1157,7 +933,7 @@ function(names) {
 ResEdit.doNamed =
 function() {
 	var foc = ResEdit.frag.editFocus;
-	if (ResTree.objInClasses(foc, [null, ResBox])) {
+	if (ResTree.objInClasses(foc, [null])) {
 		ResEdit.remember();
 		var parent = foc === null ? ResEdit.frag : foc;
 		var named = new ResNamedglyph(null);
@@ -1165,47 +941,6 @@ function() {
 		ResEdit.frag.editFocus = named;
 		ResEdit.remake();
 		ResEdit.nameFocus();
-	} else if (foc instanceof ResEmptyglyph) {
-		ResEdit.remember();
-		var named = new ResNamedglyph(null);
-		named.switchs = foc.switchs;
-		ResTree.replaceGroup(foc, named);
-		ResEdit.frag.editFocus = named;
-		ResEdit.remake();
-		ResEdit.nameFocus();
-	}
-};
-ResEdit.doEmpty =
-function() {
-	ResEdit.doEmptyOrDot(1);
-};
-ResEdit.doDot =
-function() {
-	ResEdit.doEmptyOrDot(0);
-};
-ResEdit.doEmptyOrDot =
-function(size) {
-	var foc = ResEdit.frag.editFocus;
-	if (ResTree.objInClasses(foc, [null, ResBox])) {
-		ResEdit.remember();
-		var parent = foc === null ? ResEdit.frag : foc;
-		var empty = new ResEmptyglyph(null);
-		empty.width = size;
-		empty.height = size;
-		ResTree.insertAt(parent, 0, empty);
-		ResEdit.frag.editFocus = empty;
-		ResEdit.remake();
-		ResEdit.treeFocus();
-	} else if (foc instanceof ResNamedglyph) {
-		ResEdit.remember();
-		var empty = new ResEmptyglyph(null);
-		empty.width = 0;
-		empty.height = 0;
-		empty.switchs = foc.switchs;
-		ResTree.replaceGroup(foc, empty);
-		ResEdit.frag.editFocus = empty;
-		ResEdit.remake();
-		ResEdit.treeFocus();
 	}
 };
 
@@ -1213,12 +948,14 @@ ResEdit.doStar =
 function() {
 	var foc = ResEdit.frag.editFocus;
 	var par = foc ? foc.editParent : null;
-	if (ResTree.objInClasses(foc, [ResBox, ResEmptyglyph, ResInsert, ResModify, 
-			ResNamedglyph, ResStack, ResVertgroup])) {
-		ResEdit.remember();
-		ResEdit.frag.editFocus = ResTree.appendNamedHor(foc);
-		ResEdit.remake();
-		ResEdit.nameFocus();
+	if (ResTree.objInClasses(foc, [ResInsert, ResNamedglyph, ResStack, ResVertgroup])) {
+		if (!(par instanceof ResInsert && foc === par.group1) &&
+				!ResEdit.shouldBeFlatVertgroup(foc)) {
+			ResEdit.remember();
+			ResEdit.frag.editFocus = ResTree.appendNamedHor(foc);
+			ResEdit.remake();
+			ResEdit.nameFocus();
+		}
 	} else if (foc instanceof ResHorgroup) {
 		ResEdit.remember();
 		ResEdit.frag.editFocus = ResTree.appendNamedHor(foc.groups[foc.groups.length-1].group);
@@ -1230,30 +967,26 @@ function() {
 			ResEdit.frag.editFocus = ResTree.appendNamedBehindOp(foc);
 			ResEdit.remake();
 			ResEdit.nameFocus();
-		} else {
+		} else if (!ResEdit.shouldBeFlatVertgroup(par)) {
 			ResEdit.remember();
 			ResEdit.frag.editFocus = ResTree.joinGroupsIntoHor(foc);
 			ResEdit.remake();
 			ResEdit.treeFocus();
-		}
-	} else if (foc instanceof ResSwitch) {
-		if (par instanceof ResHorgroup) {
-			ResEdit.remember();
-			ResEdit.frag.editFocus = ResTree.appendNamedHorAfterSwitch(foc);
-			ResEdit.remake();
-			ResEdit.nameFocus();
 		}
 	}
 };
 ResEdit.doPlus =
 function() {
 	var foc = ResEdit.frag.editFocus;
-	if (ResTree.objInClasses(foc, [ResBox, ResEmptyglyph, ResInsert, ResModify, 
-			ResNamedglyph, ResStack, ResVertgroup])) {
-		ResEdit.remember();
-		ResEdit.frag.editFocus = ResTree.prependNamedHor(foc);
-		ResEdit.remake();
-		ResEdit.nameFocus();
+	var par = foc ? foc.editParent : null;
+	if (ResTree.objInClasses(foc, [ResInsert, ResNamedglyph, ResStack, ResVertgroup])) {
+		if (!(par instanceof ResInsert && foc === par.group1) &&
+				!ResEdit.shouldBeFlatVertgroup(foc)) {
+			ResEdit.remember();
+			ResEdit.frag.editFocus = ResTree.prependNamedHor(foc);
+			ResEdit.remake();
+			ResEdit.nameFocus();
+		}
 	} else if (foc instanceof ResHorgroup) {
 		ResEdit.remember();
 		ResEdit.frag.editFocus = ResTree.prependNamedHor(foc.groups[0].group);
@@ -1265,30 +998,25 @@ ResEdit.doColon =
 function() {
 	var foc = ResEdit.frag.editFocus;
 	var par = foc ? foc.editParent : null;
-	if (ResTree.objInClasses(foc, [ResBox, ResEmptyglyph, ResHorgroup, ResInsert, 
-			ResModify, ResNamedglyph, ResStack])) {
-		ResEdit.remember();
-		ResEdit.frag.editFocus = ResTree.appendNamedVert(foc);
-		ResEdit.remake();
-		ResEdit.nameFocus();
+	if (ResTree.objInClasses(foc, [ResHorgroup, ResInsert, ResNamedglyph, ResStack])) {
+		if (!(par instanceof ResInsert && foc === par.group1) &&
+				!ResEdit.shouldBeFlatHorgroup(foc)) {
+			ResEdit.remember();
+			ResEdit.frag.editFocus = ResTree.appendNamedVert(foc);
+			ResEdit.remake();
+			ResEdit.nameFocus();
+		}
 	} else if (foc instanceof ResOp) {
 		if (par instanceof ResVertgroup) {
 			ResEdit.remember();
 			ResEdit.frag.editFocus = ResTree.appendNamedBehindOp(foc);
 			ResEdit.remake();
 			ResEdit.nameFocus();
-		} else {
+		} else if (!ResEdit.shouldBeFlatHorgroup(par)) {
 			ResEdit.remember();
 			ResEdit.frag.editFocus = ResTree.joinGroupsIntoVert(foc);
 			ResEdit.remake();
 			ResEdit.treeFocus();
-		}
-	} else if (foc instanceof ResSwitch) {
-		if (par instanceof ResVertgroup) {
-			ResEdit.remember();
-			ResEdit.frag.editFocus = ResTree.appendNamedVertAfterSwitch(foc);
-			ResEdit.remake();
-			ResEdit.nameFocus();
 		}
 	} else if (foc instanceof ResVertgroup) {
 		ResEdit.remember();
@@ -1300,12 +1028,15 @@ function() {
 ResEdit.doSemicolon =
 function() {
 	var foc = ResEdit.frag.editFocus;
-	if (ResTree.objInClasses(foc, [ResBox, ResEmptyglyph, ResHorgroup, ResInsert, 
-			ResModify, ResNamedglyph, ResStack])) {
-		ResEdit.remember();
-		ResEdit.frag.editFocus = ResTree.prependNamedVert(foc);
-		ResEdit.remake();
-		ResEdit.nameFocus();
+	var par = foc ? foc.editParent : null;
+	if (ResTree.objInClasses(foc, [ResHorgroup, ResInsert, ResNamedglyph, ResStack])) {
+		if (!(par instanceof ResInsert && foc === par.group1) &&
+				!ResEdit.shouldBeFlatHorgroup(foc)) {
+			ResEdit.remember();
+			ResEdit.frag.editFocus = ResTree.prependNamedVert(foc);
+			ResEdit.remake();
+			ResEdit.nameFocus();
+		}
 	} else if (foc instanceof ResVertgroup) {
 		ResEdit.remember();
 		ResEdit.frag.editFocus = ResTree.prependNamedVert(foc.groups[0].group);
@@ -1316,8 +1047,7 @@ function() {
 ResEdit.doHyphen =
 function() {
 	var foc = ResEdit.frag.editFocus;
-	if (ResTree.objInClasses(foc, [ResBox, ResEmptyglyph, ResHorgroup, ResNote,
-				ResInsert, ResModify, ResNamedglyph, ResStack, ResVertgroup])) {
+	if (ResTree.objInClasses(foc, [ResHorgroup, ResInsert, ResNamedglyph, ResStack, ResVertgroup])) {
 		ResEdit.remember();
 		ResEdit.frag.editFocus = ResTree.appendNamedHiero(foc);
 		ResEdit.remake();
@@ -1327,129 +1057,110 @@ function() {
 		ResEdit.frag.editFocus = ResTree.appendNamedBehindOpHiero(foc);
 		ResEdit.remake();
 		ResEdit.nameFocus();
-	} else if (foc instanceof ResSwitch) {
-		ResEdit.remember();
-		ResEdit.frag.editFocus = ResTree.appendNamedBehindSwitchHiero(foc);
-		ResEdit.remake();
-		ResEdit.nameFocus();
-	}
-};
-ResEdit.doBox =
-function() {
-	var foc = ResEdit.frag.editFocus;
-	if (ResTree.objInClasses(foc, [ResBox, ResEmptyglyph, ResHorgroup,
-				ResInsert, ResModify, ResNamedglyph, ResStack, ResVertgroup])) {
-		ResEdit.remember();
-		ResEdit.frag.editFocus = ResTree.placeInBox(foc);
-		ResEdit.remake();
-		ResEdit.treeFocus();
 	}
 };
 ResEdit.doStack =
 function() {
 	var foc = ResEdit.frag.editFocus;
-	if (ResTree.objInClasses(foc, [ResBox, ResEmptyglyph, ResHorgroup,
-				ResInsert, ResModify, ResNamedglyph, ResStack, ResVertgroup])) {
-		ResEdit.remember();
-		ResEdit.frag.editFocus = ResTree.placeInStack(foc);
-		ResEdit.remake();
-		ResEdit.nameFocus();
+	var par = foc ? foc.editParent : null;
+	if (ResTree.objInClasses(foc, [ResHorgroup, ResNamedglyph])) {
+		if (UniFragment.isFlatHorizontalGroup(foc) &&
+				!ResEdit.shouldBeFlatGroup(foc)) {
+			ResEdit.remember();
+			ResEdit.frag.editFocus = ResTree.placeInStack(foc);
+			ResEdit.remake();
+			ResEdit.nameFocus();
+		}
 	} else if (foc instanceof ResOp) {
-		ResEdit.remember();
-		ResEdit.frag.editFocus = ResTree.joinGroupsIntoStack(foc);
-		ResEdit.remake();
-		ResEdit.treeFocus();
+		if (UniFragment.isBetweenFlatGroups(foc) &&
+				!ResEdit.shouldBeFlatGroup(par)) {
+			ResEdit.remember();
+			ResEdit.frag.editFocus = ResTree.joinGroupsIntoStack(foc);
+			ResEdit.remake();
+			ResEdit.treeFocus();
+		}
 	}
 };
 ResEdit.doInsert =
 function() {
 	var foc = ResEdit.frag.editFocus;
-	if (ResTree.objInClasses(foc, [ResBox, ResEmptyglyph, ResHorgroup,
-				ResInsert, ResModify, ResNamedglyph, ResStack, ResVertgroup])) {
-		ResEdit.remember();
-		ResEdit.frag.editFocus = ResTree.placeInInsert(foc);
-		ResEdit.remake();
-		ResEdit.nameFocus();
-	} else if (foc instanceof ResOp) {
-		ResEdit.remember();
-		ResEdit.frag.editFocus = ResTree.joinGroupsIntoInsert(foc);
-		ResEdit.remake();
-		ResEdit.treeFocus();
-	}
-};
-ResEdit.doModify =
-function() {
-	var foc = ResEdit.frag.editFocus;
-	if (ResTree.objInClasses(foc, [ResBox, ResEmptyglyph, ResHorgroup,
-				ResInsert, ResModify, ResNamedglyph, ResStack, ResVertgroup])) {
-		ResEdit.remember();
-		ResEdit.frag.editFocus = ResTree.placeInModify(foc);
-		ResEdit.remake();
-		ResEdit.treeFocus();
-	}
-};
-
-ResEdit.doExcl =
-function() {
-	var foc = ResEdit.frag.editFocus;
-	if (ResTree.objInClasses(foc, [null, ResEmptyglyph, ResNamedglyph])) {
-		var sw = foc !== null ? foc.switchs : ResEdit.frag.switchs;
-		ResEdit.remakeTreeUpwardsFrom(sw);
-		ResEdit.treeFocus();
-	} else if (foc instanceof ResOp) {
-		var sw = ResTree.getRightSiblingSwitch(foc);
-		ResEdit.remakeTreeUpwardsFrom(sw);
-		ResEdit.treeFocus();
-	}
-};
-ResEdit.doExclFront =
-function() {
-	var foc = ResEdit.frag.editFocus;
-	if (ResTree.objInClasses(foc, [ResBox, ResInsert, ResModify, ResStack])) {
-		ResEdit.remakeTreeUpwardsFrom(foc.switchs1);
-		ResEdit.treeFocus();
-	}
-};
-ResEdit.doExclBack =
-function() {
-	var foc = ResEdit.frag.editFocus;
-	if (ResTree.objInClasses(foc, [ResBox, ResInsert, ResModify, ResStack])) {
-		var backSwitch = ResTree.objInClasses(foc, [ResBox, ResModify]) ?
-			foc.switchs2 : foc.switchs3;
-		ResEdit.remakeTreeUpwardsFrom(backSwitch);
-		ResEdit.treeFocus();
-	}
-};
-
-ResEdit.doCaret =
-function() {
-	var foc = ResEdit.frag.editFocus;
 	var par = foc ? foc.editParent : null;
-	var note = null;;
-	if (ResTree.objInClasses(foc, [ResBox, ResEmptyglyph, ResNamedglyph]))
-		if (foc instanceof ResEmptyglyph) {
-			if (foc.note !== null) {
-				ResEdit.frag.setEditFocusToElem(foc.note);
-				ResEdit.stringFocus();
-				return;
-			} else {
-				ResEdit.remember();
-				note = ResTree.addNoteIn(foc);
-			}
-		} else {
+	if (ResTree.objInClasses(foc, [ResInsert, ResNamedglyph, ResStack])) {
+		if (!ResEdit.shouldBeFlatGroup(foc)) {
 			ResEdit.remember();
-			note = ResTree.addNoteAtStart(foc);
+			ResEdit.frag.editFocus = ResTree.placeInInsert(foc);
+			ResEdit.remake();
+			ResEdit.nameFocus();
 		}
-	else if (foc instanceof ResNote) {
-		if (ResTree.objInClasses(par, [ResNamedglyph, ResBox])) {
+	} else if (foc instanceof ResOp) {
+		if (UniFragment.isAfterInsertable(foc) &&
+				!ResEdit.shouldBeFlatGroup(par)) {
 			ResEdit.remember();
-			note = ResTree.appendNote(foc);
+			ResEdit.frag.editFocus = ResTree.joinGroupsIntoInsert(foc);
+			ResEdit.remake();
+			ResEdit.treeFocus();
 		}
 	}
-	if (note !== null) {
-		ResEdit.frag.editFocus = note;
-		ResEdit.remake();
-		ResEdit.stringFocus();
+};
+
+ResEdit.doBottom =
+function() {
+	var foc = ResEdit.frag.editFocus;
+	if (ResTree.objInClasses(foc, [ResInsert])) {
+		if (foc.place === "ts") {
+			ResEdit.remember();
+			foc.place = "bs";
+			ResEdit.remake();
+		} else if (foc.place === "te") {
+			ResEdit.remember();
+			foc.place = "be";
+			ResEdit.remake();
+		} 
+	}
+};
+ResEdit.doEnd =
+function() {
+	var foc = ResEdit.frag.editFocus;
+	if (ResTree.objInClasses(foc, [ResInsert])) {
+		if (foc.place === "ts") {
+			ResEdit.remember();
+			foc.place = "te";
+			ResEdit.remake();
+		} else if (foc.place === "bs") {
+			ResEdit.remember();
+			foc.place = "be";
+			ResEdit.remake();
+		} 
+	}
+};
+ResEdit.doStart =
+function() {
+	var foc = ResEdit.frag.editFocus;
+	if (ResTree.objInClasses(foc, [ResInsert])) {
+		if (foc.place === "te") {
+			ResEdit.remember();
+			foc.place = "ts";
+			ResEdit.remake();
+		} else if (foc.place === "be") {
+			ResEdit.remember();
+			foc.place = "bs";
+			ResEdit.remake();
+		} 
+	}
+};
+ResEdit.doTop =
+function() {
+	var foc = ResEdit.frag.editFocus;
+	if (ResTree.objInClasses(foc, [ResInsert])) {
+		if (foc.place === "bs") {
+			ResEdit.remember();
+			foc.place = "ts";
+			ResEdit.remake();
+		} else if (foc.place === "be") {
+			ResEdit.remember();
+			foc.place = "te";
+			ResEdit.remake();
+		} 
 	}
 };
 
@@ -1457,38 +1168,23 @@ ResEdit.doDelete =
 function() {
 	var foc = ResEdit.frag.editFocus;
 	var par = foc ? foc.editParent : null;
-	if (ResTree.objInClasses(foc, [ResBox, ResEmptyglyph, ResNamedglyph,
-					ResInsert, ResModify, ResStack])) {
-		ResEdit.remember();
-		ResEdit.frag.editFocus = ResTree.removeNode(foc)
-		ResEdit.remake();
-	} else if (ResTree.objInClasses(foc, [ResHorgroup, ResVertgroup]) &&
-			ResTree.objInClasses(par, [ResFragment, ResBox, ResHorgroup, ResVertgroup])) {
-		ResEdit.remember();
-		ResEdit.frag.editFocus = ResTree.removeNode(foc);
-		ResEdit.remake();
-	} else if (foc instanceof ResNote) {
-		ResEdit.remember();
-		ResEdit.frag.editFocus = ResTree.removeNote(foc);
-		ResEdit.remake();
-	} else if (foc instanceof ResSwitch) {
-		if (!foc.hasDefaultValues()) {
+	if (foc instanceof ResNamedglyph) {
+		if (ResTree.objInClasses(par, [ResFragment, ResHorgroup, ResVertgroup])) {
 			ResEdit.remember();
-			foc.color = null;
-			foc.shade = null;
-			foc.sep = null;
-			foc.fit = null;
-			foc.mirror = null;
-			ResEdit.setSelectedWithCheck('color_param', foc.color, 'red');
-			ResEdit.setRadio('shade_param', foc.shade);
-			ResEdit.setRealValue('sep_param', foc.sep, null, 1);
-			ResEdit.setRadio('fit_param', foc.fit);
-			ResEdit.setRadio('mirror_param', foc.mirror);
-			ResEdit.frag.propagate();
-			ResEdit.setPreview();
-			ResEdit.setFocus();
-			ResEdit.frag.redrawNodesUpwards();
-			ResEdit.resetText();
+			ResEdit.frag.editFocus = ResTree.removeNode(foc)
+			ResEdit.remake();
+		}
+	} else if (ResTree.objInClasses(foc, [ResInsert, ResStack])) {
+		if (foc.group1 instanceof ResNamedglyph) {
+			ResEdit.remember();
+			ResEdit.frag.editFocus = ResTree.removeNode(foc)
+			ResEdit.remake();
+		}
+	} else if (ResTree.objInClasses(foc, [ResHorgroup, ResVertgroup])) {
+		if (ResTree.objInClasses(par, [ResFragment, ResHorgroup, ResVertgroup])) {
+			ResEdit.remember();
+			ResEdit.frag.editFocus = ResTree.removeNode(foc);
+			ResEdit.remake();
 		}
 	}
 	ResEdit.treeFocus();
@@ -1510,6 +1206,35 @@ function() {
 	var foc = ResEdit.frag.editFocus;
 	if (foc instanceof ResNamedglyph)
 		ResEdit.showSignMenu(true);
+};
+
+ResEdit.shouldBeFlatHorgroup =
+function(g) {
+	var par = g ? g.editParent : null;
+	var parpar = par ? par.editParent : null;
+	if (g instanceof ResNamedglyph) {
+		return par instanceof ResStack && g === par.group1 ||
+			parpar instanceof ResStack && par === parpar.group1;
+	} else if (g instanceof ResHorgroup) {
+		return par instanceof ResStack && g === par.group1;
+	} else
+		return false;
+};
+ResEdit.shouldBeFlatVertgroup =
+function(g) {
+	var par = g ? g.editParent : null;
+	var parpar = par ? par.editParent : null;
+	if (g instanceof ResNamedglyph) {
+		return par instanceof ResStack && g === par.group2 ||
+			parpar instanceof ResStack && par === parpar.group2;
+	} else if (g instanceof ResVertgroup) {
+		return par instanceof ResStack && g === par.group2;
+	} else
+		return false;
+};
+ResEdit.shouldBeFlatGroup =
+function(g) {
+	return ResEdit.shouldBeFlatHorgroup(g) || ResEdit.shouldBeFlatVertgroup(g);
 };
 
 ///////////////////////////////////

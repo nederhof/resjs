@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>RES Editor</title>
+<link rel="stylesheet" type="text/css" href="res.css" />
+<link rel="stylesheet" type="text/css" href="edit_uni.css" />
+<script type="text/javascript" src="res_aux.js"></script>
+<script type="text/javascript" src="res_points.js"></script>
+<script type="text/javascript" src="res_lite.js"></script>
+<script type="text/javascript" src="res_struct.js"></script>
+<script type="text/javascript" src="uni_struct.js"></script>
+<script type="text/javascript" src="res_syntax.js"></script>
+<script type="text/javascript" src="uni_syntax.js"></script>
+<script type="text/javascript" src="res_format.js"></script>
+<script type="text/javascript" src="res_render.js"></script>
+<script type="text/javascript" src="res_web.js"></script>
+<script type="text/javascript" src="uni_web.js"></script>
+<script type="text/javascript" src="uni_tree.js"></script>
+<script type="text/javascript" src="res_signinfo.js"></script>
+<script type="text/javascript" src="uni_edit.js"></script>
+</head>
+<body>
+	<!-- hack to force timely loading of fonts -->
+	<div id="outsidescreen">
+		<span class="outsidescreen_elem hi">&#57344;</span>
+		<span class="outsidescreen_elem hiaux">&#35;</span>
+		<span class="outsidescreen_elem hinotes">&#35;</span>
+	</div>
+
+<a href="index.html"><img src="uparr.jpg" alt="up">&nbsp;<b>RES in JavaScript</b></a>
+
+<div id="top_panel">
+<div class="top_elem">
+<span class="plain_text">Font size in preview:</span>
+<select id="preview_size" class="number_select" onchange="ResEdit.remake();">
+	<option value="28">28</option>
+	<option value="32">32</option>
+	<option value="36" selected>36</option>
+	<option value="40">40</option>
+	<option value="44">44</option>
+	<option value="48">48</option>
+	<option value="52">52</option>
+	<option value="56">56</option>
+	<option value="60">60</option>
+	<option value="64">64</option>
+	<option value="68">68</option>
+	<option value="72">72</option>
+</select>
+</div>
+<div class="top_elem">
+<span class="plain_text">Font size in tree:</span>
+<select id="tree_size" class="number_select" onchange="ResEdit.remake();">
+	<option value="28" selected>28</option>
+	<option value="32">32</option>
+	<option value="36">36</option>
+	<option value="40">40</option>
+	<option value="44">44</option>
+	<option value="48">48</option>
+	<option value="52">52</option>
+	<option value="56">56</option>
+	<option value="60">60</option>
+	<option value="64">64</option>
+	<option value="68">68</option>
+	<option value="72">72</option>
+</select>
+</div>
+<div class="top_elem"> <button id="undo_button" class="generic_button"
+	disabled onclick="ResEdit.undo();">undo</button> </div>
+<div class="top_elem"> <button id="redo_button" class="generic_button"
+	disabled onclick="ResEdit.redo();">redo</button> </div>
+<div class="top_elem"> <a id="more_help_button" class="generic_button"
+	href="edit_uni_help.html" target="_blank">help</a> </div>
+</div>
+
+<div id="full_panel">
+	<div id="main_panel">
+		<div id="header_panel" class="hlr">
+			<div id="dir_panel" class="hlr">
+				<a onclick="ResEdit.adjustFragmentDir('hlr');" id="hlr" class="button_unselected">hlr</a>
+				<a onclick="ResEdit.adjustFragmentDir('hrl');" id="hrl" class="button_unselected">hrl</a>
+				<a onclick="ResEdit.adjustFragmentDir('vlr');" id="vlr" class="button_unselected">vlr</a>
+				<a onclick="ResEdit.adjustFragmentDir('vrl');" id="vrl" class="button_unselected">vrl</a>
+			</div>
+			<div id="preview_panel" class="hlr" tabindex="0" 
+					onkeydown="ResEdit.processKeyDown(event);"
+					onkeypress="ResEdit.processKeyPress(event);">
+				<canvas id="res_preview" class="hlr" 
+					onclick="ResEdit.handlePreviewClick(event);"></canvas>
+				<canvas id="res_canvas" class="res"></canvas>
+				<canvas id="res_focus"></canvas> 
+			</div>
+		</div>
+		<div id="tree_panel" class="hlr" tabindex="1" 
+					onkeydown="ResEdit.processKeyDown(event);"
+					onkeypress="ResEdit.processKeyPress(event);">
+			<div id="res_tree" class="tree">
+			</div>
+		</div>
+	</div>
+	<div id="legend_panel">
+		<div id="structure_panel">
+			<button id="named_button" class="structure_button" 
+				onclick="ResEdit.doNamed();"><span class="u">n</span>amed</button>
+			<button id="hyphen_button" class="structure_button" 
+				onclick="ResEdit.doHyphen();">&ndash;</button>
+			<button id="star_button" class="structure_button" 
+				onclick="ResEdit.doStar();">*</button>
+			<button id="plus_button" class="structure_button" 
+				onclick="ResEdit.doPlus();">+</button>
+			<button id="colon_button" class="structure_button" 
+				onclick="ResEdit.doColon();">:</button>
+			<button id="semicolon_button" class="structure_button" 
+				onclick="ResEdit.doSemicolon();">;</button>
+			<button id="stack_button" class="structure_button" 
+				onclick="ResEdit.doStack();"><span class="u">o</span>verlay</button>
+			<button id="insert_button" class="structure_button" 
+				onclick="ResEdit.doInsert();"><span class="u">i</span>nsert</button>
+			<button id="swap_button" class="structure_button" 
+				onclick="ResEdit.doSwap();">s<span class="u">w</span>ap</button>
+			<button id="delete_button" class="structure_button" 
+				onclick="ResEdit.doDelete();">delete</button>
+		</div>
+		<div class="parameter_panel">
+			<span id="param_type"></span>
+			<div id="name_param">name: 
+				<input type="text" id="name_param_text" size="4" spellcheck="false"
+					oninput="ResEdit.adjustName();"> 
+				<button class="generic_button" onclick="ResEdit.showSignMenu(true);">men<span 
+							class="u">u</span></button>
+			</div>
+		</div>
+		<div class="parameter_panel">
+			<div id="place_param">
+				place:
+				<table id="place_grid">
+					<tr>
+					<td><input type="radio" name="place_param_radio" id="place_param_radio_ts"
+						onclick="ResEdit.adjustPlace('ts');">st</td>
+					<td><input type="radio" name="place_param_radio" id="place_param_radio_te"
+						onclick="ResEdit.adjustPlace('te');">et</td>
+					</tr>
+					<tr>
+					<td><input type="radio" name="place_param_radio" id="place_param_radio_bs"
+						onclick="ResEdit.adjustPlace('bs');">sb</td>
+					<td><input type="radio" name="place_param_radio" id="place_param_radio_be"
+						onclick="ResEdit.adjustPlace('be');">eb</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div id="footer_panel">
+		<textarea id="uni_text" rows="4" spellcheck="false" 
+			onchange="ResEdit.changeText(event);"></textarea> 
+		<button id="parse_button" class="generic_button" 
+			onclick="ResEdit.changeText(event);">Parse</button>
+		<button id="clear_button" class="generic_button danger" 
+			onclick="ResEdit.clearText(event);">Clear</button>
+		<span id="uni_error" class="error_text">
+		</span>
+	</div>
+</div>
+
+<div id="cats_panel" tabindex="10">
+	<a href="#" onclick="event.preventDefault(); ResEdit.showSignMenu(false);" 
+				id="cats_panel_close" title="close"></a>
+	<ul id="extra_cats" class="cats">
+		<li>
+		<input type="text" id="chosen_sign" size="5" spellcheck="false" readonly>
+		</li>
+		<li><button id="sign_info_button" class="generic_button"
+				onclick="ResEdit.toggleSignInfo();">info</button> </li>
+	</ul>
+	<ul id="cats" class="cats">
+	</ul>
+	<div id="cat_sections">
+	</div>
+	<div id="sign_info">
+		Nothing selected.
+	</div>
+</div>
+
+</body>
+</html>
+

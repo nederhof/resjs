@@ -393,8 +393,7 @@ function(f) {
 ResNamedglyph.prototype.resetScaling =
 function(context) {
 	this.resContext = context;
-	var key = context.mnemonics[this.name];
-	key = key ? key : this.name;
+	var key = context.unMnemonic(this.name);
 	key = context.hieroPoints[key];
 	if (key) {
 		this.font = "Hieroglyphic";

@@ -130,8 +130,7 @@ function(elem) {
 		var span = spans[i];
 		if (span.className.match(/\bsign\b/)) {
 			var code = span.firstChild.nodeValue;
-			var key = ResContext.mnemonics[code];
-			key = key ? key : code;
+			var key = ResContext.unMnemonic(code);
 			key = ResContext.hieroPoints[key];
 			if (key) 
 				span.innerHTML = String.fromCharCode(key);

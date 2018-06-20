@@ -43,6 +43,7 @@ function(canvas) {
 	if (typeof UniFragment.makeFragment === "function") {
 		try {
 			var frag = uni_syntax.parse(UniWeb.mapSMPtoBMP(code));
+			frag = frag.finetuneUni();
 			frag.render(canvas, size);
 		} catch(err) {
 			console.log("Cannot parse " + UniWeb.mapSMPtoPrintable(code) + err);
@@ -161,4 +162,20 @@ function(s) {
 			uni += c;
 	}
 	return uni;
+};
+
+UniWeb.replaceDec =
+function(match, s) {
+	return String.fromCharCode(parseInt(s)-0x13000+0xE000);
+};
+UniWeb.replaceHex =
+function(match, s) {
+	return String.fromCharCode(parseInt(s, 16)-0x13000+0xE000);
+};
+UniWeb.mapDigitsToBMP =
+function(s) {
+	s = s.replace(/\s/g, "");
+	s = s.replace(/&#x([a-f0-9]+);/g, UniWeb.replaceHex);
+	s = s.replace(/&#([0-9]+);/g, UniWeb.replaceDec);
+	return s;
 };

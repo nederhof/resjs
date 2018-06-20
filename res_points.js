@@ -1443,6 +1443,11 @@ wDa:'Aa21',
 nD:'Aa27',
 qd:'Aa28',
 Xkr:'Aa30'};
+ResContext.unMnemonic =
+function(code) {
+	var key = ResContext.mnemonics[code];
+	return key ? key : code;
+};
 
 ResContext.auxPoints = {
 open:35,
@@ -1481,6 +1486,7 @@ vrl:52};
 
 ResContext.prototype.hieroPoints = ResContext.hieroPoints;
 ResContext.prototype.mnemonics = ResContext.mnemonics;
+ResContext.prototype.unMnemonic = ResContext.unMnemonic;
 ResContext.prototype.auxPoints = ResContext.auxPoints;
 
 ResContext.tallSigns = [
