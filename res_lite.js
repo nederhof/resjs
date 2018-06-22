@@ -641,13 +641,9 @@ function(pair, rect) {
 	var subRect = new ResRectangle(x, y, rect.width, rect.height);
 	var xRef = rect.x - x;
 	var yRef = rect.y - y;
-	var canvas1 = document.createElement("canvas");
-	canvas1.width = w;
-	canvas1.height = h;
+	var canvas1 = ResCanvas.make(w, h);
 	var ctx1 = canvas1.getContext("2d");
-	var canvas2 = document.createElement("canvas");
-	canvas2.width = w;
-	canvas2.height = h;
+	var canvas2 = ResCanvas.make(w, h);
 	var ctx2 = canvas2.getContext("2d");
 	var savedCtx = this.ctx;
 	var savedTotalWidth = this.env.totalWidthPx;

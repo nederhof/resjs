@@ -530,7 +530,7 @@ function() {
 ResInsert.prototype.toUniTuple =
 function() {
 	var arg1 = this.group1.toUniTuple();
-	var arg2 = this.group2 instanceof ResNamedglyph ?
+	var arg2 = this.group2 instanceof ResNamedglyph || this.group2 instanceof ResStack ?
 		this.group2.toUni() :
 		UniFragment.beginStr + this.group2.toUni() + UniFragment.endStr;
 	if (this.place === "ts")

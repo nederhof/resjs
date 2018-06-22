@@ -148,20 +148,16 @@ function(i) {
 		var rectBefore = new ResRectangle(0, 0, w, hBefore);
 		var rectAfter = new ResRectangle(0, 0, w, hAfter);
 	}
-	var canvasBefore = document.createElement("canvas");
+	var canvasBefore = ResCanvas.make(rectBefore.width, rectBefore.height);
 	var envBefore = new ResEnv(this.resContext);
-	canvasBefore.width = rectBefore.width;
-	canvasBefore.height = rectBefore.height;
 	envBefore.ctx = canvasBefore.getContext("2d");
 	envBefore.mirror = this.globals.isRL();
 	envBefore.totalWidthPx = rectBefore.width;
 	envBefore.totalHeightPx = rectBefore.height;
 	envBefore.isH = this.effectiveIsH();
 	this.renderFromTo(envBefore, rectBefore, j, i);
-	var canvasAfter = document.createElement("canvas");
+	var canvasAfter = ResCanvas.make(rectAfter.width, rectAfter.height);
 	var envAfter = new ResEnv(this.resContext);
-	canvasAfter.width = rectAfter.width;
-	canvasAfter.height = rectAfter.height;
 	envAfter.ctx = canvasAfter.getContext("2d");
 	envAfter.mirror = this.globals.isRL();
 	envAfter.totalWidthPx = rectAfter.width;
@@ -248,20 +244,16 @@ function(i) {
 	var sepMax = Math.min(hLast, hAfter);
 	var rectBefore = new ResRectangle(0, 0, w, hBefore);
 	var rectAfter = new ResRectangle(0, 0, w, hAfter);
-	var canvasBefore = document.createElement("canvas");
+	var canvasBefore = ResCanvas.make(rectBefore.width, rectBefore.height);
 	var envBefore = new ResEnv(this.resContext);
-	canvasBefore.width = rectBefore.width;
-	canvasBefore.height = rectBefore.height;
 	envBefore.ctx = canvasBefore.getContext("2d");
 	envBefore.mirror = this.globals.isRL();
 	envBefore.totalWidthPx = rectBefore.width;
 	envBefore.totalHeightPx = rectBefore.height;
 	envBefore.isH = this.globals.isH();
 	this.renderFromTo(envBefore, rectBefore, j, i);
-	var canvasAfter = document.createElement("canvas");
+	var canvasAfter = ResCanvas.make(rectAfter.width, rectAfter.height);
 	var envAfter = new ResEnv(this.resContext);
-	canvasAfter.width = rectAfter.width;
-	canvasAfter.height = rectAfter.height;
 	envAfter.ctx = canvasAfter.getContext("2d");
 	envAfter.mirror = this.globals.isRL();
 	envAfter.totalWidthPx = rectAfter.width;
@@ -345,20 +337,16 @@ function(i) {
 	var sepMax = Math.min(wLast, wAfter);
 	var rectBefore = new ResRectangle(0, 0, wBefore, h);
 	var rectAfter = new ResRectangle(0, 0, wAfter, h);
-	var canvasBefore = document.createElement("canvas");
+	var canvasBefore = ResCanvas.make(rectBefore.width, rectBefore.height);
 	var envBefore = new ResEnv(this.resContext);
-	canvasBefore.width = rectBefore.width;
-	canvasBefore.height = rectBefore.height;
 	envBefore.ctx = canvasBefore.getContext("2d");
 	envBefore.mirror = this.globals.isRL();
 	envBefore.totalWidthPx = rectBefore.width;
 	envBefore.totalHeightPx = rectBefore.height;
 	envBefore.isH = this.globals.isH();
 	this.renderFromTo(envBefore, rectBefore, j, i);
-	var canvasAfter = document.createElement("canvas");
+	var canvasAfter = ResCanvas.make(rectAfter.width, rectAfter.height);
 	var envAfter = new ResEnv(this.resContext);
-	canvasAfter.width = rectAfter.width;
-	canvasAfter.height = rectAfter.height;
 	envAfter.ctx = canvasAfter.getContext("2d");
 	envAfter.mirror = this.globals.isRL();
 	envAfter.totalWidthPx = rectAfter.width;
@@ -552,9 +540,7 @@ ResBox.prototype.testPrintSegment =
 function() {
 	var rect = this.testPrint(this.charSegmentName, this.segmentRotate(), 
 				this.effectiveMirror());
-	var canvas = document.createElement("canvas");
-	canvas.width = rect.width;
-	canvas.height = rect.height;
+	var canvas = ResCanvas.make(rect.width, rect.height);
 	var ctx = canvas.getContext("2d");
 	var size = this.resContext.emSizePx * this.dynScale * this.scale;
 	ResCanvas.printGlyph(ctx, 0, 0, rect, this.charSegmentName,
@@ -583,9 +569,7 @@ function() {
 	var sep = Math.round(this.openSepPx());
 	var rot = this.openCloseRotate();
 	var mirror = this.effectiveMirror();
-	var canvasBefore = document.createElement("canvas");
-	canvasBefore.width = Math.round(this.openSizePx());
-	canvasBefore.height = Math.round(this.heightPx());
+	var canvasBefore = ResCanvas.make(this.openSizePx(), this.heightPx());
 	var envBefore = new ResEnv(this.resContext);
 	envBefore.ctx = canvasBefore.getContext("2d");
 	envBefore.mirror = false;
@@ -601,9 +585,7 @@ function() {
 	var lastGroup = Math.min(2, this.hiero.groups.length-1);
 	var wAfter = this.hiero.widthFromToPx(0, lastGroup);
 	var hAfter = this.hiero.heightFromToPx(0, lastGroup);
-	var canvasAfter = document.createElement("canvas");
-	canvasAfter.width = Math.round(wAfter);
-	canvasAfter.height = Math.round(this.heightPx());
+	var canvasAfter = ResCanvas.make(wAfter, this.heightPx());
 	var envAfter = new ResEnv(this.resContext);
 	envAfter.ctx = canvasAfter.getContext("2d");
 	envAfter.mirror = false;
@@ -623,9 +605,7 @@ function() {
 	var sep = Math.round(this.closeSepPx());
 	var rot = this.openCloseRotate();
 	var mirror = this.effectiveMirror();
-	var canvasAfter = document.createElement("canvas");
-	canvasAfter.width = Math.round(this.closeSizePx());
-	canvasAfter.height = Math.round(this.heightPx());
+	var canvasAfter = ResCanvas.make(this.closeSizePx(), this.heightPx());
 	var envAfter = new ResEnv(this.resContext);
 	envAfter.ctx = canvasAfter.getContext("2d");
 	envAfter.mirror = false;
@@ -642,9 +622,7 @@ function() {
 	var lastGroup = this.hiero.groups.length-1;
 	var wBefore = this.hiero.widthFromToPx(firstGroup, lastGroup);
 	var hBefore = this.hiero.heightFromToPx(firstGroup, lastGroup);
-	var canvasBefore = document.createElement("canvas");
-	canvasBefore.width = Math.round(wBefore);
-	canvasBefore.height = Math.round(this.heightPx());
+	var canvasBefore = ResCanvas.make(wBefore, this.heightPx());
 	var envBefore = new ResEnv(this.resContext);
 	envBefore.ctx = canvasBefore.getContext("2d");
 	envBefore.mirror = false;
@@ -664,9 +642,7 @@ function() {
 	var sep = Math.round(this.openSepPx());
 	var rot = this.openCloseRotate();
 	var mirror = this.effectiveMirror();
-	var canvasBefore = document.createElement("canvas");
-	canvasBefore.width = Math.round(this.widthPx());
-	canvasBefore.height = Math.round(this.openSizePx());
+	var canvasBefore = ResCanvas.make(this.widthPx(), this.openSizePx());
 	var envBefore = new ResEnv(this.resContext);
 	envBefore.ctx = canvasBefore.getContext("2d");
 	envBefore.mirror = false;
@@ -682,9 +658,7 @@ function() {
 	var lastGroup = Math.min(2, this.hiero.groups.length-1);
 	var wAfter = this.hiero.widthFromToPx(0, lastGroup);
 	var hAfter = this.hiero.heightFromToPx(0, lastGroup);
-	var canvasAfter = document.createElement("canvas");
-	canvasAfter.width = Math.round(this.widthPx());
-	canvasAfter.height = Math.round(hAfter);
+	var canvasAfter = ResCanvas.make(this.widthPx(), hAfter);
 	var envAfter = new ResEnv(this.resContext);
 	envAfter.ctx = canvasAfter.getContext("2d");
 	envAfter.mirror = false;
@@ -704,9 +678,7 @@ function() {
 	var sep = Math.round(this.closeSepPx());
 	var rot = this.openCloseRotate();
 	var mirror = this.effectiveMirror();
-	var canvasAfter = document.createElement("canvas");
-	canvasAfter.width = Math.round(this.widthPx());
-	canvasAfter.height = Math.round(this.closeSizePx());
+	var canvasAfter = ResCanvas.make(this.widthPx(), this.closeSizePx());
 	var envAfter = new ResEnv(this.resContext);
 	envAfter.ctx = canvasAfter.getContext("2d");
 	envAfter.mirror = false;
@@ -723,9 +695,7 @@ function() {
 	var lastGroup = this.hiero.groups.length-1;
 	var wBefore = this.hiero.widthFromToPx(firstGroup, lastGroup);
 	var hBefore = this.hiero.heightFromToPx(firstGroup, lastGroup);
-	var canvasBefore = document.createElement("canvas");
-	canvasBefore.width = Math.round(this.widthPx());
-	canvasBefore.height = Math.round(hBefore);
+	var canvasBefore = ResCanvas.make(this.widthPx(), hBefore);
 	var envBefore = new ResEnv(this.resContext);
 	envBefore.ctx = canvasBefore.getContext("2d");
 	envBefore.mirror = false;
@@ -786,14 +756,10 @@ function(env, rect, shadeRect, clip, fitting) {
 		}
 		var xRef = rect.x - x;
 		var yRef = rect.y - y;
-		var canvas1 = document.createElement("canvas");
-		canvas1.width = w;
-		canvas1.height = h;
+		var canvas1 = ResCanvas.make(w, h);
 		var ctx1 = canvas1.getContext("2d");
 		ctx1.translate(-xRef, -yRef);
-		var canvas2 = document.createElement("canvas");
-		canvas2.width = w;
-		canvas2.height = h;
+		var canvas2 = ResCanvas.make(w, h);
 		var ctx2 = canvas2.getContext("2d");
 		ctx2.translate(-xRef, -yRef);
 		var savedCtx = env.ctx;
@@ -826,10 +792,8 @@ ResInsert.prototype.fitSecond =
 function() {
 	var w1 = Math.round(this.group1.widthPx());
 	var h1 = Math.round(this.group1.heightPx());
-	var canvas1 = document.createElement("canvas");
+	var canvas1 = ResCanvas.make(w1, h1);
 	var env1 = new ResEnv(this.resContext);
-	canvas1.width = w1;
-	canvas1.height = h1;
 	env1.ctx = canvas1.getContext("2d");
 	env1.mirror = false;
 	env1.totalWidthPx = w1;
@@ -839,10 +803,8 @@ function() {
 	this.group1.render(env1, rect1, rect1, null, true);
 	var w2 = Math.round(this.group2.widthPx());
 	var h2 = Math.round(this.group2.heightPx());
-	var canvas2 = document.createElement("canvas");
+	var canvas2 = ResCanvas.make(w2, h2);
 	var env2 = new ResEnv(this.resContext);
-	canvas2.width = w2;
-	canvas2.height = h2;
 	env2.ctx = canvas2.getContext("2d");
 	env2.mirror = false;
 	env2.totalWidthPx = w2;
@@ -861,9 +823,7 @@ function() {
 };
 ResInsert.prototype.insertFix =
 function(ctx1, canvas2, rect1, rect2, fixX, fixY, scale) {
-	var canvas = document.createElement("canvas");
-	canvas.width = rect1.width;
-	canvas.height = rect1.height;
+	var canvas = ResCanvas.make(rect1.width, rect1.height);
 	var ctx = canvas.getContext("2d");
 	var x = 0;
 	var y = 0;

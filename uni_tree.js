@@ -661,7 +661,7 @@ function() {
 		ResEdit.enableStructureButtons(['insert']);
 	if (this.group1 instanceof ResNamedglyph)
 		ResEdit.enableStructureButtons(['delete']);
-	ResEdit.setParamType('stack');
+	ResEdit.setParamType('overlay');
 };
 
 ResInsert.prototype.connectTree =

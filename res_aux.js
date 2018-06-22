@@ -196,12 +196,21 @@ function() {
 function ResCanvas() {
 }
 
+// Make canvas with sizes, which must be at least 1.
+ResCanvas.make =
+function(width, height) {
+	var canvas = document.createElement("canvas");
+	canvas.width = Math.max(Math.round(width), 1);
+	canvas.height = Math.max(Math.round(height), 1);
+	return canvas;
+};
+
 // Clear canvas.
 ResCanvas.clear =
 function(canvas) {
 	this.ctx = canvas.getContext("2d");
 	this.ctx.clearRect(0, 0, canvas.width, canvas.height);
-}
+};
 
 // Sum all values from pixel in data from canvas with dimensions.
 // return: if there is non-blank pixel.
