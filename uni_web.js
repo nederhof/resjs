@@ -42,7 +42,7 @@ function(canvas) {
 	var size = style.getPropertyValue("font-size").replace("px", "");
 	if (typeof UniFragment.makeFragment === "function") {
 		try {
-			var frag = uni_syntax.parse(UniWeb.mapSMPtoBMP(code));
+			var frag = uni_syntax.parse(Uni.SMPtoBMP(code));
 			frag = frag.finetuneUni();
 			frag.render(canvas, size);
 		} catch(err) {
@@ -122,7 +122,7 @@ function(elem) {
 		var span = spans[i];
 		if (span.className.match(/\bsign\b/)) {
 			var code = span.firstChild.nodeValue;
-			span.innerHTML = UniWeb.mapSMPtoBMP(code);
+			span.innerHTML = Uni.SMPtoBMP(code);
 		}
 	}
 };
@@ -149,33 +149,4 @@ function(s) {
 		}
 	}
 	return p
-};
-
-UniWeb.mapSMPtoBMP =
-function(s) {
-	var uni = "";
-	for (let c of s) {
-		var p = c.codePointAt(0);
-		if (0x13000 <= p)
-			uni += String.fromCharCode(p-0x13000+0xE000);
-		else
-			uni += c;
-	}
-	return uni;
-};
-
-UniWeb.replaceDec =
-function(match, s) {
-	return String.fromCharCode(parseInt(s)-0x13000+0xE000);
-};
-UniWeb.replaceHex =
-function(match, s) {
-	return String.fromCharCode(parseInt(s, 16)-0x13000+0xE000);
-};
-UniWeb.mapDigitsToBMP =
-function(s) {
-	s = s.replace(/\s/g, "");
-	s = s.replace(/&#x([a-f0-9]+);/g, UniWeb.replaceHex);
-	s = s.replace(/&#([0-9]+);/g, UniWeb.replaceDec);
-	return s;
 };

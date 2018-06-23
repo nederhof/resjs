@@ -1,3 +1,8 @@
+@font-face {
+    font-family: 'HieroglyphicSMP';
+    src: url('NewGardinerSMP.ttf') format('truetype');
+}
+
 body {
 	font: normal 12px Arial;
 }
@@ -164,6 +169,14 @@ body {
 
 #parse_button {
 	clear: both;
+}
+
+#chars_text {
+	clear: both;
+	width: 95%;
+	margin-right: 10px;
+	font-family: HieroglyphicSMP;
+	font-size: 30px;
 }
 
 /* Sign menu */

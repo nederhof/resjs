@@ -17,12 +17,14 @@ function() {
 ResEdit.makeFromText =
 function() {
 	var uni = ResEdit.getValue('uni');
-	uni = UniWeb.mapDigitsToBMP(uni);
+	uni.replace(/\s/, '');
+	uni = Uni.SMPtoBMP(Uni.digitsToBMP(uni));
 	ResEdit.makeFromUni(uni);
 	ResEdit.setDirFromFragment();
 	ResEdit.setPreview();
 	ResEdit.setTree();
 	ResEdit.setFocus();
+	ResEdit.resetChars();
 };
 ResEdit.makeWithAddress =
 function(res, address) {
@@ -267,11 +269,20 @@ function(elem) {
 };
 ResEdit.setText =
 function(val) {
-	document.getElementById('uni_text').value = val;
+	document.getElementById('uni_text').value = Uni.intsToHex(val);
+};
+ResEdit.setCharsText =
+function(val) {
+	document.getElementById('chars_text').value = Uni.intsToSMP(val);
 };
 ResEdit.resetText =
 function() {
 	ResEdit.setText(ResEdit.frag.toUni());
+	ResEdit.resetChars();
+};
+ResEdit.resetChars =
+function() {
+	ResEdit.setCharsText(ResEdit.frag.toUni());
 };
 ResEdit.setError =
 function(message) {
@@ -783,6 +794,7 @@ ResEdit.clearText =
 function(e) {
 	ResEdit.remember();
 	ResEdit.setText('');
+	ResEdit.setCharsText('');
 	ResEdit.makeFromText();
 };
 

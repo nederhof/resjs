@@ -5,50 +5,6 @@ for (var code in ResContext.hieroPoints)
 function UniFragment() {
 }
 
-UniFragment.toHex =
-function(v) {
-	return "&#x" + v.toString(16) + ";";
-};
-
-UniFragment.vertCode = 0x13430;
-UniFragment.horCode = 0x13431;
-UniFragment.stCode = 0x13432;
-UniFragment.sbCode = 0x13433;
-UniFragment.etCode = 0x13434;
-UniFragment.ebCode = 0x13435;
-UniFragment.overlayCode = 0x13436;
-UniFragment.beginCode = 0x13437;
-UniFragment.endCode = 0x13438;
-UniFragment.openCode = 0x13379;
-UniFragment.closeCode = 0x1337A;
-
-UniFragment.vertStr = UniFragment.toHex(UniFragment.vertCode);
-UniFragment.horStr = UniFragment.toHex(UniFragment.horCode);
-UniFragment.stStr = UniFragment.toHex(UniFragment.stCode);
-UniFragment.sbStr = UniFragment.toHex(UniFragment.sbCode);
-UniFragment.etStr = UniFragment.toHex(UniFragment.etCode);
-UniFragment.ebStr = UniFragment.toHex(UniFragment.ebCode);
-UniFragment.overlayStr = UniFragment.toHex(UniFragment.overlayCode);
-UniFragment.beginStr = UniFragment.toHex(UniFragment.beginCode);
-UniFragment.endStr = UniFragment.toHex(UniFragment.endCode);
-UniFragment.openStr = UniFragment.toHex(UniFragment.openCode);
-UniFragment.closeStr = UniFragment.toHex(UniFragment.closeCode);
-
-ResNamedglyph.lowerStartTopCorner = [
-"A16","A29","A36","C4","F5","G3","G6a","G7","G7a","G7b","G8",
-"G16","G32","G40","U1","U2"];
-ResNamedglyph.raiseStartBottomCorner = [
-"A17","A24","A25","A26","A27","A28","A30","A33","A59","A66","A68",
-"D54a","D57","D59", 
-"E1","E2","E3","E6","E7","E8","E10","E11","E13","E14","E17",
-"E17a","E20","E22","E28","E29","E30","E31","E32","E33","E38",
-"F8","F22","F26",
-"G1","G2","G4","G5","G6","G9","G14","G15","G17","G18","G19",
-"G20","G20a","G21","G22","G23","G25","G26a","G27","G28","G29",
-"G30","G31","G33","G34","G35","G36","G36a","G37","G37a","G38",
-"G39","G41","G42","G43","G44","G45","G45a",
-"H2","I7","M3a","O35","T11a","T32","U13","U17","V7b","W25"];
-
 UniFragment.makeFragment =
 function(g) {
 	if (g === null) {
@@ -341,7 +297,7 @@ function() {
 	if (this.hiero !== null)
 		return this.hiero.toUni();
 	else
-		return "";
+		return [];
 };
 ResFragment.prototype.finetuneUni =
 function() {
@@ -359,7 +315,7 @@ ResHieroglyphic.prototype.toUni =
 function() {
 	var s = this.groups[0].toUni();
 	for (var i = 0; i < this.ops.length; i++)
-		s += this.groups[i+1].toUni();
+		s = s.concat(this.groups[i+1].toUni());
 	return s;
 };
 ResHieroglyphic.prototype.finetuneUni =
@@ -377,7 +333,7 @@ ResVertgroup.prototype.toUni =
 function() {
 	var s = this.groups[0].toUni();
 	for (var i = 0; i < this.ops.length; i++)
-		s += UniFragment.vertStr + this.groups[i+1].toUni();
+		s = s.concat([Uni.vertCode], this.groups[i+1].toUni());
 	return s;
 };
 ResVertgroup.prototype.finetuneUni =
@@ -420,7 +376,7 @@ ResHorgroup.prototype.toUni =
 function() {
 	var s = this.groups[0].toUni();
 	for (var i = 0; i < this.ops.length; i++)
-		s += UniFragment.horStr + this.groups[i+1].toUni();
+		s = s.concat([Uni.horCode], this.groups[i+1].toUni());
 	return s;
 };
 ResHorgroup.prototype.finetuneUni =
@@ -454,7 +410,7 @@ function() {
 ResHorsubgroup.prototype.toUni =
 function() {
 	if (this.group instanceof ResVertgroup)
-		return UniFragment.beginStr + this.group.toUni() + UniFragment.endStr;
+		return [Uni.beginCode].concat(this.group.toUni(), [Uni.endCode]);
 	else
 		return this.group.toUni();
 };
@@ -469,12 +425,12 @@ function() {
 	var key = context.unMnemonic(safeName);
 	key = context.hieroPoints[key];
 	key = key ? key : context.hieroPoints["Z9"];
-	key = key - 0xE000 + 0x13000;
-	return [UniFragment.toHex(key), "", "", "", ""];
+	key = Uni.intBMPtoSMP(key);
+	return [[key], [], [], [], []];
 };
 ResNamedglyph.prototype.toUni =
 function() {
-	return ResStack.tupleToString(this.toUniTuple());
+	return ResStack.joinTuple(this.toUniTuple());
 };
 ResNamedglyph.prototype.finetuneUni =
 function() {
@@ -491,26 +447,26 @@ function() {
 };
 ResBox.prototype.toUniTuple =
 function() {
-	return [UniFragment.openStr + (this.hiero ? this.hiero.toUni() : "") + UniFragment.closeStr,
-				"", "", "", ""];
+	return [[Uni.openCode].concat(this.hiero ? this.hiero.toUni() : [], [Uni.closeCode]),
+				[], [], [], []];
 };
 ResBox.prototype.toUni =
 function() {
-	return ResStack.tupleToString(this.toUniTuple());
+	return ResStack.joinTuple(this.toUniTuple());
 };
 ResStack.prototype.toUniTuple =
 function() {
 	var arg1 = this.group1 instanceof ResNamedglyph ?
 		this.group1.toUni() :
-		UniFragment.beginStr + this.group1.toUni() + UniFragment.endStr;
+		[Uni.beginCode].concat(this.group1.toUni(), [Uni.endCode]);
 	var arg2 = this.group2 instanceof ResNamedglyph ?
 		this.group2.toUni() :
-		UniFragment.beginStr + this.group2.toUni() + UniFragment.endStr;
-	return [arg1 + UniFragment.overlayStr + arg2, "", "", "", ""];
+		[Uni.beginCode].concat(this.group2.toUni(), [Uni.endCode]);
+	return [arg1.concat([Uni.overlayCode], arg2), [], [], [], []];
 };
 ResStack.prototype.toUni =
 function() {
-	return ResStack.tupleToString(this.toUniTuple());
+	return ResStack.joinTuple(this.toUniTuple());
 };
 ResStack.prototype.finetuneUni =
 function() {
@@ -532,7 +488,7 @@ function() {
 	var arg1 = this.group1.toUniTuple();
 	var arg2 = this.group2 instanceof ResNamedglyph || this.group2 instanceof ResStack ?
 		this.group2.toUni() :
-		UniFragment.beginStr + this.group2.toUni() + UniFragment.endStr;
+		[Uni.beginCode].concat(this.group2.toUni(), [Uni.endCode]);
 	if (this.place === "ts")
 		return [arg1[0], arg2, arg1[2], arg1[3], arg1[4]]; 
 	else if (this.place === "bs")
@@ -544,7 +500,7 @@ function() {
 };
 ResInsert.prototype.toUni =
 function() {
-	return ResStack.tupleToString(this.toUniTuple());
+	return ResStack.joinTuple(this.toUniTuple());
 };
 ResInsert.prototype.finetuneUni =
 function() {
@@ -557,11 +513,11 @@ function() {
 	var name = ResInsert.mainName(this);
 	var args = [];
 	args.push(new ResArg("sep",0.2));
-	if (place === "ts" && ResNamedglyph.lowerStartTopCorner.indexOf(name) >= 0) {
+	if (place === "ts" && Uni.lowerStartTopCorner.indexOf(name) >= 0) {
 		place = "s";
 		args.push(new ResArg("y", 0.2));
 	}
-	if (place === "bs" && ResNamedglyph.raiseStartBottomCorner.indexOf(name) >= 0) {
+	if (place === "bs" && Uni.raiseStartBottomCorner.indexOf(name) >= 0) {
 		place = "s";
 		args.push(new ResArg("y", 0.8));
 	}
@@ -574,19 +530,19 @@ function() {
 };
 ResModify.prototype.toUni =
 function() {
-	return ResStack.tupleToString(this.toUniTuple());
+	return ResStack.joinTuple(this.toUniTuple());
 };
-ResStack.tupleToString =
+ResStack.joinTuple =
 function(t) {
 	var s = t[0];
-	if (t[1])
-		s += UniFragment.stStr + t[1];
-	if (t[2])
-		s += UniFragment.sbStr + t[2];
-	if (t[3])
-		s += UniFragment.etStr + t[3];
-	if (t[4])
-		s += UniFragment.ebStr + t[4];
+	if (t[1].length > 0)
+		s = s.concat([Uni.stCode], t[1]);
+	if (t[2].length > 0)
+		s = s.concat([Uni.sbCode], t[2]);
+	if (t[3].length > 0)
+		s = s.concat([Uni.etCode], t[3]);
+	if (t[4].length > 0)
+		s = s.concat([Uni.ebCode], t[4]);
 	return s;
 };
 
