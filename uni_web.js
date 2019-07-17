@@ -6,7 +6,7 @@ function UniWeb() {
 	var canvass = document.getElementsByTagName("canvas");
 	for (var i = 0; i < canvass.length; i++) {
 		var canvas = canvass[i];
-		if (canvas.className.match(/\buni\b/)) 
+		if (canvas.classList.contains("res_uni")) 
 			UniWeb.makeSometime(canvas);
 	}
 }
@@ -16,7 +16,7 @@ function(elem) {
 	var canvass = elem.getElementsByTagName("canvas");
 	for (var i = 0; i < canvass.length; i++) {
 		var canvas = canvass[i];
-		if (canvas.className.match(/\buni\b/))
+		if (canvas.classList.contains("res_uni"))
 			UniWeb.make(canvas);
 	}
 };
@@ -120,7 +120,7 @@ function(elem) {
 	var spans = elem.getElementsByTagName("span");
 	for (var i = 0; i < spans.length; i++) {
 		var span = spans[i];
-		if (span.className.match(/\bsign\b/)) {
+		if (span.classList.contains("res_sign")) {
 			var code = span.firstChild.nodeValue;
 			span.innerHTML = Uni.SMPtoBMP(code);
 		}

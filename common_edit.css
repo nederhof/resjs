@@ -1,0 +1,295 @@
+/* Legend */
+
+.common_edit_structure_button {
+	font-size: 12px;
+	font-weight: bold;
+	width: 60px;
+	height: 19px;
+	line-height: 12px;
+	padding-top: 1px;
+	padding-bottom: 2px;
+	margin: 1px;
+	border: 1px solid Black;
+	background-color: #DDDDDD;
+}
+.common_edit_structure_button:hover {
+	background-color: #AAAAAA;
+	cursor: pointer;
+}
+.common_edit_structure_button:disabled {
+	color: White;
+	background-color: White;
+	border: 1px solid Lightgray;
+	cursor: default;
+}
+
+.common_edit_parameter_panel {
+	height: 210px;
+	margin-top: 5px;
+	margin-right: 20px;
+	float: left;
+	font-size: 14px;
+}
+
+.common_edit_param_row {
+	height: 25px;
+}
+
+/* Sign menu */
+
+.common_edit_cats {
+	list-style-type: none;
+	margin: 0 0 0 0;
+	padding: 10px 0 4px 5px;
+}
+.common_edit_cats li {
+	display: table-cell;
+}
+.common_edit_cats li a {
+	color: #42454a;
+	background-color: #dedbde;
+	font-size: 14px;
+	border: 1px solid #c9c3ba;
+	border-bottom: none;
+	padding: 0.3em;
+	text-decoration: none;
+	outline: none;
+}
+.common_edit_cats li a:hover {
+	background-color: #f1f0ee;
+	cursor: pointer;
+}
+.common_edit_cats li a.common_edit_selected {
+	color: #000;
+	background-color: #f1f0ee;
+	font-weight: bold;
+}
+
+.common_edit_cat_section {
+	padding: 0.5em;
+	background-color: #f1f0ee;
+	clear: both;
+	display: table;
+	padding: 20px 10px 20px 20px;
+}
+
+.common_edit_cat_section a:hover {
+	cursor: pointer;
+}
+
+.common_edit_sign_button {
+	display: table-cell;
+	float: left;
+	margin-right: 10px;
+	height: 70px;
+}
+
+.common_edit_sign_button_link {
+	color: inherit;
+}
+.common_edit_sign_button_label {
+	font-weight: bold;
+	text-align: center;
+	display: table-row;
+}
+.common_edit_sign_button_hi {
+	font-family: Hieroglyphic;
+	font-size: 36px;
+	display: table-row;
+	line-height: 46px;
+}
+
+/* Tree */
+
+div.common_edit_tree {
+	padding-bottom: 20px;
+	padding-left: 0;
+}
+
+.common_edit_tree ul {
+	padding-top: 20px;
+	padding-left: 0;
+	position: relative;
+	white-space: nowrap;
+}
+
+.common_edit_tree li {
+	display: inline-block;
+	vertical-align: top;
+	text-align: center;
+	list-style-type: none;
+	position: relative;
+	padding: 20px 5px 0 5px;
+}
+
+.common_edit_tree li ul::before {
+	content: '';
+	position: absolute; top: 0; left: 50%;
+	border-left: 2px solid Black;
+	width: 0; height: 20px;
+}
+
+.common_edit_tree li::before {
+	content: '';
+	position: absolute; top: 0; right: 50%;
+	border-top: 2px solid Black;
+	width: 50%; height: 20px;
+}
+.common_edit_tree li::after {
+	content: '';
+	position: absolute; top: 0; left: 50%; right: auto;
+	border-top: 2px solid Black;
+	width: 50%; height: 20px;
+}
+.common_edit_tree li::after {
+	border-left: 2px solid Black;
+}
+
+.common_edit_tree li:first-child::before {
+	border: 0 none;
+}
+.common_edit_tree li:first-child::after {
+	border-radius: 8px 0 0 0;
+	-webkit-border-radius: 8px 0 0 0;
+	-moz-border-radius: 8px 0 0 0;
+}
+.common_edit_tree li:last-child::before {
+	border-right: 2px solid Black;
+	border-radius: 0 8px 0 0;
+	-webkit-border-radius: 0 8px 0 0;
+	-moz-border-radius: 0 8px 0 0;
+}
+.common_edit_tree li:first-child::before, .common_edit_tree li:last-child::after{
+	display: none;
+}
+
+.common_edit_tree li:only-child {
+	padding-top: 0;
+}
+
+.common_edit_tree li a {
+	border: 2px solid Gray;
+	padding: 5px 10px 3px 10px;
+	text-decoration: none;
+	color: Blue;
+	display: inline-block;
+	vertical-align: text-top;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+}
+
+.common_edit_tree li a:hover {
+	background: LightGray; color: Black; border: 2px solid Green;
+	cursor: pointer;
+}
+
+.common_edit_tree li a.common_edit_focus {
+	border: 4px solid Blue;
+	padding: 3px 8px 1px 8px;
+}
+
+.common_edit_node_label {
+	overflow-y: hidden;
+	font-weight: bold;
+	font-size: 24px;
+	color: Black;
+}
+
+/* Auxiliary */
+
+.common_edit_generic_button {
+	font-size: 14px;
+	color: Black;
+	background-color: #DDDDDD;
+	border: 1px solid Black;
+	padding: 2px 10px;
+	text-decoration: none;
+	outline: none;
+	cursor: default;
+}
+.common_edit_generic_button:hover {
+	background-color: #AAAAAA;
+	cursor: pointer;
+}
+.common_edit_generic_button:disabled {
+	background-color: #dedbde;
+	color: Gray;
+	cursor: default;
+}
+
+.common_edit_danger {
+	color: Red;
+}
+
+.common_edit_button_unselected, .common_edit_button_selected {
+	height: 26px;
+	font-weight: bold;
+	text-decoration: none;
+	color: #333333;
+	text-align: center;
+	line-height: 26px;
+	border: 2px solid #777777;
+	cursor: pointer;
+	position: absolute;
+}
+.common_edit_button_unselected {
+	background-color: #EEEEEE;
+}
+.common_edit_button_selected {
+	background-color: #AAAAAA;
+}
+.common_edit_button_unselected:hover {
+	background-color: #AAAAAA;
+}
+
+input[type="text"].common_edit_text_input {
+	box-sizing: border-box;
+	height: 18px;
+	border: 1px solid #777777;
+}
+
+.common_edit_plain_text {
+	color: Black;
+	font-size: 14px;
+}
+
+.common_edit_input_text {
+	color: Black;
+	background-color: White;
+}
+.common_edit_input_text:disabled {
+	color: Gray;
+	background-color: LightGray;
+}
+.common_edit_error_text {
+	color: Red;
+	background-color: White;
+}
+.common_edit_error_text:disabled {
+	color: Gray;
+	background-color: LightGray;
+}
+
+.common_edit_generic_select {
+	font-size: 14px;
+}
+.common_edit_generic_select:enabled {
+	cursor: pointer;
+}
+
+.common_edit_number_select {
+	width: 55px;
+	font-size: 14px;
+}
+.common_edit_number_select:enabled {
+	cursor: pointer;
+}
+
+.common_edit_u {
+	text-decoration: underline;
+}
+
+.common_edit_hide {
+	display: none;
+}

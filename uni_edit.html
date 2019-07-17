@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Unicode Editor</title>
+<link rel="stylesheet" type="text/css" href="uni_edit_concat.css" />
+<script type="text/javascript" src="uni_edit_concat.js"></script>
+</head>
+<body>
+	<!-- hack to force timely loading of fonts -->
+	<div id="res_outsidescreen">
+		<span class="res_outsidescreen_elem hi">&#57344;</span>
+		<span class="res_outsidescreen_elem hiaux">&#35;</span>
+		<span class="res_outsidescreen_elem hinotes">&#35;</span>
+	</div>
+
+<a href="index.html"><img src="uparr.jpg" alt="up">&nbsp;<b>RES in JavaScript</b></a>
+
+<div id="uni_edit_top_panel">
+<div class="uni_edit_top_elem">
+<span class="common_edit_plain_text">Font size in preview:</span>
+<select id="uni_edit_preview_size" class="common_edit_number_select" 
+		onchange="ResEdit.remake();">
+	<option value="28">28</option>
+	<option value="32">32</option>
+	<option value="36" selected>36</option>
+	<option value="40">40</option>
+	<option value="44">44</option>
+	<option value="48">48</option>
+	<option value="52">52</option>
+	<option value="56">56</option>
+	<option value="60">60</option>
+	<option value="64">64</option>
+	<option value="68">68</option>
+	<option value="72">72</option>
+</select>
+</div>
+<div class="uni_edit_top_elem">
+<span class="common_edit_plain_text">Font size in tree:</span>
+<select id="uni_edit_tree_size" class="common_edit_number_select" 
+		onchange="ResEdit.remake();">
+	<option value="28" selected>28</option>
+	<option value="32">32</option>
+	<option value="36">36</option>
+	<option value="40">40</option>
+	<option value="44">44</option>
+	<option value="48">48</option>
+	<option value="52">52</option>
+	<option value="56">56</option>
+	<option value="60">60</option>
+	<option value="64">64</option>
+	<option value="68">68</option>
+	<option value="72">72</option>
+</select>
+</div>
+<div class="uni_edit_top_elem"> <button id="uni_edit_undo_button" 
+	class="common_edit_generic_button" disabled onclick="ResEdit.undo();">undo</button> </div>
+<div class="uni_edit_top_elem"> <button id="uni_edit_redo_button" 
+	class="common_edit_generic_button" disabled onclick="ResEdit.redo();">redo</button> </div>
+<div class="uni_edit_top_elem"> <a id="uni_edit_more_help_button" 
+	class="common_edit_generic_button" href="uni_edit_help.html" target="_blank">help</a> </div>
+</div>
+
+<div id="uni_edit_full_panel">
+	<div id="uni_edit_main_panel">
+		<div id="uni_edit_header_panel" class="uni_edit_hlr">
+			<div id="uni_edit_dir_panel" class="uni_edit_hlr">
+				<a onclick="ResEdit.adjustFragmentDir('hlr');" id="uni_edit_hlr" 
+					class="common_edit_button_unselected">hlr</a>
+				<a onclick="ResEdit.adjustFragmentDir('hrl');" id="uni_edit_hrl" 
+					class="common_edit_button_unselected">hrl</a>
+				<a onclick="ResEdit.adjustFragmentDir('vlr');" id="uni_edit_vlr" 
+					class="common_edit_button_unselected">vlr</a>
+				<a onclick="ResEdit.adjustFragmentDir('vrl');" id="uni_edit_vrl" 
+					class="common_edit_button_unselected">vrl</a>
+			</div>
+			<div id="uni_edit_preview_panel" class="uni_edit_hlr" tabindex="0" 
+					onkeydown="ResEdit.processKeyDown(event);"
+					onkeypress="ResEdit.processKeyPress(event);">
+				<canvas id="uni_edit_res_preview" class="uni_edit_hlr" 
+					onclick="ResEdit.handlePreviewClick(event);"></canvas>
+				<canvas id="uni_edit_res_canvas" class="res"></canvas>
+				<canvas id="uni_edit_res_focus"></canvas> 
+			</div>
+		</div>
+		<div id="uni_edit_tree_panel" class="uni_edit_hlr" tabindex="1" 
+					onkeydown="ResEdit.processKeyDown(event);"
+					onkeypress="ResEdit.processKeyPress(event);">
+			<div id="uni_edit_res_tree" class="common_edit_tree">
+			</div>
+		</div>
+	</div>
+	<div id="uni_edit_legend_panel">
+		<div id="uni_edit_structure_panel">
+			<button id="uni_edit_named_button" class="common_edit_structure_button" 
+				onclick="ResEdit.doNamed();"><span class="common_edit_u">n</span>amed</button>
+			<button id="uni_edit_hyphen_button" class="common_edit_structure_button" 
+				onclick="ResEdit.doHyphen();">&ndash;</button>
+			<button id="uni_edit_star_button" class="common_edit_structure_button" 
+				onclick="ResEdit.doStar();">*</button>
+			<button id="uni_edit_plus_button" class="common_edit_structure_button" 
+				onclick="ResEdit.doPlus();">+</button>
+			<button id="uni_edit_colon_button" class="common_edit_structure_button" 
+				onclick="ResEdit.doColon();">:</button>
+			<button id="uni_edit_semicolon_button" class="common_edit_structure_button" 
+				onclick="ResEdit.doSemicolon();">;</button>
+			<button id="uni_edit_stack_button" class="common_edit_structure_button" 
+				onclick="ResEdit.doStack();"><span class="common_edit_u">o</span>verlay</button>
+			<button id="uni_edit_insert_button" class="common_edit_structure_button" 
+				onclick="ResEdit.doInsert();"><span class="common_edit_u">i</span>nsert</button>
+			<button id="uni_edit_swap_button" class="common_edit_structure_button" 
+				onclick="ResEdit.doSwap();">s<span class="common_edit_u">w</span>ap</button>
+			<button id="uni_edit_delete_button" class="common_edit_structure_button" 
+				onclick="ResEdit.doDelete();">delete</button>
+		</div>
+		<div class="common_edit_parameter_panel">
+			<span id="uni_edit_param_type"></span>
+			<div id="uni_edit_name_param">name: 
+				<input type="text" id="uni_edit_name_param_text" class="common_edit_text_input"
+					size="4" spellcheck="false" oninput="ResEdit.adjustName();"> 
+				<button class="common_edit_generic_button" onclick="ResEdit.showSignMenu(true);">men<span 
+							class="common_edit_u">u</span></button>
+			</div>
+		</div>
+		<div class="common_edit_parameter_panel">
+			<div id="uni_edit_place_param">
+				place:
+				<table id="uni_edit_place_grid">
+					<tr>
+					<td><input type="radio" name="place_param_radio" id="uni_edit_place_param_radio_ts"
+						onclick="ResEdit.adjustPlace('ts');">st</td>
+					<td><input type="radio" name="place_param_radio" id="uni_edit_place_param_radio_te"
+						onclick="ResEdit.adjustPlace('te');">et</td>
+					</tr>
+					<tr>
+					<td><input type="radio" name="place_param_radio" id="uni_edit_place_param_radio_bs"
+						onclick="ResEdit.adjustPlace('bs');">sb</td>
+					<td><input type="radio" name="place_param_radio" id="uni_edit_place_param_radio_be"
+						onclick="ResEdit.adjustPlace('be');">eb</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div id="uni_edit_footer_panel">
+		<textarea id="uni_edit_uni_text" rows="4" spellcheck="false" 
+			onchange="ResEdit.changeText(event);"></textarea> 
+		<button id="uni_edit_parse_button" class="common_edit_generic_button" 
+			onclick="ResEdit.changeText(event);">Parse</button>
+		<button id="uni_edit_clear_button" class="common_edit_generic_button common_edit_danger" 
+			onclick="ResEdit.clearText(event);">Clear</button>
+		<span id="uni_edit_uni_error" class="uni_edit_error_text">
+		</span>
+		<textarea readonly id="uni_edit_chars_text" rows="4" spellcheck="false"></textarea> 
+	</div>
+</div>
+
+<div id="uni_edit_cats_panel" tabindex="10">
+	<a href="#" onclick="event.preventDefault(); ResEdit.showSignMenu(false);" 
+				id="uni_edit_cats_panel_close" title="close"></a>
+	<ul id="uni_edit_extra_cats" class="common_edit_cats">
+		<li> <input type="text" id="uni_edit_chosen_sign" class="common_edit_text_input" 
+				size="5" spellcheck="false" readonly> </li>
+		<li> <button id="uni_edit_sign_info_button" class="common_edit_generic_button"
+				onclick="ResEdit.toggleSignInfo();">info</button> </li>
+	</ul>
+	<ul id="uni_edit_cats" class="common_edit_cats">
+	</ul>
+	<div id="uni_edit_cat_sections">
+	</div>
+	<div id="uni_edit_sign_info">
+		Nothing selected.
+	</div>
+</div>
+
+</body>
+</html>
+

@@ -1,0 +1,287 @@
+@font-face {
+    font-family: 'HieroglyphicSMP';
+    src: url('NewGardinerSMP.ttf') format('truetype');
+}
+
+body {
+	font: normal 12px Arial;
+}
+
+/* Page structure */
+
+#uni_edit_top_panel {
+	width: 100%;
+	z-index: 5;
+}
+
+.uni_edit_top_elem {
+	display: table-cell;
+	padding: 10px;
+}
+
+#uni_edit_full_panel {
+	width: 100%;
+}
+
+#uni_edit_main_panel {
+}
+
+#uni_edit_header_panel {
+}
+#uni_edit_header_panel.uni_edit_vlr {
+	float: left;
+}
+#uni_edit_header_panel.uni_edit_vrl {
+	float: right;
+}
+
+#uni_edit_dir_panel {
+	width: 60px;
+	height: 60px;
+	position: relative;
+}
+#uni_edit_dir_panel.uni_edit_hlr {
+	float: left;
+}
+#uni_edit_dir_panel.uni_edit_hrl {
+	float: right;
+}
+#uni_edit_dir_panel.uni_edit_vlr {
+}
+#uni_edit_dir_panel.uni_edit_vrl {
+}
+#uni_edit_hlr, #uni_edit_hrl, #uni_edit_vlr, #uni_edit_vrl {
+	width: 26px;
+}
+#uni_edit_hlr {
+	top: 0px;
+	left: 0;
+}
+#uni_edit_hrl {
+	top: 0px;
+	left: 30px;
+}
+#uni_edit_vlr {
+	top: 30px;
+	left: 0;
+}
+#uni_edit_vrl {
+	top: 30px;
+	left: 30px;
+}
+#uni_edit_size_panel {
+	top: 60px;
+	left: 0;
+	position: relative;
+	width: 60px;
+	height: 30px;
+}
+#uni_edit_size_check {
+	position: absolute;
+	top: 3px;
+	width: 15px;
+	height: 15px;
+	left: 0;
+	margin-left: 0;
+}
+#uni_edit_size_text {
+	position: absolute;
+	top: 3px;
+	width: 35px;
+	right: 0;
+}
+
+#uni_edit_preview_panel {
+	border: 2px solid #777777;
+	-webkit-backface-visibility: hidden;
+}
+#uni_edit_preview_panel.uni_edit_hlr {
+	overflow-x: scroll;
+}
+#uni_edit_preview_panel.uni_edit_hrl {
+	overflow-x: scroll;
+}
+#uni_edit_preview_panel.uni_edit_vlr {
+	height: 60vh;
+	overflow-y: scroll;
+}
+#uni_edit_preview_panel.uni_edit_vrl {
+	height: 60vh;
+	overflow-y: scroll;
+}
+#uni_edit_preview_panel:focus {
+	border: 2px dotted blue;
+	outline: none;
+}
+#uni_edit_res_preview {
+	display: block;
+	padding: 5px;
+}
+#uni_edit_res_preview.uni_edit_hlr {
+}
+#uni_edit_res_preview.uni_edit_hrl {
+	margin-left: auto;
+	margin-right: 0;
+}
+#uni_edit_res_preview.uni_edit_vlr {
+}
+#uni_edit_res_preview.uni_edit_vrl {
+	margin-left: auto;
+	margin-right: 0;
+}
+#uni_edit_res_canvas {
+	display: none;
+	position: absolute;
+}
+#uni_edit_res_focus {
+	display: none;
+	position: absolute;
+}
+
+#uni_edit_tree_panel {
+	overflow-x: scroll;
+	padding: 0;
+	margin: 0;
+	border: 2px solid #777777;
+}
+#uni_edit_tree_panel.uni_edit_hlr, #uni_edit_tree_panel.uni_edit_hrl {
+	clear: both;
+}
+#uni_edit_tree_panel.uni_edit_vlr {
+}
+#uni_edit_tree_panel.uni_edit_vrl {
+}
+#uni_edit_tree_panel:focus {
+	border: 2px dotted blue;
+	outline: none;
+}
+
+#uni_edit_legend_panel {
+}
+
+#uni_edit_footer_panel {
+	clear: both;
+}
+
+#uni_edit_uni_text {
+	width: 95%;
+	margin-right: 10px;
+}
+
+#uni_edit_parse_button {
+	clear: both;
+}
+
+#uni_edit_chars_text {
+	clear: both;
+	width: 95%;
+	margin-right: 10px;
+	margin-top: 10px;
+	font-family: HieroglyphicSMP;
+	font-size: 30px;
+}
+
+/* Sign menu */
+
+#uni_edit_cats_panel {
+	position: absolute;
+	top: 2%;
+	left: 2%;
+	height: 94%;
+	width: 94%;
+	z-index: 10;
+	overflow: auto;
+	background-color: #eeeeee;
+	border: 5px solid #3a3a3a;
+	box-sizing: border-box;
+	border-radius: 12px;
+	-moz-border-radius: 12px;
+	-webkit-border-radius: 12px;
+	box-shadow: 2px 2px 4px #3a3a3a;
+	-moz-box-shadow: 2px 2px 4px #3a3a3a;
+	-webkit-box-shadow: 2px 2px 4px #3a3a3a;
+}
+#uni_edit_cats_panel:focus {
+	outline: none;
+}
+
+#uni_edit_cats_panel_close {
+	z-index: 20;
+}
+#uni_edit_cats_panel_close:link, #uni_edit_cats_panel_close:visited {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 1em;
+	height: 1em;
+	display: block;
+	font: bold 18px Arial;
+	text-align: center;
+	text-decoration: none;
+	padding: 0;
+	color: #fff;
+	background-color: #000000;
+	border: 3px solid #fff;
+	border-radius: 1em;
+	-moz-border-radius: 1em;
+	-webkit-border-radius: 1em;
+	box-shadow: 0 0 1px 1px #3a3a3a;
+	-moz-box-shadow: 0 0 1px 1px #3a3a3a;
+	-webkit-box-shadow: 0 0 1px 1px #3a3a3a;
+}
+#uni_edit_cats_panel_close:before {
+	content: "X";
+}
+#uni_edit_cats_panel_close:hover, #uni_edit_cats_panel_close:active, #uni_edit_cats_panel_close:focus {
+	box-shadow: 0 0 1px 1px #c00;
+	color:#fff;
+	background-color: #c00;
+}
+#uni_edit_cats_panel_close span {
+	text-indent: -200em;
+	display: block;
+}
+
+#uni_edit_sign_info {
+	font-size: 14px;
+	width: 42%;
+	height: 85%;
+	position: absolute; top: 5%; left: 55%;
+	z-index: 15;
+	background-color: White;
+	padding: 10px;
+	border: 2px solid #777777;
+	overflow-y: hidden;
+}
+
+/* Legend */
+
+#uni_edit_legend_panel {
+	height: 210px;
+	display: inline-block;
+}
+
+#uni_edit_structure_panel {
+	height: 210px;
+	margin: 5px;
+	width: 140px;
+	float: left;
+}
+
+#uni_edit_delete_button {
+	color: Red;
+}
+#uni_edit_delete_button:disabled {
+	color: White;
+}
+
+#uni_edit_param_type {
+	font-weight: bold;
+	padding-bottom: 5px;
+	display: block;
+}
+
+#uni_edit_place_grid td {
+	white-space: nowrap;
+	padding: 5px;
+}

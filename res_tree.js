@@ -22,6 +22,11 @@ function(frag, parent) {
 	parent.appendChild(ul);
 };
 
+ResTree.parseRes =
+function(res) {
+	return res_syntax.parse(res);
+};
+
 ResTree.makeNode = 
 function(elem, label, res) {
 	var children = elem.editChildren;
@@ -36,17 +41,17 @@ function(elem, label, res) {
 	root.editLabelToElem[id] = elem;
 	if (label !== null) {
 		var div = document.createElement('div');
-		div.className = 'node_label';
+		div.className = 'common_edit_node_label';
 		var labelText = document.createTextNode(label);
 		div.appendChild(labelText);
 		a.appendChild(div);
 	} else if (res !== null) {
 		res = root.headerString() + res;
 		var div = document.createElement('div');
-		div.className = 'node_label';
+		div.className = 'common_edit_node_label';
 		var canvas = document.createElement('canvas');
 		try {
-			var frag = res_syntax.parse(res);
+			var frag = ResTree.parseRes(res);
 		} catch(err) {
 			var frag = res_syntax.parse('\"?\"');
 		}
@@ -69,7 +74,7 @@ function(elem, res) {
 	var root = elem.editRoot;
 	res = root.headerString() + res;
 	try {
-		var frag = res_syntax.parse(res);
+		var frag = ResTree.parseRes(res);
 	} catch(err) {
 		var frag = res_syntax.parse('\"?\"');
 	}
@@ -94,9 +99,9 @@ function(elem, isFoc) {
 	for (var i = 0; i < node.children.length; i++) {
 		var child = node.children[i];
 		if (child.tagName.toLowerCase() === 'a') {
-			child.className = isFoc ? 'focus' : "";
+			child.className = isFoc ? 'common_edit_focus' : "";
 			if (isFoc) {
-				var container = document.getElementById('tree_panel');
+				var container = ResEdit.getElem('tree_panel');
 				var containerRect = container.getBoundingClientRect();
 				var rect = child.getBoundingClientRect();
 				var containerMiddle = containerRect.left + containerRect.width/2;
@@ -1210,7 +1215,7 @@ function(elem) {
 		return ResTree.replaceGroups(elem, 
 			[elem.group1, elem.group2], [new ResOp(null)], [new ResSwitch(null)]);
 	else if (elem instanceof ResBox) {
-		var hiero =  elem.hiero;
+		var hiero = elem.hiero;
 		if (hiero === null)
 			return ResTree.removeGroup(elem);
 		else
@@ -1453,4 +1458,3 @@ function(oldNote) {
 	}
 	return parent;
 };
-

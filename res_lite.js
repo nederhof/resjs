@@ -787,4 +787,3 @@ function(glyph, rect) {
 	var subHeight = glyph.heightMil * rect.height / 1000;
 	return new ResRectangle(subX, subY, subWidth, subHeight);
 };
-

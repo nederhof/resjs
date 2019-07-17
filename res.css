@@ -22,11 +22,11 @@ span.hinotes {
 }
 
 /* hack to force timely loading of fonts */
-#outsidescreen {
+#res_outsidescreen {
 	overflow: hidden;
 	position: relative;
 }
-.outsidescreen_elem {
+.res_outsidescreen_elem {
 	position: absolute;
 	height: 100px;
 	width: 100px;
@@ -39,25 +39,25 @@ span.hinotes {
 	font-size: 36px;
 }
 
-.uni {
+.res_uni {
 	vertical-align: -10px;
 	font-size: 36px;
 }
 
-.demo {
+.res_demo {
 	border: 1px solid #000000;
 }
 
-span.sign {
+span.res_sign {
 	font-family: Hieroglyphic;
 	vertical-align: 0;
 	font-size: 36px;
 	font-weight: normal;
 }
-span.high {
+span.res_high {
 	vertical-align: -10px;
 }
-span.low {
+span.res_low {
 	vertical-align: 0;
 	line-height: 70%;
 }
@@ -67,7 +67,7 @@ span.low {
 	src: url('DejaVuSans-Bold.ttf') format('truetype');;
 }
 
-span.trans {
+span.egytransl {
 	font-family: Transliteration;
 	font-weight: normal;
 	font-style: normal;

@@ -4,23 +4,14 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>Unicode test suite</title>
 <link rel="stylesheet" type="text/css" href="res.css" />
-<script type="text/javascript" src="res_aux.js"></script>
-<script type="text/javascript" src="uni_aux.js"></script>
-<script type="text/javascript" src="res_points.js"></script>
-<script type="text/javascript" src="res_lite.js"></script>
-<script type="text/javascript" src="res_struct.js"></script>
-<script type="text/javascript" src="uni_struct.js"></script>
-<script type="text/javascript" src="uni_syntax.js"></script>
-<script type="text/javascript" src="res_format.js"></script>
-<script type="text/javascript" src="res_render.js"></script>
-<script type="text/javascript" src="uni_web.js"></script>
+<script type="text/javascript" src="uni_concat.js"></script>
 </head>
 <body>
     <!-- hack to force timely loading of fonts -->
-    <div id="outsidescreen">
-        <span class="outsidescreen_elem hi">&#57344;</span>
-        <span class="outsidescreen_elem hiaux">&#35;</span>
-        <span class="outsidescreen_elem hinotes">&#35;</span>
+    <div id="res_outsidescreen">
+        <span class="res_outsidescreen_elem hi">&#57344;</span>
+        <span class="res_outsidescreen_elem hiaux">&#35;</span>
+        <span class="res_outsidescreen_elem hinotes">&#35;</span>
     </div>
 
 <a href="index.html"><img src="uparr.jpg">&nbsp;<b>RES in JavaScript</b></a>
@@ -29,84 +20,83 @@
 
 <h2>Horizontal and vertical groups</h2>
 
-<canvas class="uni
-demo">&#x13000;</canvas>
+<canvas class="res_uni
+res_demo">&#x13000;</canvas>
 
-<p><canvas class="uni
-demo">&#x13000;&#x13050;</canvas>
+<p><canvas class="res_uni
+res_demo">&#x13000;&#x13050;</canvas>
 
-<p><canvas class="uni
-demo">&#x13000;&#x13431;&#x13050;</canvas>
+<p><canvas class="res_uni
+res_demo">&#x13000;&#x13431;&#x13050;</canvas>
 
-<p><canvas class="uni
-demo">𓀀𓐱𓁐</canvas>
+<p><canvas class="res_uni
+res_demo">𓀀𓐱𓁐</canvas>
 
-<p><canvas class="uni
-demo">&#x13216;&#x13430;&#x13216;&#x13430;&#x13216;</canvas>
+<p><canvas class="res_uni
+res_demo">&#x13216;&#x13430;&#x13216;&#x13430;&#x13216;</canvas>
 
-<p><canvas class="uni
-demo">&#x13283;&#x13430;&#x13216;&#x13430;&#x133e4;&#x13431;&#x133e4;&#x13431;&#x133e4;</canvas>
+<p><canvas class="res_uni
+res_demo">&#x13283;&#x13430;&#x13216;&#x13430;&#x133e4;&#x13431;&#x133e4;&#x13431;&#x133e4;</canvas>
 
-<p><canvas class="uni
-demo">&#x13000;&#x13431;&#x13050;&#x13430;&#x133e4;&#x13431;&#x133e4;&#x13431;&#x133e4;</canvas>
+<p><canvas class="res_uni
+res_demo">&#x13000;&#x13431;&#x13050;&#x13430;&#x133e4;&#x13431;&#x133e4;&#x13431;&#x133e4;</canvas>
 
-<p><canvas class="uni
-demo">&#x1340d;&#x13431;&#x1340d;&#x13430;&#x1340d;</canvas>
+<p><canvas class="res_uni
+res_demo">&#x1340d;&#x13431;&#x1340d;&#x13430;&#x1340d;</canvas>
 
-<p><canvas class="uni
-demo">&#x13322;&#x13216;&#x13430;&#x13437;&#x133cc;&#x13430;&#x133cf;&#x13438;&#x13431;&#x133e4;&#x13431;&#x133e4;</canvas>
+<p><canvas class="res_uni
+res_demo">&#x13322;&#x13216;&#x13430;&#x13437;&#x133cc;&#x13430;&#x133cf;&#x13438;&#x13431;&#x133e4;&#x13431;&#x133e4;</canvas>
 
 <h2>Insertion</h2>
 
-<canvas class="uni
-demo">&#x133f6;&#x13432;&#x133cf;</canvas>
+<canvas class="res_uni
+res_demo">&#x133f6;&#x13432;&#x133cf;</canvas>
 
-<p><canvas class="uni
-demo">&#x133f6;&#x13433;&#x133cf;</canvas>
+<p><canvas class="res_uni
+res_demo">&#x133f6;&#x13433;&#x133cf;</canvas>
 
-<p><canvas class="uni
-demo">&#x133f6;&#x13434;&#x133cf;</canvas>
+<p><canvas class="res_uni
+res_demo">&#x133f6;&#x13434;&#x133cf;</canvas>
 
-<p><canvas class="uni
-demo">&#x133f6;&#x13435;&#x133cf;</canvas>
+<p><canvas class="res_uni
+res_demo">&#x133f6;&#x13435;&#x133cf;</canvas>
 
-<p><canvas class="uni
-demo">&#x133f6;&#x13432;&#x133cf;&#x13433;&#x133cf;&#x13434;&#x133cf;&#x13435;&#x133cf;</canvas>
+<p><canvas class="res_uni
+res_demo">&#x133f6;&#x13432;&#x133cf;&#x13433;&#x133cf;&#x13434;&#x133cf;&#x13435;&#x133cf;</canvas>
 
-<p><canvas class="uni
-demo">&#x1316d;&#x13434;&#x131f3;</canvas>
+<p><canvas class="res_uni
+res_demo">&#x1316d;&#x13434;&#x131f3;</canvas>
 
-<p><canvas class="uni
-demo">&#x13171;&#x13433;&#x133cf;</canvas>
+<p><canvas class="res_uni
+res_demo">&#x13171;&#x13433;&#x133cf;</canvas>
 
-<p><canvas class="uni
-demo">&#x13193;&#x13433;&#x13437;&#x13193;&#x13433;&#x13193;&#x13438;</canvas>
+<p><canvas class="res_uni
+res_demo">&#x13193;&#x13433;&#x13437;&#x13193;&#x13433;&#x13193;&#x13438;</canvas>
 
-<p><canvas class="uni                                                                                                                 
-demo">&#x13193;&#x13433;&#x13437;&#x133cf;&#x13430;&#x131ff;&#x13438;</canvas>
+<p><canvas class="res_uni
+res_demo">&#x13193;&#x13433;&#x13437;&#x133cf;&#x13430;&#x131ff;&#x13438;</canvas>
 
-<p><canvas class="uni                                                                                                                 
-demo">&#x13333;&#x13432;&#x13079;</canvas>
+<p><canvas class="res_uni
+res_demo">&#x13333;&#x13432;&#x13079;</canvas>
 
 <h2>Overlay</h2>
 
-<canvas class="uni                                                                                                                    
-demo">&#x13153;&#x13436;&#x1309d;</canvas>                                                                                            
-                                                                                                                                      
-<p><canvas class="uni
-demo">&#x1309d;&#x13436;&#x130c0;</canvas>
+<canvas class="res_uni
+res_demo">&#x13153;&#x13436;&#x1309d;</canvas>                                                                                            
+<p><canvas class="res_uni
+res_demo">&#x1309d;&#x13436;&#x130c0;</canvas>
 
-<p><canvas class="uni
-demo">&#x130c0;&#x13436;&#x13437;&#x1309d;&#x13430;&#x1309d;&#x13438;</canvas>
+<p><canvas class="res_uni
+res_demo">&#x130c0;&#x13436;&#x13437;&#x1309d;&#x13430;&#x1309d;&#x13438;</canvas>
 
-<p><canvas class="uni
-demo">&#x13437;&#x130c0;&#x13431;&#x130c0;&#x13438;&#x13436;&#x13437;&#x1309d;&#x13430;&#x1309d;&#x13438;</canvas>
+<p><canvas class="res_uni
+res_demo">&#x13437;&#x130c0;&#x13431;&#x130c0;&#x13438;&#x13436;&#x13437;&#x1309d;&#x13430;&#x1309d;&#x13438;</canvas>
 
-<p><canvas class="uni
-demo">&#x130c0;&#x13436;&#x1309d;&#x13432;&#x133cf;&#x13433;&#x133cf;&#x13434;&#x133cf;&#x13435;&#x133cf;</canvas>
+<p><canvas class="res_uni
+res_demo">&#x130c0;&#x13436;&#x1309d;&#x13432;&#x133cf;&#x13433;&#x133cf;&#x13434;&#x133cf;&#x13435;&#x133cf;</canvas>
 
-<p><canvas class="uni
-demo">&#x13193;&#x13433;&#x13153;&#x13436;&#x1309d;</canvas>
+<p><canvas class="res_uni
+res_demo">&#x13193;&#x13433;&#x13153;&#x13436;&#x1309d;</canvas>
 
 </body>
 </html>

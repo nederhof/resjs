@@ -20,6 +20,7 @@
 			<include name="*.md"/>
 			<include name="uparr.jpg"/>
 			<include name="build.xml"/>
+			<include name="Makefile"/>
 			</tarfileset>
 		</tar>
 	</target>

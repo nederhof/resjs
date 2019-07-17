@@ -128,7 +128,7 @@ function(elem) {
 	var spans = elem.getElementsByTagName("span");
 	for (var i = 0; i < spans.length; i++) {
 		var span = spans[i];
-		if (span.className.match(/\bsign\b/)) {
+		if (span.classList.contains("res_sign")) {
 			var code = span.firstChild.nodeValue;
 			var key = ResContext.unMnemonic(code);
 			key = ResContext.hieroPoints[key];
@@ -147,7 +147,7 @@ function(elem) {
 	var spans = elem.getElementsByTagName("span");
 	for (var i = 0; i < spans.length; i++) {
 		var span = spans[i];
-		if (span.className.match(/\btrans\b/)) {
+		if (span.classList.contains("egytransl")) {
 			var trans = span.firstChild.nodeValue;
 			var uni = "";
 			for (var j = 0; j < trans.length; j++) {

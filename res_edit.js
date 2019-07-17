@@ -7,6 +7,7 @@ function ResEdit() {
 	ResEdit.historySize = 0;
 	ResEdit.makeFromTextSometime();
 	ResEdit.makeSignMenu();
+	ResEdit.frag = res_syntax.parse('\"?\"');
 }
 
 // Make page, from RES string, as soon as possible.
@@ -64,17 +65,17 @@ function(res) {
 };
 ResEdit.treeFocus =
 function() {
-	document.getElementById('tree_panel').focus();
+	ResEdit.getElem('tree_panel').focus();
 };
 ResEdit.stringFocus =
 function() {
 	if (ResEdit.frag.editFocus instanceof ResNote)
-		document.getElementById('string_param_text').focus();
+		ResEdit.getTextElem('string_param').focus();
 };
 ResEdit.nameFocus =
 function() {
 	if (ResEdit.frag.editFocus instanceof ResNamedglyph)
-		document.getElementById('name_param_text').focus();
+		ResEdit.getTextElem('name_param').focus();
 };
 
 // Do tree focus upon entering space, or do operation.
@@ -88,14 +89,14 @@ function(name) {
 	} else if (str.match(/.*[\-\*\+\:\;\.\!\^]$/)) {
 		ResEdit.setRawValue(name, str.replace(/.$/, ''));
 		switch (str.slice(-1)) {
-			case '.': ResEdit.doDot(); break; 
-			case '*': ResEdit.doStar(); break; 
-			case '+': ResEdit.doPlus(); break; 
-			case ':': ResEdit.doColon(); break; 
-			case ';': ResEdit.doSemicolon(); break; 
-			case '-': ResEdit.doHyphen(); break; 
-			case '!': ResEdit.doExcl(); break; 
-			case '^': ResEdit.doCaret(); break; 
+			case '.': ResEdit.doDot(); break;
+			case '*': ResEdit.doStar(); break;
+			case '+': ResEdit.doPlus(); break;
+			case ':': ResEdit.doColon(); break;
+			case ';': ResEdit.doSemicolon(); break;
+			case '-': ResEdit.doHyphen(); break;
+			case '!': ResEdit.doExcl(); break;
+			case '^': ResEdit.doCaret(); break;
 		}
 		return true;
 	} else
@@ -154,30 +155,68 @@ function() {
 };
 
 ///////////////////////////////////
+// Common page elements.
+
+ResEdit.getElem =
+function(property) {
+	return document.getElementById('res_edit_' + property);
+};
+
+ResEdit.getTextElem =
+function(property) {
+	return document.getElementById('res_edit_' + property + '_text');
+};
+
+ResEdit.getCheckElem =
+function(property) {
+	return document.getElementById('res_edit_' + property + '_check');
+};
+
+ResEdit.getSelectElem =
+function(property) {
+	return document.getElementById('res_edit_' + property + '_select');
+};
+
+ResEdit.getButtonElem =
+function(property) {
+	return document.getElementById('res_edit_' + property + '_button');
+};
+
+ResEdit.getParamElem =
+function(property) {
+	return document.getElementById('res_edit_' + property + '_param');
+};
+
+ResEdit.getRadioElem =
+function(property, val) {
+	return document.getElementById('res_edit_' + property + '_radio_' + val);
+};
+
+///////////////////////////////////
 // Page elements.
 
 ResEdit.setUndoButtons =
 function() {
-	var undo = document.getElementById('undo_button');
+	var undo = ResEdit.getButtonElem('undo');
 	undo.disabled = ResEdit.historySize <= 0;
-	var redo = document.getElementById('redo_button');
+	var redo = ResEdit.getButtonElem('redo');
 	redo.disabled = ResEdit.historySize >= ResEdit.history.length-1;
 };
 ResEdit.getPreviewSize =
 function() {
-	var elem = document.getElementById('preview_size');
+	var elem = ResEdit.getElem('preview_size');
 	return elem.options[elem.selectedIndex].text;
 };
 ResEdit.getTreeSize =
 function() {
-	var elem = document.getElementById('tree_size');
+	var elem = ResEdit.getElem('tree_size');
 	return elem.options[elem.selectedIndex].text;
 };
 ResEdit.getDir =
 function() {
 	var dirs = ['none', 'hlr', 'hrl', 'vlr', 'vrl'];
 	for (var i = 0; i < dirs.length; i++)
-		if (document.getElementById(dirs[i]).className === 'button_selected')
+		if (ResEdit.getElem(dirs[i]).className === 'common_edit_button_selected')
 			return dirs[i];
 	return 'none';
 };
@@ -188,14 +227,14 @@ function(dir) {
 	var dirs = ['none', 'hlr', 'hrl', 'vlr', 'vrl'];
 	for (var i = 0; i < dirs.length; i++)
 		if (dirs[i] !== dir)
-			document.getElementById(dirs[i]).className = 'button_unselected';
-	document.getElementById(dir).className = 'button_selected';
-	var layoutDir = dir === 'none' ? 'hlr' : dir;
-	document.getElementById('header_panel').className = layoutDir;
-	document.getElementById('dir_panel').className = layoutDir;
-	document.getElementById('tree_panel').className = layoutDir;
-	document.getElementById('preview_panel').className = layoutDir;
-	document.getElementById('res_preview').className = layoutDir;
+			ResEdit.getElem(dirs[i]).className = 'common_edit_button_unselected';
+	ResEdit.getElem(dir).className = 'common_edit_button_selected';
+	var layoutDir = 'res_edit_' + (dir === 'none' ? 'hlr' : dir);
+	ResEdit.getElem('header_panel').className = layoutDir;
+	ResEdit.getElem('dir_panel').className = layoutDir;
+	ResEdit.getElem('tree_panel').className = layoutDir;
+	ResEdit.getElem('preview_panel').className = layoutDir;
+	ResEdit.getElem('res_preview').className = layoutDir;
 	return true;
 };
 ResEdit.setDirFromFragment =
@@ -208,9 +247,9 @@ function() {
 };
 ResEdit.setPreview =
 function() {
-	var canvas = document.getElementById('res_canvas');
-	var focus = document.getElementById('res_focus');
-	var preview = document.getElementById('res_preview');
+	var canvas = ResEdit.getElem('res_canvas');
+	var focus = ResEdit.getElem('res_focus');
+	var preview = ResEdit.getElem('res_preview');
 	ResCanvas.clear(canvas);
 	ResCanvas.clear(focus);
 	ResCanvas.clear(preview);
@@ -222,9 +261,9 @@ function() {
 };
 ResEdit.setFocus =
 function() {
-	var canvas = document.getElementById('res_canvas');
-	var focus = document.getElementById('res_focus');
-	var preview = document.getElementById('res_preview');
+	var canvas = ResEdit.getElem('res_canvas');
+	var focus = ResEdit.getElem('res_focus');
+	var preview = ResEdit.getElem('res_preview');
 	var focusCtx = focus.getContext('2d');
 	var previewCtx = preview.getContext('2d');
 	ResCanvas.clear(focus);
@@ -238,7 +277,7 @@ function() {
 	focusCtx.stroke();
 	previewCtx.drawImage(canvas, 0, 0);
 	previewCtx.drawImage(focus, 0, 0);
-	var container = document.getElementById('preview_panel');
+	var container = ResEdit.getElem('preview_panel');
 	var containerRect = container.getBoundingClientRect();
 	if (ResEdit.frag.globals.isH()) {
 		var containerMiddle = containerRect.width/2;
@@ -252,20 +291,20 @@ function() {
 };
 ResEdit.setTree =
 function() {
-	var treeDiv = document.getElementById('res_tree');
+	var treeDiv = ResEdit.getElem('res_tree');
 	new ResTree(ResEdit.frag, treeDiv, ResEdit.getTreeSize());
 };
 ResEdit.remakeTreeUpwardsFrom =
 function(elem) {
 	ResEdit.frag.prepareFocusToElem(elem);
 	ResEdit.frag.connectTree();
-	var treeDiv = document.getElementById('res_tree');
+	var treeDiv = ResEdit.getElem('res_tree');
 	ResTree.remakeTreeUpwardsFrom(ResEdit.frag, treeDiv, elem);
 	ResEdit.frag.finalizeFocus();
 };
 ResEdit.setText =
 function(val) {
-	document.getElementById('res_text').value = val;
+	ResEdit.getTextElem('res').value = val;
 };
 ResEdit.resetText =
 function() {
@@ -273,79 +312,78 @@ function() {
 };
 ResEdit.setError =
 function(message) {
-	var errorField = document.getElementById('res_error');
+	var errorField = ResEdit.getElem('res_error');
 	errorField.innerHTML = message;
 };
 
 ResEdit.getValue =
 function(name) {
-	var text = document.getElementById(name + '_text');
-	return text.value;
+	return ResEdit.getTextElem(name).value;
 };
 ResEdit.getNameValue =
 function(name, def) {
-	var text = document.getElementById(name + '_text');
+	var text = ResEdit.getTextElem(name);
 	var val = text.value;
 	if (!ResContext.catNameStructure.exec(val) &&
 			!ResContext.nonCatNameStructure.exec(val) &&
 			!ResContext.mnemonicStructure.exec(val)) {
-		text.className = 'error_text';
+		text.className = 'common_edit_error_text';
 		val = def;
 		throw 'wrong input';
-	} else 
-		text.className = 'input_text';
+	} else
+		text.className = 'common_edit_input_text';
 	return val;
 };
 ResEdit.getStringValue =
 function(name, def) {
-	var text = document.getElementById(name + '_text');
+	var text = ResEdit.getTextElem(name);
 	var val = text.value;
 	if (/[^\t\n\r\f\b]+/.test(val)) {
-		text.className = 'input_text';
+		text.className = 'common_edit_input_text';
 		val = ResNote.escapeString(val);
 	} else {
-		text.className = 'error_text';
+		text.className = 'common_edit_error_text';
 		val = def;
 		throw 'wrong input';
-	} 
+	}
 	return val;
 };
 ResEdit.getIntValue =
 function(name, def) {
-	var text = document.getElementById(name + '_text');
+	var text = ResEdit.getTextElem(name);
 	var val = parseInt(text.value);
 	if (isNaN(val) || val < 0) {
-		text.className = 'error_text';
+		text.className = 'common_edit_error_text';
 		val = def;
 		throw 'wrong input';
-	} else 
-		text.className = 'input_text';
+	} else
+		text.className = 'common_edit_input_text';
 	return val;
 };
 ResEdit.setValue =
 function(name, val) {
-	var text = document.getElementById(name + '_text');
+	var text = ResEdit.getTextElem(name);
 	text.value = val;
-	text.className = 'input_text';
+	text.className = 'common_edit_input_text';
 };
 ResEdit.setRawValue =
 function(name, val) {
-	var text = document.getElementById(name + '_text');
+	var text = ResEdit.getTextElem(name);
 	text.value = val;
 };
 
 ResEdit.getTestedRealValue =
 function(name, def, wrong) {
-	var check = document.getElementById(name + '_check');
-	var text = document.getElementById(name + '_text');
+	var check = ResEdit.getCheckElem(name);
+	var text = ResEdit.getTextElem(name);
 	text.disabled = !check.checked;
 	var val = parseFloat(text.value);
 	if (wrong(val)) {
-		text.className = 'error_text';
+		text.className = 'common_edit_error_text';
 		val = def;
 		throw 'wrong input';
-	} else 
-		text.className = 'input_text';
+	} else
+		text.className = 'common_edit_input_text';
 	return check.checked ? val : def;
 };
 ResEdit.getRealValue =
@@ -365,8 +403,8 @@ function(name, def) {
 };
 ResEdit.setRealValue =
 function(name, val, unval, def) {
-	var check = document.getElementById(name + '_check');
-	var text = document.getElementById(name + '_text');
+	var check = ResEdit.getCheckElem(name);
+	var text = ResEdit.getTextElem(name);
 	if (val === unval) {
 		text.value = def;
 		text.disabled = true;
@@ -376,34 +414,34 @@ function(name, val, unval, def) {
 		text.value = val;
 		check.checked = true;
 	}
-	text.className = 'input_text';
+	text.className = 'common_edit_input_text';
 };
 
 ResEdit.getRealValueWithInf =
 function(name, val, def) {
-	var text = document.getElementById(name + '_text');
-	if (val === null || val === 'inf') 
+	var text = ResEdit.getTextElem(name);
+	if (val === null || val === 'inf')
 		text.disabled = true;
 	else {
 		text.disabled = false;
 		val = parseFloat(text.value);
 		if (isNaN(val) || val <= 0 || val >= 10) {
-			text.className = 'error_text';
+			text.className = 'common_edit_error_text';
 			val = def;
-		} else 
-			text.className = 'input_text';
+		} else
+			text.className = 'common_edit_input_text';
 	}
 	return val;
 };
 ResEdit.setRealValueWithInf =
 function(name, val) {
-	var text = document.getElementById(name + '_text');
+	var text = ResEdit.getTextElem(name);
 	if (val === null || val === 'inf') {
-		var check = document.getElementById(name + '_radio_' + val);
+		var check = ResEdit.getRadioElem(name, val);
 		text.value = 1;
 		text.disabled = true;
 	} else {
-		var check = document.getElementById(name + '_radio_text');
+		var check = ResEdit.getRadioElem(name, 'text');
 		text.value = val;
 		text.disabled = false;
 	}
@@ -411,20 +449,20 @@ function(name, val) {
 };
 ResEdit.getCheck =
 function(name) {
-	return document.getElementById(name + '_check').checked;
+	return ResEdit.getCheckElem(name).checked;
 };
 ResEdit.setCheck =
 function(name, val) {
-	var check = document.getElementById(name + '_check');
+	var check = ResEdit.getCheckElem(name);
 	check.checked = val;
 };
 ResEdit.getSelected =
 function(name) {
-	return document.getElementById(name + '_select').value;
+	return ResEdit.getSelectElem(name).value;
 };
 ResEdit.setSelected =
 function(name, val, def) {
-	var sel = document.getElementById(name + '_select');
+	var sel = ResEdit.getSelectElem(name);
 	var found = false;
 	for (var i = 0; i < sel.length; i++)
 		if (sel.options[i].value === val)
@@ -436,15 +474,15 @@ function(name, val, def) {
 };
 ResEdit.getSelectedWithCheck =
 function(name) {
-	var check = document.getElementById(name + '_check');
-	var sel = document.getElementById(name + '_select');
+	var check = ResEdit.getCheckElem(name);
+	var sel = ResEdit.getSelectElem(name);
 	sel.disabled = !check.checked;
 	return check.checked ? sel.value : null;
 };
 ResEdit.setSelectedWithCheck =
 function(name, val, def) {
-	var check = document.getElementById(name + '_check');
-	var sel = document.getElementById(name + '_select');
+	var check = ResEdit.getCheckElem(name);
+	var sel = ResEdit.getSelectElem(name);
 	if (val === null) {
 		sel.value = def;
 		sel.disabled = true;
@@ -457,7 +495,7 @@ function(name, val, def) {
 };
 ResEdit.setRadio =
 function(name, val) {
-	document.getElementById(name + '_radio_' + val).checked = true;
+	ResEdit.getRadioElem(name, val).checked = true;
 };
 
 ///////////////////////////////////
@@ -471,7 +509,7 @@ function(e) {
 		ResEdit.setValue('name_param', '');
 		ResEdit.showSignMenu(true);
 		return;
-	} 
+	}
 	try {
 		ResEdit.adjustOf('name', ResEdit.getNameValue('name_param', '\"?\"'));
 	} catch(err) {};
@@ -721,11 +759,11 @@ function(prop, val) {
 				ResEdit.frag.editFocus[prop] === undefined)
 		return;
 	var oldVal = ResEdit.frag.editFocus[prop];
-	if (val === oldVal) 
+	if (val === oldVal)
 		return;
 	ResEdit.remember();
 	ResEdit.frag.editFocus[prop] = val;
-	if (ResEdit.frag.editFocus instanceof ResSwitch) 
+	if (ResEdit.frag.editFocus instanceof ResSwitch)
 		ResEdit.frag.propagate();
 	ResEdit.setPreview();
 	ResEdit.setFocus();
@@ -739,7 +777,7 @@ function(val) {
 				ResEdit.frag.editFocus.ops[0].size === undefined)
 		return;
 	var oldVal = ResEdit.frag.editFocus.ops[0].size;
-	if (val === oldVal) 
+	if (val === oldVal)
 		return;
 	ResEdit.remember();
 	ResEdit.frag.editFocus.ops[0].size = val;
@@ -749,7 +787,7 @@ function(val) {
 	ResEdit.resetText();
 };
 
-// Replace the names in the two named glyphs. 
+// Replace the names in the two named glyphs.
 // named1, named2: ResNamedglyph
 ResEdit.swapNames =
 function(named1, named2) {
@@ -785,24 +823,31 @@ function(x, y) {
 	if (button === undefined) {
 		button = document.createElement('a');
 		button.setAttribute('href', '#');
-		button.addEventListener('click',  
-			function(x1,y1) { return function(e) { 
+		button.addEventListener('click',
+			function(x1,y1) { return function(e) {
 				e.preventDefault();
 				ResEdit.toggleShade(x1, y1); }; }(x, y) );
 		button.id = id;
-		button.className = 'shade_button off';
+		button.className = 'res_edit_shade_button';
+		button.classList.add('res_edit_off');
 		ResEdit.shadeButtons[id] = button;
 	}
 	return button;
 };
 ResEdit.getShadeButtonValue =
 function(x, y) {
-	return ResEdit.getShadeButton(x, y).className === 'shade_button on';
+	return ResEdit.getShadeButton(x, y).classList.contains('res_edit_on');
 };
 ResEdit.setShadeButtonValue =
 function(x, y, b) {
 	var button = ResEdit.getShadeButton(x, y);
-	button.className = 'shade_button ' + (b ? 'on' : 'off');
+	if (b) {
+		button.classList.add('res_edit_on');
+		button.classList.remove('res_edit_off');
+	} else {
+		button.classList.add('res_edit_off');
+		button.classList.remove('res_edit_on');
+	}
 };
 ResEdit.toggleShadeButtonValue =
 function(x, y) {
@@ -811,7 +856,7 @@ function(x, y) {
 ResEdit.clearShadeButtonValues =
 function(x, y) {
 	var resol = ResEdit.getShadesResolution();
-	for (var y = 0; y < resol; y++) 
+	for (var y = 0; y < resol; y++)
 		for (var x = 0; x < resol; x++)
 			ResEdit.setShadeButtonValue(x, y, false);
 };
@@ -820,7 +865,7 @@ function() {
 	var shades = [];
 	var resol = ResEdit.getShadesResolution();
 	for (var y = 0; y < resol; y++)
-		for (var x = 0; x < resol; x++) 
+		for (var x = 0; x < resol; x++)
 			if (ResEdit.getShadeButtonValue(x, y))
 				shades.push(ResEdit.coordToShade(x, y));
 	return shades;
@@ -829,7 +874,7 @@ ResEdit.refillShades =
 function() {
 	var shades = ResEdit.cachedShades;
 	ResEdit.clearShadeButtonValues();
-	for (var i = 0; i < shades.length; i++) 
+	for (var i = 0; i < shades.length; i++)
 		ResEdit.fillShade(shades[i]);
 };
 ResEdit.fillShade =
@@ -841,20 +886,20 @@ function(shade) {
 
 ResEdit.getShadesResolution =
 function() {
-	var elem = document.getElementById('shades_resolution');
+	var elem = ResEdit.getElem('shades_resolution');
 	return elem.options[elem.selectedIndex].text;
 };
 ResEdit.setShadesResolution =
 function(resol) {
-	var elem = document.getElementById('shades_resolution');
+	var elem = ResEdit.getElem('shades_resolution');
 	elem.value = '' + resol;
 	ResEdit.rebuildShadesGrid();
 };
 ResEdit.rebuildShadesGrid =
 function() {
 	var resol = ResEdit.getShadesResolution();
-	var grid = document.getElementById('shades_grid');
-	while (grid.firstChild) 
+	var grid = ResEdit.getElem('shades_grid');
+	while (grid.firstChild)
 		grid.removeChild(grid.firstChild);
 	for (var y = 0; y < resol; y++) {
 		var tr = document.createElement('tr');
@@ -894,7 +939,7 @@ function(shades) {
 ResEdit.shadesRes =
 function(shades) {
 	var max = 2;
-	for (var i = 0; i < shades.length; i++) 
+	for (var i = 0; i < shades.length; i++)
 		max = Math.max(max, ResEdit.maxShadeRes(shades[i]));
 	return Math.min(max, 16);
 };
@@ -986,7 +1031,7 @@ function(x, y) {
 
 ResEdit.openHelp =
 function(e) {
-	window.open('edit_help.html', '_blank');
+	window.open('res_edit_help.html', '_blank');
 };
 ResEdit.changeText =
 function(e) {
@@ -1005,7 +1050,7 @@ function(e) {
 
 ResEdit.handlePreviewClick =
 function(e) {
-	var preview = document.getElementById('res_preview');
+	var preview = ResEdit.getElem('res_preview');
 	var rect = preview.getBoundingClientRect();
 	var x = e.clientX - rect.left;
 	var y = e.clientY - rect.top;
@@ -1040,25 +1085,25 @@ function(e) {
 ResEdit.processKeyPress =
 function(e) {
 	switch (String.fromCharCode(e.charCode)) {
-		case 'b': ResEdit.doBox(); break; 
-		case 'e': ResEdit.doEmpty(); break; 
-		case 'i': ResEdit.doInsert(); break; 
-		case 'k': ResEdit.doExclBack(); break; 
-		case 'm': ResEdit.doModify(); break; 
-		case 'n': ResEdit.doNamed(); break; 
-		case 's': ResEdit.doStack(); break; 
-		case 't': ResEdit.doExclFront(); break; 
-		case 'u': ResEdit.doSignMenu(); break; 
-		case 'w': ResEdit.doSwap(); break; 
-		case '.': ResEdit.doDot(); break; 
-		case '*': ResEdit.doStar(); break; 
-		case '+': ResEdit.doPlus(); break; 
-		case ':': ResEdit.doColon(); break; 
-		case ';': ResEdit.doSemicolon(); break; 
-		case '-': ResEdit.doHyphen(); break; 
-		case '!': ResEdit.doExcl(); break; 
-		case '^': ResEdit.doCaret(); break; 
-		case ' ': ResEdit.nameFocus(); ResEdit.stringFocus(); break; 
+		case 'b': ResEdit.doBox(); break;
+		case 'e': ResEdit.doEmpty(); break;
+		case 'i': ResEdit.doInsert(); break;
+		case 'k': ResEdit.doExclBack(); break;
+		case 'm': ResEdit.doModify(); break;
+		case 'n': ResEdit.doNamed(); break;
+		case 's': ResEdit.doStack(); break;
+		case 't': ResEdit.doExclFront(); break;
+		case 'u': ResEdit.doSignMenu(); break;
+		case 'w': ResEdit.doSwap(); break;
+		case '.': ResEdit.doDot(); break;
+		case '*': ResEdit.doStar(); break;
+		case '+': ResEdit.doPlus(); break;
+		case ':': ResEdit.doColon(); break;
+		case ';': ResEdit.doSemicolon(); break;
+		case '-': ResEdit.doHyphen(); break;
+		case '!': ResEdit.doExcl(); break;
+		case '^': ResEdit.doCaret(); break;
+		case ' ': ResEdit.nameFocus(); ResEdit.stringFocus(); break;
 		default: return;
 	}
 	e.preventDefault();
@@ -1105,12 +1150,12 @@ function() {
 
 ResEdit.enableStructureButton =
 function(name, b) {
-	document.getElementById(name + '_button').disabled = b;
+	ResEdit.getButtonElem(name).disabled = b;
 };
 ResEdit.disableStructureButtons =
 function() {
 	var names = ['named', 'empty', 'dot', 'star', 'plus', 'colon', 'semicolon',
-		'hyphen', 'box', 'stack', 'insert', 'modify', 'front', 'back', 'excl', 
+		'hyphen', 'box', 'stack', 'insert', 'modify', 'front', 'back', 'excl',
 		'caret', 'delete', 'swap'];
 	for (var i = 0; i < names.length; i++)
 		ResEdit.enableStructureButton(names[i], true);
@@ -1122,26 +1167,26 @@ function(names) {
 };
 
 ResEdit.setParamType =
-function(name) { 
-	document.getElementById('param_type').innerHTML = name;
+function(name) {
+	ResEdit.getElem('param_type').innerHTML = name;
 };
 ResEdit.enableParam =
-function(name, b) { 
-	var cl = b ? 'hide' : 'param_row';
-	document.getElementById(name + '_param').className = cl;
+function(name, b) {
+	var cl = b ? 'common_edit_hide' : 'common_edit_param_row';
+	ResEdit.getParamElem(name).className = cl;
 };
 ResEdit.enableParamChunk =
-function(name, b) { 
-	var cl = b ? 'hide' : 'param_chunk';
-	document.getElementById(name + '_param').className = cl;
+function(name, b) {
+	var cl = b ? 'common_edit_hide' : 'common_edit_param_chunk';
+	ResEdit.getParamElem(name).className = cl;
 };
 ResEdit.disableParams =
 function() {
-	var names = ['name', 'string', 'type', 'mirror', 'direction', 'rotate', 
+	var names = ['name', 'string', 'type', 'mirror', 'direction', 'rotate',
 		'scale', 'xscale', 'yscale', 'width', 'height', 'size', 'size_inf',
-		'sep', 'opensep', 'closesep', 'undersep', 'oversep', 
+		'sep', 'opensep', 'closesep', 'undersep', 'oversep',
 		'x', 'y', 'above', 'below', 'before', 'after',
-		'color', 'shade', 
+		'color', 'shade',
 		'fit', 'firm', 'fix', 'omit', 'cover'];
 	for (var i = 0; i < names.length; i++)
 		ResEdit.enableParam(names[i], true);
@@ -1213,7 +1258,7 @@ ResEdit.doStar =
 function() {
 	var foc = ResEdit.frag.editFocus;
 	var par = foc ? foc.editParent : null;
-	if (ResTree.objInClasses(foc, [ResBox, ResEmptyglyph, ResInsert, ResModify, 
+	if (ResTree.objInClasses(foc, [ResBox, ResEmptyglyph, ResInsert, ResModify,
 			ResNamedglyph, ResStack, ResVertgroup])) {
 		ResEdit.remember();
 		ResEdit.frag.editFocus = ResTree.appendNamedHor(foc);
@@ -1248,7 +1293,7 @@ function() {
 ResEdit.doPlus =
 function() {
 	var foc = ResEdit.frag.editFocus;
-	if (ResTree.objInClasses(foc, [ResBox, ResEmptyglyph, ResInsert, ResModify, 
+	if (ResTree.objInClasses(foc, [ResBox, ResEmptyglyph, ResInsert, ResModify,
 			ResNamedglyph, ResStack, ResVertgroup])) {
 		ResEdit.remember();
 		ResEdit.frag.editFocus = ResTree.prependNamedHor(foc);
@@ -1265,7 +1310,7 @@ ResEdit.doColon =
 function() {
 	var foc = ResEdit.frag.editFocus;
 	var par = foc ? foc.editParent : null;
-	if (ResTree.objInClasses(foc, [ResBox, ResEmptyglyph, ResHorgroup, ResInsert, 
+	if (ResTree.objInClasses(foc, [ResBox, ResEmptyglyph, ResHorgroup, ResInsert,
 			ResModify, ResNamedglyph, ResStack])) {
 		ResEdit.remember();
 		ResEdit.frag.editFocus = ResTree.appendNamedVert(foc);
@@ -1300,7 +1345,7 @@ function() {
 ResEdit.doSemicolon =
 function() {
 	var foc = ResEdit.frag.editFocus;
-	if (ResTree.objInClasses(foc, [ResBox, ResEmptyglyph, ResHorgroup, ResInsert, 
+	if (ResTree.objInClasses(foc, [ResBox, ResEmptyglyph, ResHorgroup, ResInsert,
 			ResModify, ResNamedglyph, ResStack])) {
 		ResEdit.remember();
 		ResEdit.frag.editFocus = ResTree.prependNamedVert(foc);
@@ -1499,7 +1544,7 @@ function() {
 	if (foc instanceof ResNamedglyph) {
 		var named = foc.editRoot.namedGlyphs();
 		var i = named.indexOf(foc);
-		if (i < named.length-1) 
+		if (i < named.length-1)
 			ResEdit.swapNames(foc, named[i+1]);
 	}
 	ResEdit.treeFocus();
@@ -1523,9 +1568,9 @@ ResEdit.catSecs = {};
 ResEdit.makeSignMenu =
 function() {
 	ResContext.makeCatToNames();
-	var panel = document.getElementById('cats_panel');
-	var menu = document.getElementById('cats');
-	var sections = document.getElementById('cat_sections');
+	var panel = ResEdit.getElem('cats_panel');
+	var menu = ResEdit.getElem('cats');
+	var sections = ResEdit.getElem('cat_sections');
 	var cats = ResContext.categories;
 	for (var i = 0; i < cats.length; i++) {
 		var cat = cats[i];
@@ -1533,13 +1578,13 @@ function() {
 		if (i === 0)
 			var first = cat;
 	}
-	var extraMenu = document.getElementById('extra_cats');
+	var extraMenu = ResEdit.getElem('extra_cats');
 	cats = ResContext.extraCategories;
 	for (var i = 0; i < cats.length; i++) {
 		var cat = cats[i];
 		ResEdit.makeCatMenu(extraMenu, sections, cat);
 	}
-	cats_panel.addEventListener('keydown', function(e) { ResEdit.processMenuKey(e); }, false);
+	panel.addEventListener('keydown', function(e) { ResEdit.processMenuKey(e); }, false);
 	ResEdit.showCat(first);
 	ResEdit.showSignMenu(false);
 	ResEdit.showSignInfo(false);
@@ -1554,8 +1599,8 @@ function(menu, sections, cat) {
 	ResEdit.catLinks[cat] = link;
 	var text = document.createTextNode(cat);
 	link.appendChild(text);
-	link.addEventListener('click', 
-		function(c) { return function(e) { 
+	link.addEventListener('click',
+		function(c) { return function(e) {
 			e.preventDefault();
 			ResEdit.showCat(c); }; }(cat) );
 	link.addEventListener('mouseover',
@@ -1563,29 +1608,29 @@ function(menu, sections, cat) {
 
 	var section = document.createElement('div');
 	sections.appendChild(section);
-	section.className = 'cat_section';
+	section.className = 'common_edit_cat_section';
 	var names = ResContext.catToNames[cat];
 	for (var j = 0; j < names.length; j++) {
 		var name = names[j];
 		var signLink = document.createElement('a');
 		section.appendChild(signLink);
-		signLink.className = 'sign_button_link';
+		signLink.className = 'common_edit_sign_button_link';
 		signLink.setAttribute('href', '#');
 		var sign = document.createElement('div');
 		signLink.appendChild(sign);
-		sign.className = 'sign_button';
+		sign.className = 'common_edit_sign_button';
 		var glyph = document.createElement('span');
 		sign.appendChild(glyph);
-		glyph.className = 'sign_button_hi';
+		glyph.className = 'common_edit_sign_button_hi';
 		var key = ResContext.hieroPoints[name];
 		glyph.innerHTML = String.fromCharCode(key);
 		var label = document.createElement('span');
 		sign.appendChild(label);
-		label.className = 'sign_button_label';
+		label.className = 'common_edit_sign_button_label';
 		label.innerHTML = name;
-		signLink.addEventListener('mouseover', function(n,g) { 
+		signLink.addEventListener('mouseover', function(n,g) {
 			return function() { ResEdit.processSignInfo(n,g); }; }(name,glyph) );
-		signLink.addEventListener('click', function(n,g) { 
+		signLink.addEventListener('click', function(n,g) {
 			return function(e) { e.preventDefault(); ResEdit.chooseSign(n); }; }(name) );
 	}
 	ResEdit.catSecs[cat] = section;
@@ -1594,38 +1639,38 @@ function(menu, sections, cat) {
 // Show sign menu.
 ResEdit.showSignMenu =
 function(b) {
-	var menu = document.getElementById('cats_panel');
-	menu.className = b ? 'show' : 'hide';
+	var menu = ResEdit.getElem('cats_panel');
+	menu.className = b ? 'common_edit_show' : 'common_edit_hide';
 	ResEdit.signMenuShown = b;
 	if (b) {
 		menu.focus();
 		var name = ResEdit.getValue('name_param');
 		var parts = ResContext.catNameStructure.exec(name);
-		if (parts) 
+		if (parts)
 			ResEdit.showCat(parts[1])
-	} else 
+	} else
 		ResEdit.treeFocus();
 };
 // Select category.
 ResEdit.showCat =
 function(cat) {
 	var cats = ResContext.categoriesAndExtra;
-	for (var i = 0; i < cats.length; i++) 
+	for (var i = 0; i < cats.length; i++)
 		if (cats[i] === cat) {
-			ResEdit.catLinks[cats[i]].className = 'selected';
-			ResEdit.catSecs[cats[i]].className = 'cat_section';
+			ResEdit.catLinks[cats[i]].className = 'common_edit_selected';
+			ResEdit.catSecs[cats[i]].className = 'common_edit_cat_section';
 		} else {
 			ResEdit.catLinks[cats[i]].className = '';
-			ResEdit.catSecs[cats[i]].className = 'hide';
+			ResEdit.catSecs[cats[i]].className = 'common_edit_hide';
 		}
-	var chosen = document.getElementById('chosen_sign');
+	var chosen = ResEdit.getElem('chosen_sign');
 	chosen.value = ResContext.categories.indexOf(cat) >= 0 ? cat : '';
 };
 ResEdit.shownCat =
 function() {
 	var cats = ResContext.categoriesAndExtra;
-	for (var i = 0; i < cats.length; i++) 
-		if (ResEdit.catLinks[cats[i]].className === 'selected')
+	for (var i = 0; i < cats.length; i++)
+		if (ResEdit.catLinks[cats[i]].className === 'common_edit_selected')
 			return cats[i];
 	return -1;
 };
@@ -1635,7 +1680,7 @@ function() {
 	var i = ResContext.categories.indexOf(cat);
 	if (i === 0)
 		return;
-	else if (i > 0) 
+	else if (i > 0)
 		ResEdit.showCat(ResContext.categories[i-1]);
 	else {
 		i = ResContext.extraCategories.indexOf(cat);
@@ -1677,14 +1722,14 @@ function() {
 };
 ResEdit.backspaceSign =
 function() {
-	var chosen = document.getElementById('chosen_sign');
+	var chosen = ResEdit.getElem('chosen_sign');
 	chosen.value.length > 0;
 	chosen.value = chosen.value.substring(0, chosen.value.length-1);
 };
 ResEdit.chooseTypedSign =
 function() {
-	var chosen = document.getElementById('chosen_sign');
-	if (ResContext.hieroPoints[chosen.value] !== undefined) 
+	var chosen = ResEdit.getElem('chosen_sign');
+	if (ResContext.hieroPoints[chosen.value] !== undefined)
 		ResEdit.chooseSign(chosen.value);
 };
 ResEdit.chooseSign =
@@ -1697,9 +1742,9 @@ function(name) {
 // Show information on sign.
 ResEdit.showSignInfo =
 function(b) {
-	var infoButton = document.getElementById('sign_info_button');
-	var info = document.getElementById('sign_info');
-	info.className = b ? 'show' : 'hide';
+	var infoButton = ResEdit.getButtonElem('sign_info');
+	var info = ResEdit.getElem('sign_info');
+	info.className = b ? 'common_edit_show' : 'common_edit_hide';
 	ResEdit.signInfoShown = b;
 	infoButton.innerHTML = 'info ' + (b ? 'off' : 'on');
 };
@@ -1712,8 +1757,8 @@ ResEdit.processSignInfo =
 function(name, elem) {
 	if (!ResEdit.signInfoShown || !ResEdit.signMenuShown)
 		return;
-	var menu = document.getElementById('cats_panel');
-	var info = document.getElementById('sign_info');
+	var menu = ResEdit.getElem('cats_panel');
+	var info = ResEdit.getElem('sign_info');
 	var menuX = menu.offsetWidth / 2;
 	var linkX = elem.offsetLeft + elem.offsetWidth / 2;
 	if (linkX > menuX)
@@ -1728,7 +1773,7 @@ function(name, elem) {
 			ResWeb.makeIn(info);
 			ResWeb.mapSignsIn(info);
 			ResWeb.mapTransIn(info);
-		} else 
+		} else
 			info.innerHTML = name;
 	}
 };
@@ -1753,22 +1798,21 @@ function(e) {
 		case 40: ResEdit.showCatDown(); return true; // down
 	}
 	c = String.fromCharCode(c);
-	var chosen = document.getElementById('chosen_sign');
+	var chosen = ResEdit.getElem('chosen_sign');
 	if (/^[A-Z]$/.test(c)) {
-		if (chosen.value === 'N' && /^[LU]$/.test(c)) 
+		if (chosen.value === 'N' && /^[LU]$/.test(c))
 			ResEdit.showCat('N' + c);
 		else if (chosen.value === 'A' && c === 'A')
 			ResEdit.showCat('Aa');
-		else if (/^([A-IK-Z]?|NL|NU|Aa)$/.test(chosen.value) && /^[A-IK-Z]$/.test(c)) 
+		else if (/^([A-IK-Z]?|NL|NU|Aa)$/.test(chosen.value) && /^[A-IK-Z]$/.test(c))
 			ResEdit.showCat(c);
 		else if (/^[a-zA-Z]+[0-9]+$/.test(chosen.value))
 			chosen.value = chosen.value + c.toLowerCase();
 		return true;
 	} else if (/^[0-9]$/.test(c)) {
-		if (/^[a-zA-Z]+[0-9]*$/.test(chosen.value)) 
+		if (/^[a-zA-Z]+[0-9]*$/.test(chosen.value))
 			chosen.value = chosen.value + c;
 		return true;
 	}
 	return false;
 };
-

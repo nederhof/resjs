@@ -6,8 +6,6 @@
 </head>
 <body>
 
-<a href="edit_uni.html"><img src="uparr.jpg">&nbsp;<b>Unicode Editor</b></a>
-
 <h1>Manual of Unicode Editor in JavaScript</h1>
 
 <h2>Introductory examples</h2>
@@ -32,7 +30,7 @@ structure in the tree panel, and the corresponding Unicode sequence is
 in the text panel near the bottom of the page, above the <b>Parse</b> button.
 Below the <b>Parse</b> button, the actual characters are displayed.
 <p>
-Suppose we wanted to move the ideogram marker (Z1) to the bottom right
+Suppose we wanted to move the ideogram marker (Z1) to the bottom left
 corner. Then we do:
 <ol>
 <li> Press the space bar and the arrow up
@@ -106,7 +104,8 @@ there is a blue line at the beginning of the preview panel.
 In the tree panel, the focus can be changed by clicking on a node.
 In the preview panel, the root node of a top-level group can be
 made the focus by clicking on that group; one may also click
-on the white space between two groups to transfer focus onto an operator. 
+on the white space between two groups to transfer focus to the position
+between the two groups.
 Other ways to navigate rely on keyboard shortcuts, as will be explained later.
 
 <h3>Control panel</h3>
@@ -122,6 +121,12 @@ an edit is made, for example through the buttons in the control panel.
 Alternatively, one can edit the text panel and press
 <b>Parse</b>, which updates the preview and tree panels.
 By pressing <b>Clear</b>, one obtains an empty fragment.
+
+<h3>Character panel</h3>
+
+The character panel shows the bare sequence of Unicode characters. The
+sequence is updated every time an edit is made. One cannot enter text into
+this panel nor edit its contents.
 
 <h2>Editing</h2>
 

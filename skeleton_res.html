@@ -4,21 +4,14 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>My title</title>
 <link rel="stylesheet" type="text/css" href="res.css" />
-<script type="text/javascript" src="res_aux.js"></script>
-<script type="text/javascript" src="res_points.js"></script>
-<script type="text/javascript" src="res_lite.js"></script>
-<script type="text/javascript" src="res_struct.js"></script>
-<script type="text/javascript" src="res_syntax.js"></script>
-<script type="text/javascript" src="res_format.js"></script>
-<script type="text/javascript" src="res_render.js"></script>
-<script type="text/javascript" src="res_web.js"></script>
+<script type="text/javascript" src="res_concat.js"></script>
 </head>
 <body>
 	<!-- hack to force timely loading of fonts -->
-	<div id="outsidescreen">
-		<span class="outsidescreen_elem hi">&#57344;</span>
-		<span class="outsidescreen_elem hiaux">&#35;</span>
-		<span class="outsidescreen_elem hinotes">&#35;</span>
+	<div id="res_outsidescreen">
+		<span class="res_outsidescreen_elem hi">&#57344;</span>
+		<span class="res_outsidescreen_elem hiaux">&#35;</span>
+		<span class="res_outsidescreen_elem hinotes">&#35;</span>
 	</div>
 
 Include RES like this, with default font size 36px:
@@ -32,26 +25,26 @@ A1*B1:Z1*Z1*Z1
 </canvas>
 <p>
 For a single hieroglyph in isolation, 
-like <span class="sign">A1</span>, 
+like <span class="res_sign">A1</span>, 
 one can avoid using a canvas. 
 This will typically be faster to render, but the appearance may differ slightly.
 By default, the baseline of the sign will be below the baseline of surrounding text. 
 For high signs, it may be better to have the baseline below the baseline of
 surrounding text, 
-like <span class="sign high">A1</span>.
+like <span class="res_sign res_high">A1</span>.
 For low signs, one may want to make the line less high, 
-like <span class="sign low">a</span>.
+like <span class="res_sign res_low">a</span>.
 <p>
 Also mnemonics may be used, like <span class="sign">mSa</span>.
 Look at <a href="res_points.js">res_points.js</a> for allowable sign names and
 mnemonics.
 Again, one may vary the font size, like this:
-<span class="sign" style="font-size: 25px; vertical-align: -5px;">A1</span>.
+<span class="res_sign" style="font-size: 25px; vertical-align: -5px;">A1</span>.
 <p>
 Lastly, one can use transliteration, like this:
-<span class="trans">AjiyawbpfmnrlhHxXzsSqKkgtTdD</span>. Upper case is with a
+<span class="egytransl">AjiyawbpfmnrlhHxXzsSqKkgtTdD</span>. Upper case is with a
 caret sign like this: 
-<span class="trans">^A^j^i^y^a^w^b^p^f^m^n^r^l^h^H^x^X^z^s^S^q^K^k^g^t^T^d^D</span>.
+<span class="egytransl">^A^j^i^y^a^w^b^p^f^m^n^r^l^h^H^x^X^z^s^S^q^K^k^g^t^T^d^D</span>.
 
 </body>
 </html>
