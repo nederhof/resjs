@@ -24,7 +24,7 @@ span.hinotes {
 /* hack to force timely loading of fonts */
 #res_outsidescreen {
 	overflow: hidden;
-	position: relative;
+	position: absolute;
 }
 .res_outsidescreen_elem {
 	position: absolute;
