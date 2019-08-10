@@ -2360,6 +2360,15 @@ function(code) {
 	var key = ResContext.mnemonics[code];
 	return key ? key : code;
 };
+ResContext.unBracket =
+function(code) {
+	if (code == "open")
+		return "V11a";
+	else if (code == "close")
+		return "V11b";
+	else
+		return code;
+};
 
 ResContext.auxPoints = {
 open:35,
@@ -2399,6 +2408,7 @@ vrl:52};
 ResContext.prototype.hieroPoints = ResContext.hieroPoints;
 ResContext.prototype.mnemonics = ResContext.mnemonics;
 ResContext.prototype.unMnemonic = ResContext.unMnemonic;
+ResContext.prototype.unBracket = ResContext.unBracket;
 ResContext.prototype.auxPoints = ResContext.auxPoints;
 
 ResContext.tallSigns = [
@@ -5278,7 +5288,7 @@ ResNamedglyph.prototype.toUniTuple =
 function() {
 	var context = new ResContext();
 	var safeName = this.name === "\"?\"" ? "Z9" : this.name;
-	var key = context.unMnemonic(safeName);
+	var key = context.unBracket(context.unMnemonic(safeName));
 	key = context.hieroPoints[key];
 	key = key ? key : context.hieroPoints["Z9"];
 	key = Uni.intBMPtoSMP(key);

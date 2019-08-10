@@ -28,7 +28,7 @@ span.hinotes {
 /* hack to force timely loading of fonts */
 #res_outsidescreen {
 	overflow: hidden;
-	position: relative;
+	position: absolute;
 }
 .res_outsidescreen_elem {
 	position: absolute;
@@ -79,7 +79,7 @@ span.egytransl {
 
 /* res_edit.css */
 
-body {
+body.res_edit {
 	font: normal 12px Arial;
 }
 

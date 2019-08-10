@@ -28,7 +28,7 @@ span.hinotes {
 /* hack to force timely loading of fonts */
 #res_outsidescreen {
 	overflow: hidden;
-	position: relative;
+	position: absolute;
 }
 .res_outsidescreen_elem {
 	position: absolute;
@@ -84,11 +84,15 @@ span.egytransl {
     src: url('NewGardinerSMP.ttf') format('truetype');
 }
 
-body {
+body.uni_edit {
 	font: normal 12px Arial;
 }
 
 /* Page structure */
+
+#uni_edit_pane {
+	font: normal 12px Arial;
+}
 
 #uni_edit_top_panel {
 	width: 100%;

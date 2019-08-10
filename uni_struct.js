@@ -422,7 +422,7 @@ ResNamedglyph.prototype.toUniTuple =
 function() {
 	var context = new ResContext();
 	var safeName = this.name === "\"?\"" ? "Z9" : this.name;
-	var key = context.unMnemonic(safeName);
+	var key = context.unBracket(context.unMnemonic(safeName));
 	key = context.hieroPoints[key];
 	key = key ? key : context.hieroPoints["Z9"];
 	key = Uni.intBMPtoSMP(key);

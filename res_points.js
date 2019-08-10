@@ -1448,6 +1448,15 @@ function(code) {
 	var key = ResContext.mnemonics[code];
 	return key ? key : code;
 };
+ResContext.unBracket =
+function(code) {
+	if (code == "open")
+		return "V11a";
+	else if (code == "close")
+		return "V11b";
+	else
+		return code;
+};
 
 ResContext.auxPoints = {
 open:35,
@@ -1487,6 +1496,7 @@ vrl:52};
 ResContext.prototype.hieroPoints = ResContext.hieroPoints;
 ResContext.prototype.mnemonics = ResContext.mnemonics;
 ResContext.prototype.unMnemonic = ResContext.unMnemonic;
+ResContext.prototype.unBracket = ResContext.unBracket;
 ResContext.prototype.auxPoints = ResContext.auxPoints;
 
 ResContext.tallSigns = [
